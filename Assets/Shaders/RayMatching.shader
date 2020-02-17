@@ -25,8 +25,11 @@
             uniform float _maxDistance, _box1round, _boxSphereSmooth, _sphereIntersectSmooth;
             uniform float4 _sphere1, _sphere2, _box1;
             uniform float3 _modInterval;
-            uniform float3 _LightDirection;
+            uniform float3 _LightDirection, _LightCol;
+            uniform float _LightIntensity;
             uniform fixed4 _mainColor;
+            uniform float2 _ShadowDistance;
+            uniform float _ShadowIntensity, _ShadowPenumbra;
 
             struct appdata
             {
@@ -81,6 +84,43 @@
                 return normalize(n);
             }
 
+            float hardShadow(float3 ro, float3 rd, float mint, float maxt){
+                for(float t = mint; t < maxt; ){
+                    float h = distanceField(ro + rd* t);
+                    if(h < 0.001){
+                        return 0.0;
+                    }
+                    t += h;
+                }
+                return 1.0;
+            }
+
+            float softShadow(float3 ro, float3 rd, float mint, float maxt, float k){
+                float result = 1.0;
+                for(float t = mint; t < maxt; ){
+                    float h = distanceField(ro + rd* t);
+                    if(h < 0.001){
+                        return 0.0;
+                    }
+                    result = min(result, k*h/t);
+                    t += h;
+                }
+                return result;
+            }
+
+            float3  Shading(float3 p, float3 n){
+                // Directional Light
+                float3 result = (_LightCol * dot(-_LightDirection, n) * 0.5 + 0.5) * _LightIntensity;
+
+                // Shadows
+                float shadow = softShadow(p, -_LightDirection, _ShadowDistance.x, _ShadowDistance.y, _ShadowPenumbra) * 0.5 + 0.5;
+                shadow = max( 0.0, pow(shadow, _ShadowIntensity));
+
+                result *= shadow;
+
+                return result;
+            }
+
             fixed4 raymarching(float3 ro, float3 rd, float depth){
                 fixed4 result = fixed4(0,0,0,1);
                 const int max_iteration = 164;
@@ -97,9 +137,10 @@
                     //check for hit in distancefield
                     float d = distanceField(p);
                     if(d < 0.01){
+                        //Shading
                         float3 n = getNormal(p);
-                        float3 light = dot(-_LightDirection, n);
-                        result = fixed4(_mainColor * light,1);
+                        float3 s = Shading(p, n);
+                        result = fixed4(_mainColor * s,1);
                         break;
                     }
                     t += d;

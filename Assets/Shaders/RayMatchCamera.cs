@@ -36,15 +36,26 @@ public class RayMatchCamera : SceneViewFilter {
     private Camera _cam;
     public float _maxDistance;
     
+    [Header("Directional Light")]
+    public Transform _directionalLight;
+    public Color _LightCol;
+    public float _LightIntensity;
+    
+    [Header("Shadow")]
+    [Range(0,4)]
+    public float _ShadowIntensity;
+    [Range(1,128)]
+    public float _ShadowPenumbra;
+    public Vector2 _ShadowDistance;
+
     [Header("Signed Distance Field")]
+    public Color _mainColor = Color.red;
     public Vector4 _sphere1;
     public Vector4 _box1;
     public float _box1round; 
     public float _boxSphereSmooth; 
     public Vector4 _sphere2;
     public float _sphereIntersectSmooth; 
-    public Transform _directionalLight;
-    public Color _mainColor = Color.red;
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
@@ -65,6 +76,12 @@ public class RayMatchCamera : SceneViewFilter {
         _raymarchMaterial.SetFloat("_sphereIntersectSmooth", _sphereIntersectSmooth);
         _raymarchMaterial.SetVector("_LightDirection", _directionalLight ? _directionalLight.forward : Vector3.down);
         _raymarchMaterial.SetColor("_mainColor", _mainColor);
+
+        _raymarchMaterial.SetColor("_LightCol", _LightCol);
+        _raymarchMaterial.SetFloat("_LightIntensity", _LightIntensity);
+        _raymarchMaterial.SetVector("_ShadowDistance", _ShadowDistance);
+        _raymarchMaterial.SetFloat("_ShadowIntensity", _ShadowIntensity);
+        _raymarchMaterial.SetFloat("_ShadowPenumbra", _ShadowPenumbra);
 
         RenderTexture.active = destination;
         _raymarchMaterial.SetTexture("_MainTex", source);
