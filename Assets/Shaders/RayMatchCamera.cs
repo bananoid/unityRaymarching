@@ -36,6 +36,11 @@ public class RayMatchCamera : SceneViewFilter {
     private Camera _cam;
     public float _maxDistance;
     
+    [Range(1, 300)]
+    public int _MaxIterations;
+    [Range(0.1f, 0.001f)]
+    public float _Accuracy;
+
     [Header("Directional Light")]
     public Transform _directionalLight;
     public Color _LightCol;
@@ -64,6 +69,9 @@ public class RayMatchCamera : SceneViewFilter {
             Graphics.Blit(source, destination);
             return;
         }
+
+        _raymarchMaterial.SetInt("_MaxIterations", _MaxIterations);
+        _raymarchMaterial.SetFloat("_Accuracy", _Accuracy);
 
         _raymarchMaterial.SetMatrix("_CamFrustum", CamFrustum(_camera));
         _raymarchMaterial.SetMatrix("_CamToWorld", _camera.cameraToWorldMatrix);

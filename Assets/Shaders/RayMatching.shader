@@ -22,6 +22,8 @@
             sampler2D _MainTex;
             uniform sampler2D _CameraDepthTexture;
             uniform float4x4 _CamFrustum, _CamToWorld;
+            uniform int _MaxIterations;
+            uniform float _Accuracy; 
             uniform float _maxDistance, _box1round, _boxSphereSmooth, _sphereIntersectSmooth;
             uniform float4 _sphere1, _sphere2, _box1;
             uniform float3 _modInterval;
@@ -123,7 +125,7 @@
 
             fixed4 raymarching(float3 ro, float3 rd, float depth){
                 fixed4 result = fixed4(0,0,0,1);
-                const int max_iteration = 164;
+                const int max_iteration = _MaxIterations;
                 float t = 0; //distance travel along the ray direction
 
                 for(int i = 0; i < max_iteration; i++){
@@ -136,7 +138,7 @@
                     float3 p = ro + rd * t;
                     //check for hit in distancefield
                     float d = distanceField(p);
-                    if(d < 0.01){
+                    if(d < _Accuracy){
                         //Shading
                         float3 n = getNormal(p);
                         float3 s = Shading(p, n);

@@ -219,6 +219,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shader: {fileID: 4800000, guid: 387004cddd8a84fce859ea1b4a3b2dd3, type: 3}
   _maxDistance: 1000
+  _MaxIterations: 269
+  _Accuracy: 0.001
   _directionalLight: {fileID: 1600518599}
   _LightCol: {r: 1, g: 0.9463319, b: 0.8160377, a: 0}
   _LightIntensity: 1
