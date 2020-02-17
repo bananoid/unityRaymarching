@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 [ExecuteInEditMode]
-public class RayMatchCamera : MonoBehaviour {
+public class RayMatchCamera : SceneViewFilter {
     [SerializeField]
     private Shader _shader;
     public Material _raymarchMaterial
@@ -53,6 +53,7 @@ public class RayMatchCamera : MonoBehaviour {
         _raymarchMaterial.SetVector("_LightDirection", _directionalLight ? _directionalLight.forward : Vector3.down);
 
         RenderTexture.active = destination;
+        _raymarchMaterial.SetTexture("_MainTex", source);
         GL.PushMatrix();
         GL.LoadOrtho();
         _raymarchMaterial.SetPass(0);
