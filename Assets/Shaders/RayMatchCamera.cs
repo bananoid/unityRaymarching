@@ -35,9 +35,14 @@ public class RayMatchCamera : SceneViewFilter {
     }
     private Camera _cam;
     public float _maxDistance;
+    
+    [Header("Signed Distance Field")]
     public Vector4 _sphere1;
     public Vector4 _box1;
-    public Vector3 _modInterval;
+    public float _box1round; 
+    public float _boxSphereSmooth; 
+    public Vector4 _sphere2;
+    public float _sphereIntersectSmooth; 
     public Transform _directionalLight;
     public Color _mainColor = Color.red;
 
@@ -54,7 +59,10 @@ public class RayMatchCamera : SceneViewFilter {
         _raymarchMaterial.SetFloat("_maxDistance", _maxDistance);
         _raymarchMaterial.SetVector("_sphere1", _sphere1);
         _raymarchMaterial.SetVector("_box1", _box1);
-        _raymarchMaterial.SetVector("_modInterval", _modInterval);
+        _raymarchMaterial.SetFloat("_box1round", _box1round);
+        _raymarchMaterial.SetFloat("_boxSphereSmooth", _boxSphereSmooth);
+        _raymarchMaterial.SetVector("_sphere2", _sphere2);
+        _raymarchMaterial.SetFloat("_sphereIntersectSmooth", _sphereIntersectSmooth);
         _raymarchMaterial.SetVector("_LightDirection", _directionalLight ? _directionalLight.forward : Vector3.down);
         _raymarchMaterial.SetColor("_mainColor", _mainColor);
 

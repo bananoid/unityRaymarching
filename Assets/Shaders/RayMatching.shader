@@ -22,8 +22,8 @@
             sampler2D _MainTex;
             uniform sampler2D _CameraDepthTexture;
             uniform float4x4 _CamFrustum, _CamToWorld;
-            uniform float _maxDistance;
-            uniform float4 _sphere1, _box1;
+            uniform float _maxDistance, _box1round, _boxSphereSmooth, _sphereIntersectSmooth;
+            uniform float4 _sphere1, _sphere2, _box1;
             uniform float3 _modInterval;
             uniform float3 _LightDirection;
             uniform fixed4 _mainColor;
@@ -54,15 +54,21 @@
                 o.ray = mul(_CamToWorld, o.ray);  
                 return o;
             }
-            
-            float distanceField(float3 p){
-                float modX = pMod1(p.x, _modInterval.x);
-                float modY = pMod1(p.y, _modInterval.y);
-                float modZ = pMod1(p.z, _modInterval.z);
 
+            float BoxSphere(float3 p){
                 float Sphere1 = sdSphere(p - _sphere1.xyz, _sphere1.w);
-                float Box1 = sdBox(p - _box1.xyz, _box1.www);
-                return opS(Sphere1, Box1);
+                float Box1 = sdRoundBox(p - _box1.xyz, _box1.www, _box1round);
+                float combine1 = opSS(Sphere1, Box1, _boxSphereSmooth);
+                float Sphere2 = sdSphere(p - _sphere2.xyz, _sphere2.w);
+                float combine2 = opIS(Sphere2, combine1, _sphereIntersectSmooth);
+                return combine2;
+            }
+
+            float distanceField(float3 p){
+                float ground =  sdPlane(p, float4(0,1,0,0));
+                float boxSphere1 = BoxSphere(p);
+
+                return opU(ground, boxSphere1);
             }
 
             float3 getNormal(float3 p ){
