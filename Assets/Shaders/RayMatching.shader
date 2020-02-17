@@ -110,15 +110,38 @@
                 return result;
             }
 
+            uniform float _AoStepSize; 
+            uniform float _AoIntensity; 
+            uniform int _AoIterations;
+
+            float AmbientOcclusion(float3 p, float3 n){
+                float step = _AoStepSize;
+                float ao = 0.0;
+                float dist;
+                for(int i=1; i< _AoIterations; i++){
+                    dist = step * i;
+                    ao += max(0.0, (dist - distanceField(p + n * dist)) / dist);  
+                }
+                return 1.0 - ao * _AoIntensity;
+            }
+
             float3  Shading(float3 p, float3 n){
+                float3 result;
+
+                //Diffuse color;
+                float3 color = _mainColor.rgb;
+                
                 // Directional Light
-                float3 result = (_LightCol * dot(-_LightDirection, n) * 0.5 + 0.5) * _LightIntensity;
+                float3 light = (_LightCol * dot(-_LightDirection, n) * 0.5 + 0.5) * _LightIntensity;
 
                 // Shadows
                 float shadow = softShadow(p, -_LightDirection, _ShadowDistance.x, _ShadowDistance.y, _ShadowPenumbra) * 0.5 + 0.5;
                 shadow = max( 0.0, pow(shadow, _ShadowIntensity));
 
-                result *= shadow;
+                //Ambient Occlusion
+                float ao = AmbientOcclusion(p,n);
+                
+                result = color * light * shadow * ao;
 
                 return result;
             }
@@ -142,7 +165,7 @@
                         //Shading
                         float3 n = getNormal(p);
                         float3 s = Shading(p, n);
-                        result = fixed4(_mainColor * s,1);
+                        result = fixed4(s,1);
                         break;
                     }
                     t += d;

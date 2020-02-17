@@ -36,6 +36,7 @@ public class RayMatchCamera : SceneViewFilter {
     private Camera _cam;
     public float _maxDistance;
     
+    [Header("Setup")]
     [Range(1, 300)]
     public int _MaxIterations;
     [Range(0.1f, 0.001f)]
@@ -52,6 +53,14 @@ public class RayMatchCamera : SceneViewFilter {
     [Range(1,128)]
     public float _ShadowPenumbra;
     public Vector2 _ShadowDistance;
+
+    [Header("Ambient Occlusion")]
+    [Range(0.01f, 10.0f)]
+    public float _AoStepSize; 
+    [Range(1, 5)]
+    public int _AoIterations;
+    [Range(0, 1)]
+    public float _AoIntensity; 
 
     [Header("Signed Distance Field")]
     public Color _mainColor = Color.red;
@@ -72,7 +81,7 @@ public class RayMatchCamera : SceneViewFilter {
 
         _raymarchMaterial.SetInt("_MaxIterations", _MaxIterations);
         _raymarchMaterial.SetFloat("_Accuracy", _Accuracy);
-
+        
         _raymarchMaterial.SetMatrix("_CamFrustum", CamFrustum(_camera));
         _raymarchMaterial.SetMatrix("_CamToWorld", _camera.cameraToWorldMatrix);
         _raymarchMaterial.SetFloat("_maxDistance", _maxDistance);
@@ -90,6 +99,10 @@ public class RayMatchCamera : SceneViewFilter {
         _raymarchMaterial.SetVector("_ShadowDistance", _ShadowDistance);
         _raymarchMaterial.SetFloat("_ShadowIntensity", _ShadowIntensity);
         _raymarchMaterial.SetFloat("_ShadowPenumbra", _ShadowPenumbra);
+
+        _raymarchMaterial.SetFloat("_AoStepSize", _AoStepSize);
+        _raymarchMaterial.SetFloat("_AoIntensity", _AoIntensity);
+        _raymarchMaterial.SetInt("_AoIterations", _AoIterations);
 
         RenderTexture.active = destination;
         _raymarchMaterial.SetTexture("_MainTex", source);

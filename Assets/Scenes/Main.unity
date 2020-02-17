@@ -222,11 +222,14 @@ MonoBehaviour:
   _MaxIterations: 269
   _Accuracy: 0.001
   _directionalLight: {fileID: 1600518599}
-  _LightCol: {r: 1, g: 0.9463319, b: 0.8160377, a: 0}
+  _LightCol: {r: 1, g: 1, b: 1, a: 0}
   _LightIntensity: 1
   _ShadowIntensity: 1.31
   _ShadowPenumbra: 3.5
   _ShadowDistance: {x: 0.53, y: 17.39}
+  _AoStepSize: 1.64
+  _AoIterations: 3
+  _AoIntensity: 0.292
   _mainColor: {r: 1, g: 0.7819159, b: 0, a: 0}
   _sphere1: {x: 0, y: 2.5, z: 0, w: 2.42}
   _box1: {x: 0, y: 2.5, z: 0, w: 2.51}
