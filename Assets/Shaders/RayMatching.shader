@@ -35,6 +35,8 @@
             uniform float2 _ShadowDistance;
             uniform float _ShadowIntensity, _ShadowPenumbra;
 
+            #include "SceneDF.cginc"
+
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -62,25 +64,8 @@
                 return o;
             }
 
-            float BoxSphere(float3 p){
-                float Sphere1 = sdSphere(p - _sphere1.xyz, _sphere1.w);
-                float Box1 = sdRoundBox(p - _box1.xyz, _box1.www, _box1round);
-                float combine1 = opSS(Sphere1, Box1, _boxSphereSmooth);
-                float Sphere2 = sdSphere(p - _sphere2.xyz, _sphere2.w);
-                float combine2 = opIS(Sphere2, combine1, _sphereIntersectSmooth);
-                return combine2;
-            }
-
             float4 distanceField(float3 p){
-                // float ground =  sdPlane(p, float4(0,1,0,0));
-                // float boxSphere1 = BoxSphere(p);
-                // return opU(ground, boxSphere1);
-
-                float4 Sphere1 = float4(float3(0.5,0,1), sdSphere(p - _sphere1.xyz, _sphere1.w));
-                Sphere1.w = abs(sin(Sphere1.w * 2.0 + _Time * 10.0 )) - 0.6;
-                float4 Sphere2 = float4(float3(0.1,0.5,0.9), sdSphere(p - _sphere2.xyz, _sphere2.w));
-                float4 combine = opSS(Sphere1,Sphere2,_sphereIntersectSmooth);    
-                return combine;
+                return SineSphere(p);
             }
 
             float3 getNormal(float3 p, float d ){

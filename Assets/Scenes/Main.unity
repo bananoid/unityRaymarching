@@ -225,10 +225,10 @@ MonoBehaviour:
   _directionalLight: {fileID: 1600518599}
   _LightCol: {r: 0.050173707, g: 0.050173707, b: 0.050173707, a: 0}
   _ShadowColor: {r: 5.278032, g: 0.84862477, b: 0, a: 0}
-  _ShadowIntensity: 1.07
+  _ShadowIntensity: 1.22
   _ShadowPenumbra: 1.5
   _ShadowDistance: {x: 0.1, y: 38.09}
-  _AoIntensity: 0.298
+  _AoIntensity: 0.316
   _AoStepSize: 6.38
   _AoIterations: 5
   _mainColor: {r: 0.9150943, g: 0.90729576, b: 0.8158152, a: 0}
