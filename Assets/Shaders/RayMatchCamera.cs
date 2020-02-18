@@ -43,9 +43,10 @@ public class RayMatchCamera : SceneViewFilter {
     public float _Accuracy;
 
     [Header("Directional Light")]
-    public Transform _directionalLight;
-    public Color _LightCol;
     public float _LightIntensity;
+    public Transform _directionalLight;
+     [ColorUsage(true, true)]
+    public Color _LightCol;
     
     [Header("Shadow")]
     [Range(0,4)]
@@ -55,20 +56,20 @@ public class RayMatchCamera : SceneViewFilter {
     public Vector2 _ShadowDistance;
 
     [Header("Ambient Occlusion")]
+    [Range(0, 1)]
+    public float _AoIntensity; 
     [Range(0.01f, 10.0f)]
     public float _AoStepSize; 
     [Range(1, 5)]
     public int _AoIterations;
-    [Range(0, 1)]
-    public float _AoIntensity; 
 
     [Header("Signed Distance Field")]
     public Color _mainColor = Color.red;
     public Vector4 _sphere1;
+    public Vector4 _sphere2;
     public Vector4 _box1;
     public float _box1round; 
     public float _boxSphereSmooth; 
-    public Vector4 _sphere2;
     public float _sphereIntersectSmooth; 
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)

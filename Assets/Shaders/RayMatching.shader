@@ -69,26 +69,33 @@
                 return combine2;
             }
 
-            float distanceField(float3 p){
-                float ground =  sdPlane(p, float4(0,1,0,0));
-                float boxSphere1 = BoxSphere(p);
+            float4 distanceField(float3 p){
+                // float ground =  sdPlane(p, float4(0,1,0,0));
+                // float boxSphere1 = BoxSphere(p);
+                // return opU(ground, boxSphere1);
 
-                return opU(ground, boxSphere1);
+                float4 Sphere1 = float4(float3(1,0,0), sdSphere(p - _sphere1.xyz, _sphere1.w));
+                float4 Sphere2 = float4(float3(1,1,1), sdSphere(p - _sphere2.xyz, _sphere2.w));
+
+                return opUS(Sphere1,Sphere2,_sphereIntersectSmooth);
             }
 
-            float3 getNormal(float3 p ){
-                const float2 offset = float2(0.001, 0.0);
+            float3 getNormal(float3 p, float d ){
+                const float2 offset = float2(0.0001, 0.0);
                 float3 n = float3(
-                    distanceField(p + offset.xyy) - distanceField(p - offset.xyy),
-                    distanceField(p + offset.yxy) - distanceField(p - offset.yxy),
-                    distanceField(p + offset.yyx) - distanceField(p - offset.yyx)
+                    // distanceField(p + offset.xyy).w - distanceField(p - offset.xyy).w,
+                    // distanceField(p + offset.yxy).w - distanceField(p - offset.yxy).w,
+                    // distanceField(p + offset.yyx).w - distanceField(p - offset.yyx).w
+                    distanceField(p + offset.xyy).w - d,
+                    distanceField(p + offset.yxy).w - d,
+                    distanceField(p + offset.yyx).w - d
                 );
                 return normalize(n);
             }
 
             float hardShadow(float3 ro, float3 rd, float mint, float maxt){
                 for(float t = mint; t < maxt; ){
-                    float h = distanceField(ro + rd* t);
+                    float h = distanceField(ro + rd* t).w;
                     if(h < 0.001){
                         return 0.0;
                     }
@@ -100,7 +107,7 @@
             float softShadow(float3 ro, float3 rd, float mint, float maxt, float k){
                 float result = 1.0;
                 for(float t = mint; t < maxt; ){
-                    float h = distanceField(ro + rd* t);
+                    float h = distanceField(ro + rd* t).w;
                     if(h < 0.001){
                         return 0.0;
                     }
@@ -120,29 +127,34 @@
                 float dist;
                 for(int i=1; i< _AoIterations; i++){
                     dist = step * i;
-                    ao += max(0.0, (dist - distanceField(p + n * dist)) / dist);  
+                    ao += max(0.0, (dist - distanceField(p + n * dist).w) / dist);  
                 }
                 return 1.0 - ao * _AoIntensity;
             }
 
-            float3  Shading(float3 p, float3 n){
-                float3 result;
-
+            float3  Shading(float3 p, float3 n, fixed3 color){
                 //Diffuse color;
-                float3 color = _mainColor.rgb;
+                float3 result = color;
                 
                 // Directional Light
-                float3 light = (_LightCol * dot(-_LightDirection, n) * 0.5 + 0.5) * _LightIntensity;
+                if(_LightIntensity > 0){
+                    float3 light = _LightCol * dot(-_LightDirection, n) * _LightIntensity;
+                    result *= light;
+                }
 
                 // Shadows
-                float shadow = softShadow(p, -_LightDirection, _ShadowDistance.x, _ShadowDistance.y, _ShadowPenumbra) * 0.5 + 0.5;
-                shadow = max( 0.0, pow(shadow, _ShadowIntensity));
+                if(_ShadowIntensity > 0){
+                    float shadow = softShadow(p, -_LightDirection, _ShadowDistance.x, _ShadowDistance.y, _ShadowPenumbra) * 0.5 + 0.5;
+                    shadow = max( 0.0, pow(shadow, _ShadowIntensity));
+                    result *= shadow;
+                }
 
                 //Ambient Occlusion
-                float ao = AmbientOcclusion(p,n);
+                if(_AoIntensity > 0){
+                    float ao = AmbientOcclusion(p,n);
+                    result *= ao;
+                }
                 
-                result = color * light * shadow * ao;
-
                 return result;
             }
 
@@ -160,15 +172,15 @@
 
                     float3 p = ro + rd * t;
                     //check for hit in distancefield
-                    float d = distanceField(p);
-                    if(d < _Accuracy){
+                    float4 d = distanceField(p);
+                    if(d.w < _Accuracy){
                         //Shading
-                        float3 n = getNormal(p);
-                        float3 s = Shading(p, n);
+                        float3 n = getNormal(p, d.w);
+                        float3 s = Shading(p, n, d.rgb);
                         result = fixed4(s,1);
                         break;
                     }
-                    t += d;
+                    t += d.w;
                 }
 
                 return result;
