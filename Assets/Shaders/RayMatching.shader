@@ -30,6 +30,8 @@
             uniform float3 _LightDirection, _LightCol;
             uniform float _LightIntensity;
             uniform fixed4 _mainColor;
+
+            uniform fixed4 _ShadowColor;
             uniform float2 _ShadowDistance;
             uniform float _ShadowIntensity, _ShadowPenumbra;
 
@@ -74,10 +76,11 @@
                 // float boxSphere1 = BoxSphere(p);
                 // return opU(ground, boxSphere1);
 
-                float4 Sphere1 = float4(float3(1,0,0), sdSphere(p - _sphere1.xyz, _sphere1.w));
-                float4 Sphere2 = float4(float3(1,1,1), sdSphere(p - _sphere2.xyz, _sphere2.w));
-
-                return opUS(Sphere1,Sphere2,_sphereIntersectSmooth);
+                float4 Sphere1 = float4(float3(0.5,0,1), sdSphere(p - _sphere1.xyz, _sphere1.w));
+                Sphere1.w = abs(sin(Sphere1.w * 2.0 + _Time * 10.0 )) - 0.6;
+                float4 Sphere2 = float4(float3(0.1,0.5,0.9), sdSphere(p - _sphere2.xyz, _sphere2.w));
+                float4 combine = opSS(Sphere1,Sphere2,_sphereIntersectSmooth);    
+                return combine;
             }
 
             float3 getNormal(float3 p, float d ){
@@ -146,13 +149,13 @@
                 if(_ShadowIntensity > 0){
                     float shadow = softShadow(p, -_LightDirection, _ShadowDistance.x, _ShadowDistance.y, _ShadowPenumbra) * 0.5 + 0.5;
                     shadow = max( 0.0, pow(shadow, _ShadowIntensity));
-                    result *= shadow;
+                    result *= shadow + _ShadowColor * _ShadowIntensity;
                 }
 
                 //Ambient Occlusion
                 if(_AoIntensity > 0){
                     float ao = AmbientOcclusion(p,n);
-                    result *= ao;
+                    result *= ao + _ShadowColor * _AoIntensity;
                 }
                 
                 return result;

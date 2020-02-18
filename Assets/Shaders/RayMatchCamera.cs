@@ -45,10 +45,12 @@ public class RayMatchCamera : SceneViewFilter {
     [Header("Directional Light")]
     public float _LightIntensity;
     public Transform _directionalLight;
-     [ColorUsage(true, true)]
+    [ColorUsage(true, true)]
     public Color _LightCol;
     
     [Header("Shadow")]
+    [ColorUsage(true, true)]
+    public Color _ShadowColor;
     [Range(0,4)]
     public float _ShadowIntensity;
     [Range(1,128)]
@@ -97,6 +99,8 @@ public class RayMatchCamera : SceneViewFilter {
 
         _raymarchMaterial.SetColor("_LightCol", _LightCol);
         _raymarchMaterial.SetFloat("_LightIntensity", _LightIntensity);
+
+        _raymarchMaterial.SetColor("_ShadowColor", _ShadowColor);
         _raymarchMaterial.SetVector("_ShadowDistance", _ShadowDistance);
         _raymarchMaterial.SetFloat("_ShadowIntensity", _ShadowIntensity);
         _raymarchMaterial.SetFloat("_ShadowPenumbra", _ShadowPenumbra);
