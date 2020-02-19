@@ -18,10 +18,10 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 19.3
+    value: 1
   threshold:
     overrideState: 1
-    value: 0.6
+    value: 0.3
   softKnee:
     overrideState: 1
     value: 0.147
@@ -30,7 +30,7 @@ MonoBehaviour:
     value: 65494.08
   diffusion:
     overrideState: 1
-    value: 8.84
+    value: 9.29
   anamorphicRatio:
     overrideState: 0
     value: 0.159
@@ -109,25 +109,25 @@ MonoBehaviour:
     defaultState: 1
   tonemapper:
     overrideState: 1
-    value: 2
+    value: 0
   toneCurveToeStrength:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 0.255
   toneCurveToeLength:
-    overrideState: 0
-    value: 0.5
+    overrideState: 1
+    value: 0.633
   toneCurveShoulderStrength:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 0.357
   toneCurveShoulderLength:
-    overrideState: 0
-    value: 0.5
+    overrideState: 1
+    value: 0.54
   toneCurveShoulderAngle:
-    overrideState: 0
+    overrideState: 1
     value: 0
   toneCurveGamma:
-    overrideState: 0
-    value: 1
+    overrideState: 1
+    value: 0.78
   ldrLut:
     overrideState: 0
     value: {fileID: 0}
@@ -136,11 +136,11 @@ MonoBehaviour:
     overrideState: 0
     value: 1
   temperature:
-    overrideState: 1
-    value: -45.6
+    overrideState: 0
+    value: -25.8
   tint:
-    overrideState: 1
-    value: 66.8
+    overrideState: 0
+    value: 29.1
   colorFilter:
     overrideState: 0
     value: {r: 1, g: 1, b: 1, a: 1}
@@ -148,17 +148,17 @@ MonoBehaviour:
     overrideState: 0
     value: 55
   saturation:
-    overrideState: 1
-    value: 8.6
+    overrideState: 0
+    value: -37
   brightness:
     overrideState: 0
     value: 0
   postExposure:
-    overrideState: 1
+    overrideState: 0
     value: 0
   contrast:
-    overrideState: 1
-    value: 10.6
+    overrideState: 0
+    value: 7.3
   mixerRedOutRedIn:
     overrideState: 0
     value: 100
@@ -188,13 +188,13 @@ MonoBehaviour:
     value: 100
   lift:
     overrideState: 1
-    value: {x: 1, y: 0.88632566, z: 0.7480235, w: 0}
+    value: {x: 1, y: 0.95068675, z: 0.98929685, w: -0.026723683}
   gamma:
     overrideState: 1
-    value: {x: 0.93771726, y: 0.88921446, z: 1, w: 0}
+    value: {x: 0.93771726, y: 0.88921446, z: 1, w: 0.18172102}
   gain:
     overrideState: 1
-    value: {x: 0.47999388, y: 0.853293, z: 1, w: 0}
+    value: {x: 0.46329588, y: 0.68718255, z: 1, w: -0.016034208}
   masterCurve:
     overrideState: 0
     value:
@@ -1441,7 +1441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6050e2d5de785ce4d931e4dbdbf2d755, type: 3}
   m_Name: ChromaticAberration
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
@@ -1450,8 +1450,8 @@ MonoBehaviour:
     value: {fileID: 0}
     defaultState: 1
   intensity:
-    overrideState: 0
-    value: 0.812
+    overrideState: 1
+    value: 1
   fastMode:
     overrideState: 0
     value: 1
@@ -1512,7 +1512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40b924e2dad56384a8df2a1e111bb675, type: 3}
   m_Name: Vignette
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -1562,13 +1562,43 @@ MonoBehaviour:
     value: 1
   maxIterations:
     overrideState: 1
-    value: 43
+    value: 200
   maxDistance:
     overrideState: 1
-    value: 4006.88
+    value: 100
   minDistance:
     overrideState: 1
     value: 0.001
+  shadowIntensity:
+    overrideState: 1
+    value: 0.6
+  shadowColor:
+    overrideState: 1
+    value: {r: 1.1662091, g: 0.39057007, b: 0.3962022, a: 1}
+  shadowDistance:
+    overrideState: 1
+    value: {x: 0.1, y: 100}
+  shadowPenumbra:
+    overrideState: 1
+    value: 1.5
+  aoIntensity:
+    overrideState: 1
+    value: 1.77
+  aoStepSize:
+    overrideState: 1
+    value: 6.15
+  aoIterations:
+    overrideState: 1
+    value: 5
+  sphere1:
+    overrideState: 1
+    value: {x: 9.07, y: 5.31, z: -6.35, w: 3}
+  sphere2:
+    overrideState: 1
+    value: {x: 0.04, y: 0.92, z: 1.39, w: 3}
+  sphereIntersectSmooth:
+    overrideState: 1
+    value: 0.59
 --- !u!114 &8883287571506663327
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1581,7 +1611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 556797029e73b2347956b6579e77e05b, type: 3}
   m_Name: DepthOfField
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -1590,10 +1620,10 @@ MonoBehaviour:
     value: 6.2
   aperture:
     overrideState: 1
-    value: 1.3
+    value: 11.1
   focalLength:
     overrideState: 1
-    value: 201.2
+    value: 215
   kernelSize:
     overrideState: 0
     value: 1

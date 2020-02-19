@@ -27,10 +27,25 @@ Shader "Raymarch/RaymarchHDRP"
             uniform int _MaxIterations;
             uniform float _MaxDistance;
             uniform float _MinDistance;
-            uniform float3 _LightDir;
-            float4 _Tint;
 
             uniform float4 _MainTex_TexelSize;
+
+            //Light
+            uniform float3 _LightDir, _LightCol;
+            uniform float _LightIntensity;
+            uniform fixed4 _ShadowColor;
+            uniform float2 _ShadowDistance;
+            uniform float _ShadowIntensity, _ShadowPenumbra;
+
+            uniform float _AoStepSize; 
+            uniform float _AoIntensity; 
+            uniform int _AoIterations;
+
+            //Scene
+            uniform float _sphereIntersectSmooth;
+            uniform float4 _sphere1, _sphere2, _box1;
+            #include "DistanceFunctions.cginc"
+            #include "SceneDF.cginc"
 
             struct AttributesDefault
             {
@@ -67,30 +82,84 @@ Shader "Raymarch/RaymarchHDRP"
                 return o;
             }
 
-            float sdSphere(float3 position, float3 origin, float radius)
-            {
-                return distance(position, origin) - radius;
+            float4 distanceField(float3 p) {
+                return SineSphere(p);
             }
 
-            float distanceField(float3 p) {
-                return sdSphere(p, float3(1, 0, 0), 2);
-            }
-
-            float3 getNormal(float3 p)
-            {
-                const float2 offset = float2(0.001, 0.0);
-                
+            float3 getNormal(float3 p, float d ){
+                const float2 offset = float2(0.0001, 0.0);
                 float3 n = float3(
-                    distanceField(p + offset.xyy) - distanceField(p - offset.xyy),
-                    distanceField(p + offset.yxy) - distanceField(p - offset.yxy),
-                    distanceField(p + offset.yyx) - distanceField(p - offset.yyx));
-
+                    distanceField(p + offset.xyy).w - d,
+                    distanceField(p + offset.yxy).w - d,
+                    distanceField(p + offset.yyx).w - d
+                );
                 return normalize(n);
             }
 
+            // Shading
+            float hardShadow(float3 ro, float3 rd, float mint, float maxt){
+                for(float t = mint; t < maxt; ){
+                    float h = distanceField(ro + rd* t).w;
+                    if(h < 0.001){
+                        return 0.0;
+                    }
+                    t += h;
+                }
+                return 1.0;
+            }
+
+            float softShadow(float3 ro, float3 rd, float mint, float maxt, float k){
+                float result = 1.0;
+                for(float t = mint; t < maxt; ){
+                    float h = distanceField(ro + rd* t).w;
+                    if(h < 0.001){
+                        return 0.0;
+                    }
+                    result = min(result, k*h/t);
+                    t += h;
+                }
+                return result;
+            }
+
+            float AmbientOcclusion(float3 p, float3 n){
+                float step = _AoStepSize;
+                float ao = 0.0;
+                float dist;
+                for(int i=1; i< _AoIterations; i++){
+                    dist = step * i;
+                    ao += max(0.0, (dist - distanceField(p + n * dist).w) / dist);  
+                }
+                return 1.0 - ao * _AoIntensity;
+            }
+
+            float3  Shading(float3 p, float3 n, fixed3 color){
+                //Diffuse color;
+                float3 result = color;
+                
+                // Directional Light
+                if(_LightIntensity > 0){
+                    float3 light = _LightCol * dot(-_LightDir, n) * _LightIntensity;
+                    result *= light;
+                }
+
+                // Shadows
+                if(_ShadowIntensity > 0){
+                    float shadow = softShadow(p, -_LightDir, _ShadowDistance.x, _ShadowDistance.y, _ShadowPenumbra) * 0.5 + 0.5;
+                    shadow = max( 0.0, pow(shadow, _ShadowIntensity));
+                    result *= shadow + _ShadowColor * _ShadowIntensity;
+                }
+
+                //Ambient Occlusion
+                if(_AoIntensity > 0){
+                    float ao = AmbientOcclusion(p,n);
+                    result *= ao + _ShadowColor * _AoIntensity;
+                }
+                
+                return result;
+            }
 
             fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
-                fixed4 result = float4(1, 1, 1, 1);
+                fixed4 result = float4(0, 0, 0, 1);
                 float t = 0.01; // Distance Traveled from ray origin (ro) along the ray direction (rd)
 
                 for (int i = 0; i < _MaxIterations; i++)
@@ -102,17 +171,17 @@ Shader "Raymarch/RaymarchHDRP"
                     }
 
                     float3 p = rayOrigin + rayDirection * t;    // This is our current position
-                    float d = distanceField(p); // should be a sphere at (0, 0, 0) with a radius of 1
-                    if (d <= _MinDistance) // We have hit something
+                    float4 d = distanceField(p); // should be a sphere at (0, 0, 0) with a radius of 1
+                    if (d.w <= _MinDistance) // We have hit something
                     {
-                        // shading
-                        float3 n = getNormal(p);
-                        float light = dot(-_LightDir, n);
-                        result = float4(fixed3(1, 1, 1) * light, 1); // yellow sphere should be drawn at (0, 0, 0)
+                        //Shading
+                        float3 n = getNormal(p, d.w);
+                        float3 s = Shading(p, n, d.rgb);
+                        result = fixed4(s,1);
                         break;
                     }
 
-                    t += d;
+                    t += d.w;
                 }
 
                 return result;
@@ -130,7 +199,7 @@ Shader "Raymarch/RaymarchHDRP"
                 float3 rayDirection = normalize(i.ray);
                 float4 result = raymarching(rayOrigin, rayDirection, depth);
 
-                return fixed4(col * (1.0 - result.w) + result.xyz * result.w, 1.0);
+                return fixed4(col * (1.0 - result.w) + result.xyz * result.w, result.w);
             }
 
             ENDHLSL
