@@ -10,6 +10,8 @@ public sealed class ShaderParameter : ParameterOverride<Shader> { }
 [PostProcess(typeof(RaymarchPostProcessRenderer), PostProcessEvent.BeforeStack, "Custom/RaymarchPostProcess")]
 public sealed class RaymarchPostProcess : PostProcessEffectSettings
 {
+    public FloatParameter cumTime = new FloatParameter { value = 0f };
+
     [Header("Setup")]
     public IntParameter maxIterations = new IntParameter { value = 200 };
     public FloatParameter maxDistance = new FloatParameter { value = 100f };
@@ -30,7 +32,7 @@ public sealed class RaymarchPostProcess : PostProcessEffectSettings
     [Header("Signed Distance Field")]
     public Vector4Parameter sphere1 = new Vector4Parameter { value = new Vector4(0,0,0,3)};
     public Vector4Parameter sphere2 = new Vector4Parameter { value = new Vector4(0,1,0,3)};
-    public FloatParameter sphereIntersectSmooth = new FloatParameter { value = 0.01f }; 
+    public FloatParameter sphereIntersectSmooth = new FloatParameter { value = 0.01f };
 
     public DepthTextureMode GetCameraFlags()
     {
@@ -59,7 +61,7 @@ public sealed class RaymarchPostProcessRenderer : PostProcessEffectRenderer<Raym
     public override void Render(PostProcessRenderContext context)
     {
         Camera _cam = context.camera;
-
+        
         var sheet = context.propertySheets.Get(Shader.Find("Raymarch/RaymarchHDRP"));
         sheet.properties.SetMatrix("_CamFrustum", FrustumCorners(_cam));
         sheet.properties.SetMatrix("_CamToWorld", _cam.cameraToWorldMatrix);
@@ -67,6 +69,8 @@ public sealed class RaymarchPostProcessRenderer : PostProcessEffectRenderer<Raym
         sheet.properties.SetInt("_MaxIterations", settings.maxIterations);
         sheet.properties.SetFloat("_MaxDistance", settings.maxDistance);
         sheet.properties.SetFloat("_MinDistance", settings.minDistance);
+        
+        sheet.properties.SetFloat("_CumTime", settings.cumTime);
 
         sheet.properties.SetColor("_ShadowColor", settings.shadowColor);
         sheet.properties.SetVector("_ShadowDistance", settings.shadowDistance);
@@ -80,7 +84,7 @@ public sealed class RaymarchPostProcessRenderer : PostProcessEffectRenderer<Raym
         sheet.properties.SetVector("_sphere1", settings.sphere1);
         sheet.properties.SetVector("_sphere2", settings.sphere2);
         sheet.properties.SetFloat("_sphereIntersectSmooth", settings.sphereIntersectSmooth);
-
+        
         if (directionalLight)
         {
             Vector3 position = directionalLight.transform.forward;

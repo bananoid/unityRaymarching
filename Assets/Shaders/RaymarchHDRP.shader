@@ -30,6 +30,9 @@ Shader "Raymarch/RaymarchHDRP"
 
             uniform float4 _MainTex_TexelSize;
 
+            //Time
+            uniform float _CumTime;
+
             //Light
             uniform float3 _LightDir, _LightCol;
             uniform float _LightIntensity;
