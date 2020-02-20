@@ -46,8 +46,8 @@ public class RaymarchHelper : MonoBehaviour
     // }
 
     void OnDestroy(){
-        DestroyAsset(raymarchPostProcess);
-        DestroyAsset(_profile);
+        // DestroyAsset(raymarchPostProcess);
+        // DestroyAsset(_profile);
     }
 
     float fraction(float value){
