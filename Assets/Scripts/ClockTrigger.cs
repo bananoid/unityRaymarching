@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class ClockTrigger : MonoBehaviour
 {
@@ -31,6 +32,13 @@ public class ClockTrigger : MonoBehaviour
     [Header("UI")]
     public Text bpmText;
     public Text beatCountText;
+
+    [Header("Events")]
+    public UnityEvent beatTrigEvent;
+    public UnityEvent barTrigEvent;
+    public UnityEvent bar4TrigEvent;
+    public UnityEvent bar8TrigEvent;
+    public UnityEvent bar16TrigEvent;
 
     void Awake()
     {
@@ -159,25 +167,31 @@ public class ClockTrigger : MonoBehaviour
 
             if(clockCount % beatDivider == 0)
             {
+                
+                beatTrigEvent.Invoke();
                 beatCount++;
 
                 if (beatCount % 4 == 0)
                 {
+                    barTrigEvent.Invoke();
                     barCount++;
                 }
 
                 if (beatCount % 8 == 0)
                 {
+                    bar4TrigEvent.Invoke();
                     bar4Count++;
                 }
 
                 if (beatCount % 16 == 0)
                 {
+                    bar8TrigEvent.Invoke();
                     bar8Count++;
                 }
 
                 if (beatCount % 32 == 0)
                 {
+                    bar16TrigEvent.Invoke();
                     bar16Count++;
                 }
 
