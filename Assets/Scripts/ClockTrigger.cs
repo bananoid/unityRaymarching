@@ -12,16 +12,21 @@ public class ClockTrigger : MonoBehaviour
     [Header("Time")]
     public static ClockTrigger instance;
     public float bpm = 120;
-    private float beatInterval, beatTimer;
-    public static bool beatFull;
-    public static int beatCountFull;
+    private float clockInterval, clockTimer;
+    public static bool clockTrig;
+    public static int clockCount;
 
     private float tapTimeout = 2;
     private float lastTapTime = 0;
     private float[] tapTime = new float[256];
     public static int tap = 0;
     public static bool customBeat;
-    
+
+    private int beatDivider = 8;
+    public int beatCount = 0;
+    public int barCount = 0;
+    private bool resetBeat = false;
+
     void Awake()
     {
        if(instance != null && instance != this)
@@ -35,9 +40,18 @@ public class ClockTrigger : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            ResetClock();
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            ResetBeat();
+        }
+
         Tapping();
         BeatDetection();
     }
@@ -86,8 +100,8 @@ public class ClockTrigger : MonoBehaviour
             }
 
             if(tap % 4 == 0){
-                beatTimer = 0;
-                beatCountFull = 0;
+                clockTimer = 0;
+                clockCount = 0;
             }
 
             bpmText.color = Color.red;
@@ -98,27 +112,54 @@ public class ClockTrigger : MonoBehaviour
             bpmText.color = Color.white;
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            tap = 0;
-            beatTimer = 0;
-            beatCountFull = 0;
-        }
+    }
 
+    void ResetClock()
+    {
+        tap = 0;
+        clockTimer = 0;
+        clockCount = 0;
+    }
+
+    void ResetBeat()
+    {
+        resetBeat = true;
     }
 
     void BeatDetection()
     {
 
-        beatFull = false;
-        beatInterval = 60 / bpm;
-        beatTimer += Time.deltaTime;
-        if(beatTimer >= beatInterval)
+        clockTrig = false;
+        clockInterval = 60 / bpm;
+
+        clockInterval /= beatDivider;
+
+        clockTimer += Time.deltaTime;
+        if(clockTimer >= clockInterval)
         {
-            beatTimer -= beatInterval;
-            beatFull = true;
-            beatCountFull++;
-            beatCountText.text = beatCountFull.ToString();
+            clockTimer -= clockInterval;
+            clockTrig = true;
+            clockCount++;
+
+            if (resetBeat)
+            {
+                beatCount = 0;
+                barCount = 0;
+                resetBeat = false;
+            }
+
+            if(clockCount % beatDivider == 0)
+            {
+                beatCount++;
+
+                if (beatCount % 4 == 0)
+                {
+                    barCount++;
+                }
+
+            }
+
+            beatCountText.text = beatCount.ToString();
         }
 
         bpmText.text = bpm.ToString();
