@@ -24,10 +24,13 @@ public class ClockTrigger : MonoBehaviour
     private int beatDivider = 8;
 
     public int beatCount = 0;
+    public bool enableBeatTrack = true;
     public int barCount = 0;
+    public bool enableBarTrack = true;
     public int bar4Count = 0;
     public int bar8Count = 0;
     public int bar16Count = 0;
+
 
     [Header("UI")]
     public Text bpmText;
@@ -63,6 +66,16 @@ public class ClockTrigger : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.B))
         {
             ResetBeat();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            enableBeatTrack = !enableBeatTrack;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            enableBarTrack = !enableBarTrack;
         }
 
         Tapping();
@@ -167,13 +180,20 @@ public class ClockTrigger : MonoBehaviour
 
             if(clockCount % beatDivider == 0)
             {
-                
-                beatTrigEvent.Invoke();
+                if (enableBeatTrack)
+                {
+                    beatTrigEvent.Invoke();
+                }
+
                 beatCount++;
 
                 if (beatCount % 4 == 0)
                 {
-                    barTrigEvent.Invoke();
+                    if (enableBarTrack)
+                    {
+                        barTrigEvent.Invoke();
+                    }
+
                     barCount++;
                 }
 
