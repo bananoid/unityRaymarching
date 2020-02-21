@@ -16,9 +16,12 @@ public class ClockTrigger : MonoBehaviour
     public static bool beatFull;
     public static int beatCountFull;
 
+    private float tapTimeout = 2;
+    private float lastTapTime = 0;
     public float[] tapTime = new float[16];
     public static int tap = 0;
     public static bool customBeat;
+    
 
     void Awake()
     {
@@ -45,6 +48,14 @@ public class ClockTrigger : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            float deltaTime = Time.realtimeSinceStartup - lastTapTime;
+            lastTapTime = Time.realtimeSinceStartup;
+            Debug.Log(deltaTime +" > "+ tapTimeout);
+            if (deltaTime > tapTimeout)
+            {
+                tap = 0;
+            }
+
             if (tap < tapTime.Length)
             {
                 tapTime[tap] = Time.realtimeSinceStartup;
