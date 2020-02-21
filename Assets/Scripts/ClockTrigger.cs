@@ -5,10 +5,6 @@ using UnityEngine.UI;
 
 public class ClockTrigger : MonoBehaviour
 {
-    [Header("UI")]
-    public Text bpmText;
-    public Text beatCountText;
-
     [Header("Time")]
     public static ClockTrigger instance;
     public float bpm = 120;
@@ -22,10 +18,19 @@ public class ClockTrigger : MonoBehaviour
     public static int tap = 0;
     public static bool customBeat;
 
+    private bool resetBeat = false;
+
     private int beatDivider = 8;
+
     public int beatCount = 0;
     public int barCount = 0;
-    private bool resetBeat = false;
+    public int bar4Count = 0;
+    public int bar8Count = 0;
+    public int bar16Count = 0;
+
+    [Header("UI")]
+    public Text bpmText;
+    public Text beatCountText;
 
     void Awake()
     {
@@ -145,6 +150,10 @@ public class ClockTrigger : MonoBehaviour
             {
                 beatCount = 0;
                 barCount = 0;
+                bar4Count = 0;
+                bar8Count = 0;
+                bar16Count = 0;
+
                 resetBeat = false;
             }
 
@@ -155,6 +164,21 @@ public class ClockTrigger : MonoBehaviour
                 if (beatCount % 4 == 0)
                 {
                     barCount++;
+                }
+
+                if (beatCount % 8 == 0)
+                {
+                    bar4Count++;
+                }
+
+                if (beatCount % 16 == 0)
+                {
+                    bar8Count++;
+                }
+
+                if (beatCount % 32 == 0)
+                {
+                    bar16Count++;
                 }
 
             }
