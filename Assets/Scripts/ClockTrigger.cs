@@ -16,6 +16,10 @@ public class ClockTrigger : MonoBehaviour
     public static bool beatFull;
     public static int beatCountFull;
 
+    public float[] tapTime = new float[16];
+    public static int tap = 0;
+    public static bool customBeat;
+
     void Awake()
     {
        if(instance != null && instance != this)
@@ -32,7 +36,48 @@ public class ClockTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Tapping();
         BeatDetection();
+    }
+
+    void Tapping()
+    {
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (tap < tapTime.Length)
+            {
+                tapTime[tap] = Time.realtimeSinceStartup;
+                tap++;
+            }
+            if (tap == tapTime.Length)
+            {
+                float averageTime =
+                    (tapTime[1] - tapTime[0]) +
+                    (tapTime[2] - tapTime[1]) +
+                    (tapTime[3] - tapTime[2]);
+                averageTime /= 3;
+                bpm = (float)System.Math.Round((double)60 / averageTime, 2);
+                tap = 0;
+                beatTimer = 0;
+                beatCountFull = 0;
+            }
+
+            bpmText.color = Color.red;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            bpmText.color = Color.white;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            tap = 0;
+            beatTimer = 0;
+            beatCountFull = 0;
+        }
+
     }
 
     void BeatDetection()
