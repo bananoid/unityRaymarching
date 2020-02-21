@@ -33,9 +33,9 @@ public class RaymarchHelper : MonoBehaviour
         _volume.sharedProfile = _profile;
         _volume.isGlobal = true;
         _volume.priority = 1000;
-
+        
         raymarchPostProcess.cumTime.value = 0;
-
+        
         LateUpdate();
     }
 
