@@ -18,11 +18,10 @@ public class ClockTrigger : MonoBehaviour
 
     private float tapTimeout = 2;
     private float lastTapTime = 0;
-    public float[] tapTime = new float[256];
+    private float[] tapTime = new float[256];
     public static int tap = 0;
     public static bool customBeat;
     
-
     void Awake()
     {
        if(instance != null && instance != this)
@@ -51,8 +50,6 @@ public class ClockTrigger : MonoBehaviour
             float deltaTime = Time.realtimeSinceStartup - lastTapTime;
             lastTapTime = Time.realtimeSinceStartup;
 
-            Debug.Log(deltaTime +" > "+ tapTimeout);
-
             if (deltaTime > tapTimeout)
             {
                 tap = 0;
@@ -78,14 +75,17 @@ public class ClockTrigger : MonoBehaviour
                 }
                 averageTime /= tap-1;
 
-                //bpm = (float)System.Math.Round((double)60 / averageTime, 4);
-                bpm = 60 / averageTime;
+                bpm = (float)System.Math.Round((double)60 / averageTime, 4);
+                //bpm = 60 / averageTime;
 
             }
 
             if(tap >= tapTime.Length)
             {
                 tap = 0;
+            }
+
+            if(tap % 4 == 0){
                 beatTimer = 0;
                 beatCountFull = 0;
             }
