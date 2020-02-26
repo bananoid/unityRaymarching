@@ -10,6 +10,8 @@ Shader "Unlit/VJ"
 {
     Properties
     {
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 0
+
         colorA ("ColorA", Color) = (1,0,0,1)
         colorB ("ColorB", Color) = (1,1,1,1)
         colorC ("ColorC", Color) = (0,0,1,1)
@@ -19,12 +21,13 @@ Shader "Unlit/VJ"
         lineFade ("Line Fade", float) = 0.01
         lineSize ("Line Size", float) = 0.5
         lineFreq ("Line Freq", float) = 30.
+
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
-
+        Cull [_Cull]
         Pass
         {
             CGPROGRAM
@@ -57,7 +60,7 @@ Shader "Unlit/VJ"
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
-                half3 worldNormal : TEXCOORD1;
+                float3 worldNormal : TEXCOORD1;
                 float3 worldPos : TEXCOORD2;
                 float3 localPos : TEXCOORD3;
                 float3 normal : NORMAL;
@@ -100,17 +103,26 @@ Shader "Unlit/VJ"
                 col.rgb = light.xxx;
 
                 float3 gradient = float3(0,0,0);    
-                float gradientPos = i.localPos.z * 1.0 + 0.5;
-                gradientPos += _Time * 10;
+                float gradientPos = i.localPos.y * 0.3 + 0.5;
+                //gradientPos += _Time * 2;
+                //gradientPos += 0;
     
                 //gradient = clamp(gradientPos*2.0,0,1) * lerp(colorB,colorC,  clamp(gradientPos*2.0 - 1.0,0,1) ).rgb;
                 //gradient += clamp(2-gradientPos*2.0,0,1) * lerp(colorA,colorB,  clamp(gradientPos*2.0,0,1) ).rgb;
 
-                gradient = colorA * (sin(gradientPos * 1.0 * pi - pi) * 0.5 + 0.5) * step(0.5, gradientPos);
-                gradient += colorB * (sin(gradientPos * 1.0 * pi) * 0.5 + 0.5);
-                gradient += colorC * (sin(gradientPos * 1.0 * pi - pi) * 0.5 + 0.5) * step( gradientPos, 0.5);
+                //gradient = colorA * (sin(gradientPos * pi - pi) * 0.5 + 0.5) * step( 0.5, cos(gradientPos * pi) * 0.5 + 0.5 );
+                //gradient += colorB * (sin(gradientPos * pi) * 0.5 + 0.5);
+                //gradient += colorC * (sin(gradientPos * pi - pi) * 0.5 + 0.5) * step( cos(gradientPos * pi) * 0.5 + 0.5, 0.5 );
 
-                col.rgb *= gradient;
+                gradient = colorA * (sin(gradientPos*pi*3 - pi*0.5) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5)*0.5+0.5);
+                gradient+= colorB * (sin(gradientPos*pi*3 - pi*0.5 - pi*3) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 - pi*0.5)*0.5+0.5);
+                gradient+= colorC * (sin(gradientPos*pi*3 - pi*0.5 - pi*6) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 + pi*3)*0.5+0.5);  
+                gradient+= colorA * (sin(gradientPos*pi*3 - pi*0.5 - pi*9) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 + pi*0.5)*0.5+0.5);  
+
+
+                //gradient = sin(colorA.rgb * gradientPos * 2. + _Time * 1 ) * 0.5 + 0.5;
+
+                col.rgb *= gradient * lines;
 
                 return col;
             }
