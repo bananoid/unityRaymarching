@@ -103,8 +103,8 @@ Shader "Unlit/VJ"
                 col.rgb = light.xxx;
 
                 float3 gradient = float3(0,0,0);    
-                float gradientPos = i.localPos.y * 0.3 + 0.5;
-                //gradientPos += _Time * 2;
+                float gradientPos = i.localPos.y * 0.4 + 0.75;
+                gradientPos += _Time * 2;
                 //gradientPos += 0;
     
                 //gradient = clamp(gradientPos*2.0,0,1) * lerp(colorB,colorC,  clamp(gradientPos*2.0 - 1.0,0,1) ).rgb;
