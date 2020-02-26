@@ -23,16 +23,17 @@ Shader "Unlit/VJ"
         lineFreq ("Line Freq", float) = 30.
 
     }
+
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
         Cull [_Cull]
+
         Pass
         {
             CGPROGRAM
-
-
+    
             #pragma vertex vert
             #pragma fragment frag
 
@@ -129,4 +130,6 @@ Shader "Unlit/VJ"
             ENDCG
         }
     }
+
+    Fallback "Diffuse"
 }
