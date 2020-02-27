@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
-using Lasp;
+//using Lasp;
 
 [ExecuteInEditMode]
 public class RaymarchHelper : MonoBehaviour
@@ -54,7 +54,7 @@ public class RaymarchHelper : MonoBehaviour
         return value - (int) value;
     }
     void LateUpdate(){
-        float audioPeak = MasterInput.GetPeakLevel(FilterType.LowPass);
+        float audioPeak = 0;//MasterInput.GetPeakLevel(FilterType.LowPass);
         float cumTime = raymarchPostProcess.cumTime.value;
         cumTime += Time.deltaTime * (speed + (1 + audioPeak * audioPeakIntensity));
         float mod = Mathf.PI * 20;
