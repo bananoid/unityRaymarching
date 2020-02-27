@@ -11,7 +11,7 @@ Material:
   m_Shader: {fileID: 4800000, guid: fc7aa8c7750e44a038de97cce13d03ab, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -92,5 +92,5 @@ Material:
     - colorA: {r: 1, g: 0.08701119, b: 0, a: 1}
     - colorB: {r: 1, g: 1, b: 1, a: 1}
     - colorC: {r: 0, g: 0.77702427, b: 1, a: 1}
-    - lightFalloff: {r: -0.3, g: 3.92, b: 0.07, a: -0.21}
-    - lightPos: {r: 0.01, g: -0.66, b: 1.02, a: 2.62}
+    - lightFalloff: {r: -0.3, g: 5.17, b: 0.07, a: -0.21}
+    - lightPos: {r: 0.01, g: -0.66, b: 1.5, a: 2.62}

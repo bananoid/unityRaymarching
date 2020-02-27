@@ -635,7 +635,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: b342373f9fc0e4d0aa84c9ad44e12df6,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: b342373f9fc0e4d0aa84c9ad44e12df6,
         type: 3}
@@ -786,6 +786,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RoomCube
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: b342373f9fc0e4d0aa84c9ad44e12df6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -113181020801827196, guid: b342373f9fc0e4d0aa84c9ad44e12df6,
         type: 3}
@@ -1541,7 +1546,7 @@ Camera:
     height: 1
   near clip plane: 2
   far clip plane: 15.64
-  field of view: 12.6
+  field of view: 15
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1771,6 +1776,57 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 695816508}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2005758698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2005758700}
+  - component: {fileID: 2005758699}
+  m_Layer: 0
+  m_Name: RoomsGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2005758699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2005758698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ad1360e30704d93b4d5550b0ea5772, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomBox: {fileID: 935160104}
+  objects: []
+  mainCamera: {fileID: 1517248415}
+  splits: 6
+  maxRoomDepth: 4
+  gridSize: 0
+  cols: 0
+  rows: 0
+--- !u!4 &2005758700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2005758698}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2010068420 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7465190233194349034, guid: b342373f9fc0e4d0aa84c9ad44e12df6,
