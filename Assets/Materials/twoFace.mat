@@ -7,11 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: roomMaterial
-  m_Shader: {fileID: 4800000, guid: fc7aa8c7750e44a038de97cce13d03ab, type: 3}
+  m_Name: twoFace
+  m_Shader: {fileID: 4800000, guid: cf0afedc5c4a14f59b0897e409e841fa, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -39,14 +39,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Mai_Main2Tex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Main2Tex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -65,9 +57,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
-    - _Cull: 0
     - _Cutoff: 0.5
-    - _DepthLevel: 1.461
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
@@ -82,17 +72,6 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - lineFade: 43.88
-    - lineFreq: 2.92
-    - lineSize: 0.5
     m_Colors:
-    - _Color: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - center: {r: -0.84, g: -0.55, b: 0.13, a: 1}
-    - colorA: {r: 1, g: 0.070606984, b: 0, a: 1}
-    - colorB: {r: 1, g: 1, b: 1, a: 1}
-    - colorC: {r: 0, g: 0.77702427, b: 1, a: 1}
-    - lightFalloff: {r: 0, g: 38.48, b: 4.7, a: -0.21}
-    - lightPos: {r: 0.01, g: -0.66, b: -0.47, a: 2.62}
-    - maxBounds: {r: 0.75, g: 0.39, b: 2.35, a: 1}
-    - minBounds: {r: 0.05, g: -0.35, b: -2.33, a: 1}

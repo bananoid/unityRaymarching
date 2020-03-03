@@ -6,17 +6,19 @@ using Unity.Transforms;
 using Unity.Collections;
 using Unity.Rendering;
 using Unity.Mathematics;
+using Unity.Physics;
 
-public class ECSTest : MonoBehaviour
+public class RoomsController : MonoBehaviour
 {
     [SerializeField] private Mesh mesh;
-    [SerializeField] private Material material;
+    [SerializeField] private UnityEngine.Material material;
 
     // Start is called before the first frame update
     void Start()
     {
         EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-        
+
+ 
         EntityArchetype entityArchetype = entityManager.CreateArchetype(
             typeof(RoomComponent),
 
@@ -24,6 +26,8 @@ public class ECSTest : MonoBehaviour
             typeof(Rotation),
             typeof(Translation),
             typeof(NonUniformScale),
+            typeof(RenderBounds),
+            //typeof(Phys)
 
             typeof(RenderMesh)
 
@@ -31,9 +35,9 @@ public class ECSTest : MonoBehaviour
 
         NativeArray<Entity> entities = new NativeArray<Entity>(10, Allocator.Temp);
         entityManager.CreateEntity(entityArchetype, entities);
-
         foreach (Entity entity in entities)
         {
+
             entityManager.SetComponentData(entity, new RoomComponent
             {
                 size = 1
@@ -44,9 +48,18 @@ public class ECSTest : MonoBehaviour
                 Value = Matrix4x4.identity
             });
 
+            entityManager.SetComponentData(entity, new RenderBounds
+            {
+                Value = new AABB
+                {
+                    Center = new Vector3(0, 0, 0),
+                    Extents = new Vector3(4, 4, 4)
+                }
+            });
+
             entityManager.SetComponentData(entity, new NonUniformScale
             {
-                Value = new Vector3(1,1,1)
+                Value = new Vector3(2,2,2)
             });
 
 
@@ -58,11 +71,5 @@ public class ECSTest : MonoBehaviour
         }
 
         entities.Dispose();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
