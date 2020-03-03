@@ -22,6 +22,9 @@ Shader "Unlit/VJ"
         lineSize ("Line Size", float) = 0.5
         lineFreq ("Line Freq", float) = 30.
 
+        minBounds ("Min Room Bounds", Vector) = (-2,-1,-5)
+        maxBounds ("Min Room Bounds", Vector) = ( 2, 1, 5)
+        
     }
 
     SubShader
@@ -29,7 +32,7 @@ Shader "Unlit/VJ"
         Tags { "RenderType"="Opaque" }
         LOD 100
         Cull [_Cull]
-
+        
         Pass
         {
             CGPROGRAM
@@ -49,6 +52,9 @@ Shader "Unlit/VJ"
             float lineFade;
             float lineSize;
             float lineFreq;
+
+            float3 minBounds;
+            float3 maxBounds;
 
             struct appdata
             {
@@ -83,7 +89,7 @@ Shader "Unlit/VJ"
                 
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag (v2f i, fixed facing : VFACE) : SV_Target
             {
                 const float pi = 3.141592653589793238462;
 
@@ -120,10 +126,21 @@ Shader "Unlit/VJ"
                 gradient+= colorC * (sin(gradientPos*pi*3 - pi*0.5 - pi*6) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 + pi*3)*0.5+0.5);  
                 gradient+= colorA * (sin(gradientPos*pi*3 - pi*0.5 - pi*9) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 + pi*0.5)*0.5+0.5);  
 
-
                 //gradient = sin(colorA.rgb * gradientPos * 2. + _Time * 1 ) * 0.5 + 0.5;
 
                 col.rgb *= gradient * lines;
+
+
+                //Bounds
+                float boundsMask =
+                    step( i.worldPos.x, maxBounds.x) *    
+                    step( minBounds.x, i.worldPos.x) *
+                    step( i.worldPos.y, maxBounds.y) *    
+                    step( minBounds.y, i.worldPos.y) *
+                    step( i.worldPos.z, maxBounds.z) *    
+                    step( minBounds.z, i.worldPos.z);
+
+                col.rgb *= boundsMask * facing;
 
                 return col;
             }

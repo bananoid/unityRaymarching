@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Experimental.AI;
+using UnityEngine.UIElements;
 
 //[ExecuteInEditMode]
 public class RoomsGenerator : MonoBehaviour
@@ -46,6 +47,7 @@ public class RoomsGenerator : MonoBehaviour
 
         GameObject room;
         int roomId = 0;
+        float boundsOffset = 0.01f;
 
         for (int i = 0; i < cols; i++)
         {
@@ -65,6 +67,12 @@ public class RoomsGenerator : MonoBehaviour
                 positon.z = scale.z * 0.5f;
                 room.transform.localScale = scale;
                 room.transform.localPosition = positon;
+
+                
+
+                Material mat = room.GetComponent<Renderer>().material;
+                mat.SetVector("minBounds", positon - scale * .5f - Vector3.one * boundsOffset);
+                mat.SetVector("maxBounds", positon + scale * .5f + Vector3.one * boundsOffset);
 
                 roomId++;
             }
