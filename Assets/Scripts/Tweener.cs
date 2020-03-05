@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Mathematics;
 
 public class Tweener : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class Tweener : MonoBehaviour
 
     public Vector3 attractionPoint = new Vector3(0,0,0);
     public float attractionForce = 1;
+
+    public float pulseK = 40;
+    public float pulseN = 40;
 
     void Start()
     {
@@ -65,20 +69,30 @@ public class Tweener : MonoBehaviour
         return 1f + ((k -= 1f) * k * k * k * k);
     }
 
+    public float PolyImpulse(float k, float n, float x)
+    {
+        return (n / (n - 1.0f)) * math.pow((n - 1.0f) * k, 1.0f / n) * x / (1.0f + k * math.pow(x, n));
+    }
+
+    float QuaImpulse(float k, float x)
+    {
+        return 2.0f * math.sqrt(k) * x / (1.0f + k * x * x);
+    }
+
     public void Trig()
     {
         time = 0;
 
-        rotationSpeed.x = Random.Range(-randomSpeedSize, randomSpeedSize);
-        rotationSpeed.y = Random.Range(-randomSpeedSize, randomSpeedSize);
-        rotationSpeed.z = Random.Range(-randomSpeedSize, randomSpeedSize);
+        rotationSpeed.x = UnityEngine.Random.Range(-randomSpeedSize, randomSpeedSize);
+        rotationSpeed.y = UnityEngine.Random.Range(-randomSpeedSize, randomSpeedSize);
+        rotationSpeed.z = UnityEngine.Random.Range(-randomSpeedSize, randomSpeedSize);
 
-        color = Color.HSVToRGB( Mathf.Abs(Random.Range(0f,0.12f)) , 0.9f, 1.0f);
+        color = Color.HSVToRGB( Mathf.Abs(UnityEngine.Random.Range(0f,0.12f)) , 0.9f, 1.0f);
 
-        oscillationSpeed.x = Random.Range(-1, 1) * oscillationSpeedSize;
-        oscillationSpeed.y = Random.Range(-1, 1) * oscillationSpeedSize;
-        oscillationSpeed.z = Random.Range(-1, 1) * oscillationSpeedSize;
-        oscillationRadius = Random.Range(0.1f, 1.0f);
+        oscillationSpeed.x = UnityEngine.Random.Range(-1, 1) * oscillationSpeedSize;
+        oscillationSpeed.y = UnityEngine.Random.Range(-1, 1) * oscillationSpeedSize;
+        oscillationSpeed.z = UnityEngine.Random.Range(-1, 1) * oscillationSpeedSize;
+        oscillationRadius = UnityEngine.Random.Range(0.1f, 1.0f);
 
         Vector3 pos = new Vector3();
         pos.x = Mathf.Sin(oscillationSpeed.x * Time.time + oscillationSpeed.z) * oscillationRadius;

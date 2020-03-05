@@ -92,7 +92,7 @@ Material:
     - colorA: {r: 1, g: 0.070606984, b: 0, a: 1}
     - colorB: {r: 1, g: 1, b: 1, a: 1}
     - colorC: {r: 0, g: 0.77702427, b: 1, a: 1}
-    - lightFalloff: {r: 0, g: 38.48, b: 4.7, a: -0.21}
-    - lightPos: {r: 0.01, g: -0.66, b: -0.47, a: 2.62}
-    - maxBounds: {r: 0.75, g: 0.39, b: 2.35, a: 1}
-    - minBounds: {r: 0.05, g: -0.35, b: -2.33, a: 1}
+    - lightFalloff: {r: 0, g: 32.4, b: 4.7, a: 1.86}
+    - lightPos: {r: -4.11, g: -0.55, b: 6.66, a: 5.3}
+    - maxBounds: {r: 10000, g: 10000, b: 10000, a: 1}
+    - minBounds: {r: -10000, g: -10000, b: -1000, a: 1}

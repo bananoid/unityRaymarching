@@ -27,13 +27,13 @@ public class RoomsSystem : ComponentSystem
 
         if (spawnTimer < 0)
         {
-            spawnTimer = 1.0f;
+            spawnTimer = 10.0f;
 
             Entities.ForEach((
                 ref RoomsDescriptionComponent roomsDesc
             ) =>
             {
-                SpownObjects(roomsDesc.objPrefab, 10);
+                SpownObjects(roomsDesc.objPrefab, 200);
             });
         }
     }
@@ -46,43 +46,40 @@ public class RoomsSystem : ComponentSystem
         float spawnRadius = 5;
         foreach(var obj in objs)
         {
+
+            EntityManager.SetComponentData(obj,
+                new RoomObjectComponent
+                {
+                    weight = random.NextFloat(0.3f, 2f),
+                    up = math.up()
+                }
+            );
+
             var pos = random.NextFloat3(-spawnRadius, spawnRadius);
-
-            var s = random.NextFloat(0.1f, 1.0f); 
-            var scale = EntityManager
-                .GetComponentData<CompositeScale>(objPrefab)
-                .Value;
-            scale *= s;
-            scale[3].w = 1;
-
             EntityManager.SetComponentData(obj,
                 new Translation { Value = pos }
             );
 
-            var renderBounds = EntityManager
-                .GetComponentData<RenderBounds>(objPrefab)
-                .Value;
-            renderBounds.Extents = new float3(scale[0].x);
-            EntityManager.SetComponentData(obj,
-                new RenderBounds { Value = renderBounds }
-            );
+            if(random.NextFloat() > 0.8) { 
+                float startVal = random.NextFloat(5.0f, 6.0f);
+                float endVal = random.NextFloat(2.0f, 4.0f);
+
+                EntityManager.AddComponentData(obj, new ImpulseData
+                {
+                    Start = startVal,
+                    End = endVal,
+                    Time = 0f,
+                    Speed = 0.02f
+                });
 
 
-            EntityManager.SetComponentData(obj,
-                new RoomObjectComponent {
-                    weight = random.NextFloat(0.3f, 2f  ),
-                    up = math.up()
-                }
-            ); ;
+                EntityManager.AddComponentData(obj, new Scale
+                {
+                    Value = startVal * 2f,
+                });
 
+            }
 
-            var pc = EntityManager
-                .GetComponentData<PhysicsCollider>(objPrefab);
-
-            //if (pc.ColliderPtr->Type != ColliderType.Sphere) return;
-
-            //SphereCollider* scPtr = (SphereCollider*)pc.ColliderPtr;
-            //scPtr->Geometry.Radius = s;
         }
 
         objs.Dispose();
