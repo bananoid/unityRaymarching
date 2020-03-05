@@ -83,3 +83,10 @@ float opIS( float d1, float d2, float k )
     float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
     return lerp( d2, d1, h ) + k*h*(1.0-h); 
 }
+
+void rotateAxe(float a, inout float2 p) {
+    float s = sin(a);
+    float c = cos(a);
+    float2x2 m = float2x2(c, -s, s, c);
+	p = mul(m, p);
+}

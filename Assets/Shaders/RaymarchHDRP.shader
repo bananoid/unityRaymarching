@@ -86,7 +86,9 @@ Shader "Raymarch/RaymarchHDRP"
             }
 
             float4 distanceField(float3 p) {
-                return SineSphere(p);
+                // return SineSphere(p);
+                // return Corridor01(p);
+                return Corridor02(p);
             }
 
             float3 getNormal(float3 p, float d ){
@@ -139,24 +141,31 @@ Shader "Raymarch/RaymarchHDRP"
                 //Diffuse color;
                 float3 result = color;
                 
+
+                float spherLight = distance(p, _sphere1.xyz);
+                spherLight = 1 - smoothstep(0, _sphere1.w, spherLight);
+
+                // result = (n *0.5 + 0.5);
+                result = float3(spherLight,spherLight,spherLight);
+
                 // Directional Light
-                if(_LightIntensity > 0){
-                    float3 light = _LightCol * dot(-_LightDir, n) * _LightIntensity;
-                    result *= light;
-                }
+                // if(_LightIntensity > 0){
+                //     float3 light = _LightCol * dot(-_LightDir, n) * _LightIntensity;
+                //     result *= light;
+                // }
 
                 // Shadows
-                if(_ShadowIntensity > 0){
-                    float shadow = softShadow(p, -_LightDir, _ShadowDistance.x, _ShadowDistance.y, _ShadowPenumbra) * 0.5 + 0.5;
-                    shadow = max( 0.0, pow(shadow, _ShadowIntensity));
-                    result *= shadow + _ShadowColor * _ShadowIntensity;
-                }
+                // if(_ShadowIntensity > 0){
+                //     float shadow = softShadow(p, -_LightDir, _ShadowDistance.x, _ShadowDistance.y, _ShadowPenumbra) * 0.5 + 0.5;
+                //     shadow = max( 0.0, pow(shadow, _ShadowIntensity));
+                //     result *= shadow + _ShadowColor * _ShadowIntensity;
+                // }
 
                 //Ambient Occlusion
-                if(_AoIntensity > 0){
-                    float ao = AmbientOcclusion(p,n);
-                    result *= ao + _ShadowColor * _AoIntensity;
-                }
+                // if(_AoIntensity > 0){
+                //     float ao = AmbientOcclusion(p,n);
+                //     result *= ao + _ShadowColor * _AoIntensity;
+                // }
                 
                 return result;
             }
@@ -169,7 +178,8 @@ Shader "Raymarch/RaymarchHDRP"
                 {
                     if (t > _MaxDistance || t >= depth)
                     {
-                        result = float4(rayDirection, 0); // color backround from ray direction for debugging
+                        // result = float4(rayDirection, 0); // color backround from ray direction for debugging
+                        result = 0;
                         break;
                     }
 
@@ -202,7 +212,7 @@ Shader "Raymarch/RaymarchHDRP"
                 float3 rayDirection = normalize(i.ray);
                 float4 result = raymarching(rayOrigin, rayDirection, depth);
 
-                return fixed4(col * (1.0 - result.w) + result.xyz * result.w, result.w);
+                return fixed4(result.xyz,1.0);
             }
 
             ENDHLSL

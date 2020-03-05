@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48a79b01ea5641d4aa6daa2e23605641, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb84e30e02715445aeb9959894e3b4d, type: 3}
   m_Name: ColorGrading
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -1441,7 +1441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6050e2d5de785ce4d931e4dbdbf2d755, type: 3}
   m_Name: ChromaticAberration
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -1565,40 +1565,40 @@ MonoBehaviour:
     value: 0
   maxIterations:
     overrideState: 1
-    value: 200
+    value: 256
   maxDistance:
     overrideState: 1
     value: 100
   minDistance:
     overrideState: 1
-    value: 0.001
+    value: 0.01
   shadowIntensity:
-    overrideState: 1
-    value: 0.6
+    overrideState: 0
+    value: 1.09
   shadowColor:
-    overrideState: 1
+    overrideState: 0
     value: {r: 1.1662091, g: 0.39057007, b: 0.3962022, a: 1}
   shadowDistance:
-    overrideState: 1
+    overrideState: 0
     value: {x: 0.1, y: 100}
   shadowPenumbra:
-    overrideState: 1
+    overrideState: 0
     value: 1.5
   aoIntensity:
     overrideState: 1
-    value: 1.77
+    value: -0.02
   aoStepSize:
     overrideState: 1
-    value: 6.15
+    value: 6.6
   aoIterations:
     overrideState: 1
-    value: 5
+    value: 23
   sphere1:
     overrideState: 1
-    value: {x: 9.07, y: 5.31, z: -6.35, w: 3}
+    value: {x: 0, y: 0, z: 4.5, w: 12}
   sphere2:
     overrideState: 1
-    value: {x: 0.04, y: 0.92, z: 1.39, w: 3}
+    value: {x: 4.53, y: -1.65, z: 13.52, w: 1.45}
   sphereIntersectSmooth:
     overrideState: 1
     value: 0.59
