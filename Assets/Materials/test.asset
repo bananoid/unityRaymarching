@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48a79b01ea5641d4aa6daa2e23605641, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -213,6 +213,9 @@ MonoBehaviour:
   cumTime:
     overrideState: 1
     value: 59.01
+  sceneIndex:
+    overrideState: 0
+    value: 0
   maxIterations:
     overrideState: 1
     value: 200

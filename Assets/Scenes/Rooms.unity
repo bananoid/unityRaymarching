@@ -1544,8 +1544,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 2
-  far clip plane: 15.64
+  near clip plane: 0.01
+  far clip plane: 13.119884
   field of view: 15
   orthographic: 0
   orthographic size: 5
@@ -1805,14 +1805,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6ad1360e30704d93b4d5550b0ea5772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 1
   roomBox: {fileID: 935160104}
   objects: []
   mainCamera: {fileID: 1517248415}
   splits: 6
   maxRoomDepth: 4
-  gridSize: 0
-  cols: 0
-  rows: 0
+  gridSize: 1
+  gutter: 0.001
+  cols: 6
+  rows: 3
+  roomsPool: []
+  rooms: []
 --- !u!4 &2005758700
 Transform:
   m_ObjectHideFlags: 0

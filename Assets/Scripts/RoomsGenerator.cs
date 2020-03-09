@@ -5,13 +5,14 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Experimental.AI;
 using UnityEngine.UIElements;
+using Unity.Mathematics;
 
 public class RoomsGenerator : MonoBehaviour
 {
-    private int oldSeed = -1;
+    private uint oldSeed = 0;
     [SerializeField]
     // [ShowProperty]
-    private int seed = 0;
+    private uint seed = 1;
 
     public GameObject roomBox;
     public List<GameObject> objects;
@@ -20,14 +21,15 @@ public class RoomsGenerator : MonoBehaviour
     public int splits = 4;
     public float maxRoomDepth = 4;
 
-    public float gridSize;
+    public float gridSize = 1;
+    public float gutter = 0.0f;
     public int cols, rows;
 
     [SerializeField]
     private List<GameObject> roomsPool;
     [SerializeField]
     private List<GameObject> rooms;
-
+    private Unity.Mathematics.Random random;
 
     void Start()
     {
@@ -36,34 +38,26 @@ public class RoomsGenerator : MonoBehaviour
     }
 
     private void Update() {
-        if(oldSeed != seed){
+        if(oldSeed != seed && seed > 0){
             oldSeed = seed;
+            random = new Unity.Mathematics.Random(seed); 
             GenerateRooms();
+            UpdateCameraPosizion();
         }
         if(oldCameraFov != mainCamera.fieldOfView){
             oldCameraFov = mainCamera.fieldOfView;
-            GenerateRooms();
+            UpdateCameraPosizion();
         }
     }
 
     void GenerateRooms()
     {
-
-        float fovRad = mainCamera.fieldOfView * Mathf.Deg2Rad * 0.5f;
-        float camDist = Math.Abs(mainCamera.transform.position.z);
-        
-        float sh = camDist * Mathf.Tan(fovRad) * 2.0f;
-        float sw = mainCamera.aspect * sh;
-
-        gridSize = sw / splits;
-
         cols = splits;
-        rows = (int)(sh / gridSize);
+        rows = (int)((float)splits/mainCamera.aspect);
 
         float totW = cols * gridSize;
         float totH = rows * gridSize;
 
-        mainCamera.farClipPlane = camDist + gridSize * maxRoomDepth;
 
         GameObject room;
         int roomId = 0;
@@ -71,18 +65,19 @@ public class RoomsGenerator : MonoBehaviour
 
         RelaseAllRooms();
 
+        float gutterScale = gridSize - gutter;    
         for (int i = 0; i < cols; i++)
         {
             for (int j = 0; j < rows; j++)
             {
                 room = GetRoomFromPool();
                 room.transform.parent = transform;
-                room.layer = roomId;
+                // room.layer = roomId;
                 room.SetActive(true);
-                Vector3 scale = new Vector3(gridSize, gridSize, gridSize) * 0.9f;
+                Vector3 scale = new Vector3(gridSize, gridSize, gridSize) * gutterScale;
                 Vector3 positon = new Vector3();
 
-                scale.z *= UnityEngine.Random.Range(1.0f, 4.0f);
+                scale.z *= random.NextFloat(1.0f, 4.0f);
 
                 positon.x = i * gridSize - totW * 0.5f + gridSize * 0.5f;
                 positon.y = j * gridSize - totH * 0.5f + gridSize * 0.5f;
@@ -98,6 +93,24 @@ public class RoomsGenerator : MonoBehaviour
             }
         }
 
+    }
+
+    void UpdateCameraPosizion(){
+        float camDist;
+        float totH = rows * gridSize;
+        float totW = cols * gridSize;
+
+        //Vertical Fit
+        // float fovRad = mainCamera.fieldOfView * Mathf.Deg2Rad * 0.5f;
+        // camDist = totH / (Mathf.Tan(fovRad)*2.0f);
+
+        //Horizontal Fit
+        var radAngle = mainCamera.fieldOfView * Mathf.Deg2Rad;
+        var radHFOV = Mathf.Atan(Mathf.Tan(radAngle / 2) * mainCamera.aspect);
+        camDist = totW / (Mathf.Tan(radHFOV)*2.0f);
+        
+        mainCamera.transform.position = new Vector3(0,0,-camDist);
+        mainCamera.farClipPlane = camDist + gridSize * maxRoomDepth;
     }
 
     GameObject GetRoomFromPool(){
