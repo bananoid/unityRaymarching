@@ -26,6 +26,39 @@ float sdRoundBox( in float3 p,  in float3 b, in float r){
 	return min(max(q.x, max(q.y,q.z)),0.0) + length(max(q,0.0)) - r;
 } 
 
+//Gyroid
+float sdGyroid(in float3 p, in float scale){
+	p *= scale;
+    return dot(sin(p), cos(p.zxy * 0.35345))/scale;
+}
+// Cone
+float sdCone( float3 p, float2 c )
+{
+  // c is the sin/cos of the angle
+  float q = length(p.xy);
+  return dot(c,float2(q,p.z));
+}
+
+float sdRoundCone( in float3 p, in float r1, float r2, float h )
+{
+    float2 q = float2( length(p.xz), p.y );
+    
+    float b = (r1-r2)/h;
+    float a = sqrt(1.0-b*b);
+    float k = dot(q,float2(-b,a));
+    
+    if( k < 0.0 ) return length(q) - r1;
+    if( k > a*h ) return length(q-float2(0.0,h)) - r2;
+        
+    return dot(q, float2(a,b) ) - r1;
+}
+
+float sdTorus( float3 p, float2 t )
+{
+  float2 q = float2(length(p.xz)-t.x,p.y);
+  return length(q)-t.y;
+}
+
 // BOOLEAN OPERATORS //
 
 // Union
@@ -89,4 +122,34 @@ void rotateAxe(float a, inout float2 p) {
     float c = cos(a);
     float2x2 m = float2x2(c, -s, s, c);
 	p = mul(m, p);
+}
+
+
+// float2x2 rotateMx(float a, inout float2 p) {
+//     float s = sin(a);
+//     float c = cos(a);
+//     float2x2 m = float2x2(c, -s, s, c);
+// 	return m;
+// }
+
+struct SDFrVolumeData
+{
+    float4x4 WorldToLocal;
+    float3 Extents;
+};
+
+SamplerState sdfr_sampler_linear_clamp;
+
+inline float DistanceFunctionTex3DFast(in float3 rayPosWS, in SDFrVolumeData data, in Texture3D tex)
+{
+	float4x4 w2l = data.WorldToLocal;
+	float3 extents = data.Extents;
+
+	float3 rayPosLocal = mul(w2l, float4(rayPosWS, 1)).xyz;
+	rayPosLocal /= extents.xyz * 2;
+	rayPosLocal += 0.5; //texture space
+	//values are -1 to 1
+	float sample = tex.SampleLevel(sdfr_sampler_linear_clamp, rayPosLocal, 0).r;
+	sample *= length(extents); //scale by magnitude of bound extent
+	return sample;
 }

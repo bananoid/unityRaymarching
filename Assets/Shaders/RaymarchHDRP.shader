@@ -18,6 +18,8 @@ Shader "Raymarch/RaymarchHDRP"
             //#include "HLSLSupport.cginc"
             #include "UnityCG.cginc"
 
+            Texture3D _VolumeATex;
+            
             //TEXTURE2D_SAMPLER2D(_MainTex, sampler_MainTex);
             uniform sampler2D _MainTex;
             uniform sampler2D_float _CameraDepthTexture, sampler_CameraDepthTexture;
@@ -32,6 +34,9 @@ Shader "Raymarch/RaymarchHDRP"
 
             //Time
             uniform float _CumTime;
+
+            //Scene 
+            uniform int _SceneIndex;
 
             //Light
             uniform float3 _LightDir, _LightCol;
@@ -88,7 +93,20 @@ Shader "Raymarch/RaymarchHDRP"
             float4 distanceField(float3 p) {
                 // return SineSphere(p);
                 // return Corridor01(p);
-                return Corridor02(p);
+                
+                if(_SceneIndex == 0){
+                    return SineSphere(p);
+                }else if(_SceneIndex == 1){
+                    return Scene01(p);
+                }else if(_SceneIndex == 2){
+                    return Scene02(p);
+                }else if(_SceneIndex == 3){
+                    return Scene03(p);
+                }else if(_SceneIndex == 4){
+                    return Scene04(p);
+                }
+
+                return float4(float3(1.0,0.0,1.0), sdSphere(p, 4));
             }
 
             float3 getNormal(float3 p, float d ){
@@ -139,20 +157,26 @@ Shader "Raymarch/RaymarchHDRP"
 
             float3  Shading(float3 p, float3 n, fixed3 color){
                 //Diffuse color;
-                float3 result = color;
+                // float3 result = color;
+                float3 result = float3(1,0,0);
+                // float3 result = n.xxx + n.yyy * 0.5 + 0.5;
                 
 
                 float spherLight = distance(p, _sphere1.xyz);
                 spherLight = 1 - smoothstep(0, _sphere1.w, spherLight);
 
                 // result = (n *0.5 + 0.5);
-                result = float3(spherLight,spherLight,spherLight);
+                result *= spherLight;
+
 
                 // Directional Light
                 // if(_LightIntensity > 0){
                 //     float3 light = _LightCol * dot(-_LightDir, n) * _LightIntensity;
                 //     result *= light;
                 // }
+
+                float3 light = dot(-_LightDir, n) * _LightIntensity;
+                result = result  + light;
 
                 // Shadows
                 // if(_ShadowIntensity > 0){

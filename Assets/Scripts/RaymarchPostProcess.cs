@@ -12,6 +12,9 @@ public sealed class RaymarchPostProcess : PostProcessEffectSettings
 {
     public FloatParameter cumTime = new FloatParameter { value = 0f };
 
+    [Range(0,4)]
+    public IntParameter sceneIndex = new IntParameter { value = 0 };
+
     [Header("Setup")]
     public IntParameter maxIterations = new IntParameter { value = 200 };
     public FloatParameter maxDistance = new FloatParameter { value = 100f };
@@ -71,6 +74,7 @@ public sealed class RaymarchPostProcessRenderer : PostProcessEffectRenderer<Raym
         sheet.properties.SetFloat("_MinDistance", settings.minDistance);
         
         sheet.properties.SetFloat("_CumTime", settings.cumTime);
+        sheet.properties.SetInt("_SceneIndex", settings.sceneIndex);
 
         sheet.properties.SetColor("_ShadowColor", settings.shadowColor);
         sheet.properties.SetVector("_ShadowDistance", settings.shadowDistance);
