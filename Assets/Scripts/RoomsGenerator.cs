@@ -6,24 +6,44 @@ using UnityEngine;
 using UnityEngine.Experimental.AI;
 using UnityEngine.UIElements;
 
-//[ExecuteInEditMode]
 public class RoomsGenerator : MonoBehaviour
 {
+    private int oldSeed = -1;
+    [SerializeField]
+    // [ShowProperty]
+    private int seed = 0;
+
     public GameObject roomBox;
     public List<GameObject> objects;
     public Camera mainCamera;
+    private float oldCameraFov = 0;
     public int splits = 4;
     public float maxRoomDepth = 4;
 
     public float gridSize;
     public int cols, rows;
 
+    [SerializeField]
+    private List<GameObject> roomsPool;
+    [SerializeField]
     private List<GameObject> rooms;
+
 
     void Start()
     {
         rooms = new List<GameObject>();
-        GenerateRooms();
+        roomsPool = new List<GameObject>();
+    }
+
+    private void Update() {
+        if(oldSeed != seed){
+            oldSeed = seed;
+            GenerateRooms();
+        }
+        if(oldCameraFov != mainCamera.fieldOfView){
+            oldCameraFov = mainCamera.fieldOfView;
+            GenerateRooms();
+        }
     }
 
     void GenerateRooms()
@@ -49,11 +69,13 @@ public class RoomsGenerator : MonoBehaviour
         int roomId = 0;
         float boundsOffset = 0.01f;
 
+        RelaseAllRooms();
+
         for (int i = 0; i < cols; i++)
         {
             for (int j = 0; j < rows; j++)
             {
-                room = Instantiate(roomBox);
+                room = GetRoomFromPool();
                 room.transform.parent = transform;
                 room.layer = roomId;
                 room.SetActive(true);
@@ -68,9 +90,7 @@ public class RoomsGenerator : MonoBehaviour
                 room.transform.localScale = scale;
                 room.transform.localPosition = positon;
 
-                
-
-                Material mat = room.GetComponent<Renderer>().material;
+                Material mat = room.GetComponent<Renderer>().sharedMaterial;
                 mat.SetVector("minBounds", positon - scale * .5f - Vector3.one * boundsOffset);
                 mat.SetVector("maxBounds", positon + scale * .5f + Vector3.one * boundsOffset);
 
@@ -80,4 +100,21 @@ public class RoomsGenerator : MonoBehaviour
 
     }
 
+    GameObject GetRoomFromPool(){
+        GameObject obj;
+        if(roomsPool.Count == 0){
+            obj = Instantiate(roomBox);
+        }else{
+            obj = roomsPool[0];
+            roomsPool.RemoveAt(0);
+        }
+        rooms.Add(obj);
+        return obj;        
+    }
+    void RelaseAllRooms(){
+        foreach(GameObject obj in rooms){
+            roomsPool.Add(obj);
+        }
+        rooms = new List<GameObject>();
+    }
 }

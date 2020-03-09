@@ -132,15 +132,15 @@ Shader "Unlit/VJ"
 
 
                 //Bounds
-                float boundsMask =
-                    step( i.worldPos.x, maxBounds.x) *    
-                    step( minBounds.x, i.worldPos.x) *
-                    step( i.worldPos.y, maxBounds.y) *    
-                    step( minBounds.y, i.worldPos.y) *
-                    step( i.worldPos.z, maxBounds.z) *    
-                    step( minBounds.z, i.worldPos.z);
+                // float boundsMask =
+                //     step( i.worldPos.x, maxBounds.x) *    
+                //     step( minBounds.x, i.worldPos.x) *
+                //     step( i.worldPos.y, maxBounds.y) *    
+                //     step( minBounds.y, i.worldPos.y) *
+                //     step( i.worldPos.z, maxBounds.z) *    
+                //     step( minBounds.z, i.worldPos.z);
 
-                col.rgb *= boundsMask * facing;
+                // col.rgb *= boundsMask * facing;
 
                 return col;
             }
