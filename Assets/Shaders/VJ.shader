@@ -141,7 +141,9 @@ Shader "Unlit/VJ"
                 //     step( minBounds.z, i.worldPos.z);
 
                 // col.rgb *= boundsMask * facing;
-
+                // if(!facing){
+                //     discard;
+                // }    
                 return col;
             }
             ENDCG

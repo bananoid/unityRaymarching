@@ -37,6 +37,10 @@ public class RoomsGenerator : MonoBehaviour
 
     public List<RoomData> roomsData;
 
+
+    public uint maxSplits = 12;
+    public uint maxIteration = 3;
+
     void Start()
     {
         rooms = new List<GameObject>();
@@ -47,7 +51,7 @@ public class RoomsGenerator : MonoBehaviour
     private void Update() {
         if(oldSeed != seed && seed > 0){
             oldSeed = seed;
-            random = new Unity.Mathematics.Random(seed); 
+            random = new Unity.Mathematics.Random(seed + 2345831274); 
             CalcRows();
             GenerateRooms();
             UpdateCameraPosizion();
@@ -65,7 +69,7 @@ public class RoomsGenerator : MonoBehaviour
 
     void GenerateRooms()
     {
-        GenerateRoomsData();
+        roomsData = GenerateRoomsData();
 
         float totW = cols * gridSize;
         float totH = rows * gridSize;
@@ -84,8 +88,8 @@ public class RoomsGenerator : MonoBehaviour
             float z = roomData.d * 0.5f;
             Vector3 position = new Vector3(roomData.x,roomData.y, z);
             
-            position.x -= totW * 0.5f - gridSize * 0.5f;
-            position.y -= totH * 0.5f - gridSize * 0.5f;
+            position.x -= totW * 0.5f - roomData.w * 0.5f;
+            position.y -= totH * 0.5f - roomData.h * 0.5f;
 
             room.transform.localScale = scale;
             room.transform.localPosition = position;
@@ -97,27 +101,92 @@ public class RoomsGenerator : MonoBehaviour
 
     }
 
-    void GenerateRoomsData(){
-        int maxSplits = 4;
-        int maxIteration = 3;
+    List<RoomData> GenerateRoomsData(uint iteration = 0){
+        
+        if(iteration == 0){
 
-        roomsData = new List<RoomData>();
-
-        for (int xi = 0; xi < cols; xi++)
-        {
-            for (int yi = 0; yi < rows; yi++)
-            {
-                RoomData roomData = new RoomData();
-                roomData.x = xi * gridSize + gutter;
-                roomData.y = yi * gridSize + gutter;
-
-                roomData.w = gridSize - gutter*2;
-                roomData.h = gridSize - gutter*2;
-                roomData.d = gridSize * random.NextFloat(1.0f, 4.0f);
-                
-                roomsData.Add(roomData);
-            }
         }
+
+        float maxSplits = this.maxSplits;    
+        uint numSplits = (uint) ((random.NextFloat()*maxSplits) % maxSplits) + 1;
+        // int numSplits = random.NextInt(1,maxSplits+1);
+        Debug.Log(numSplits);
+
+        float totW = cols * gridSize;
+        float totH = rows * gridSize;
+        
+        List<RoomData> rd = new List<RoomData>();
+
+        // for (int xi = 0; xi < cols; xi++)
+        // {
+        //     for (int yi = 0; yi < rows; yi++)
+        //     {
+        //         RoomData roomData = new RoomData();
+        //         roomData.x = xi * gridSize + gutter;
+        //         roomData.y = yi * gridSize + gutter;
+
+        //         roomData.w = gridSize - gutter*2;
+        //         roomData.h = gridSize - gutter*2;
+        //         roomData.d = gridSize * random.NextFloat(1.0f, 4.0f);
+                
+        //         roomsData.Add(roomData);
+        //     }
+        // }
+        
+        RoomData inRect = new RoomData { 
+            x = 0,
+            y = 0,
+            w = totW,
+            h = totH
+        };   
+
+        bool hSplit = true;
+
+        float parentCellPos;
+        float parentCellSize;
+        
+        if(hSplit){
+            parentCellPos = inRect.x;
+            parentCellSize = inRect.w; 
+        }else{
+            parentCellPos = inRect.y;
+            parentCellSize = inRect.h; 
+        }
+
+        float splitSize = parentCellSize / (float)numSplits;
+        splitSize = math.ceil(splitSize / gridSize) * gridSize; 
+       
+        Debug.Log("splitSize " +  splitSize);
+
+
+        float cellPos = parentCellPos;
+        float cellSize;
+
+        RoomData roomData = inRect;
+
+        for(int i=0; i<numSplits; i++){
+        
+            cellPos += i > 0 ? splitSize : 0;
+            cellSize = splitSize;  
+
+            if(cellPos + cellSize > parentCellPos + parentCellSize){
+                break;
+            }
+
+            if(hSplit){
+                roomData.x = cellPos;
+                roomData.w = cellSize - gutter;
+            }else{
+                roomData.y = cellPos;
+                roomData.h = cellSize - gutter;
+            }
+
+            roomData.d = gridSize * random.NextFloat(1.0f, 4.0f);
+
+            rd.Add(roomData);
+        }
+
+        return rd;
     }
 
     void UpdateCameraPosizion(){
@@ -151,6 +220,7 @@ public class RoomsGenerator : MonoBehaviour
     }
     void RelaseAllRooms(){
         foreach(GameObject obj in rooms){
+            obj.SetActive(false);
             roomsPool.Add(obj);
         }
         rooms = new List<GameObject>();

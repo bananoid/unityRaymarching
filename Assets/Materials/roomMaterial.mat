@@ -65,7 +65,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
-    - _Cull: 0
+    - _Cull: 2
     - _Cutoff: 0.5
     - _DepthLevel: 1.461
     - _DetailNormalMapScale: 1
@@ -89,10 +89,10 @@ Material:
     - _Color: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - center: {r: -0.84, g: -0.55, b: 0.13, a: 1}
-    - colorA: {r: 1, g: 0.070606984, b: 0, a: 1}
+    - colorA: {r: 1, g: 1, b: 1, a: 1}
     - colorB: {r: 1, g: 1, b: 1, a: 1}
-    - colorC: {r: 0, g: 0.77702427, b: 1, a: 1}
-    - lightFalloff: {r: 5.5, g: 41.62, b: 4.7, a: 1.86}
-    - lightPos: {r: 0, g: 0, b: -11, a: 5.3}
-    - maxBounds: {r: 10.0095005, g: 5.5095, b: 3.8672416, a: 0}
-    - minBounds: {r: 8.9904995, g: 4.4905, b: -0.01, a: 0}
+    - colorC: {r: 1, g: 1, b: 1, a: 1}
+    - lightFalloff: {r: 5.5, g: 29.15, b: 4.7, a: 1.86}
+    - lightPos: {r: 0, g: 0, b: -6.01, a: 5.3}
+    - maxBounds: {r: 2.91, g: 1.51, b: 1.6053821, a: 0}
+    - minBounds: {r: 1.99, g: -1.51, b: -0.01, a: 0}

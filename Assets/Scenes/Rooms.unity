@@ -1805,18 +1805,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6ad1360e30704d93b4d5550b0ea5772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 1
+  seed: 3107
   roomBox: {fileID: 935160104}
   objects: []
   mainCamera: {fileID: 1517248415}
-  splits: 6
   maxRoomDepth: 4
   gridSize: 1
-  gutter: 0.001
+  gutter: 0.1
   cols: 6
   rows: 3
   roomsPool: []
   rooms: []
+  maxSplits: 12
+  maxIteration: 3
 --- !u!4 &2005758700
 Transform:
   m_ObjectHideFlags: 0
