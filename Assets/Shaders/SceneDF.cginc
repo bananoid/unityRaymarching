@@ -34,7 +34,7 @@ float4 Scene01(float3 p){
 }
 
 float4 Scene02(float3 p){   
-    float box = sdBox(p, float3(20,1.0,30)) * -1.;
+    float box = sdBox(p, float3(20,1.0,10)) * -1.;
     float4 boxC = float4(float3(0.0,0.5,1.0), box); 
     return boxC;
 }  
@@ -44,17 +44,17 @@ float4 Scene03(float3 p){
     float plane = sdPlane(p, float4(0,0,-1,0));
     // float box = sdBox(p, float3(10000,10000,5));
 
-    float scale = 1;
+    float scale = 1.;
     p.y += _Time * 10.0;
     p.z += _Time * 1.3450;
     p += _sphere2.xyz;
 
-    p.y *= 0.5;
-    float gyroid = abs(sdGyroid(p,scale)) - 0.2;
+    // p.y *= 0.5;
+    float gyroid = abs(sdGyroid(p,scale)) - 0.1;
     
     float combine = max(plane, gyroid);
 
-    float3 color = float3(1,1,1);
+    float3 color = float3(1,0,1);
     return float4(color, combine);
 }
 

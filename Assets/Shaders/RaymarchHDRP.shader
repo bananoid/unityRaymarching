@@ -176,7 +176,7 @@ Shader "Raymarch/RaymarchHDRP"
                 // }
 
                 float3 light = dot(-_LightDir, n) * _LightIntensity;
-                result = result  + light;
+                result = result + light;
 
                 // Shadows
                 // if(_ShadowIntensity > 0){
@@ -190,6 +190,19 @@ Shader "Raymarch/RaymarchHDRP"
                 //     float ao = AmbientOcclusion(p,n);
                 //     result *= ao + _ShadowColor * _AoIntensity;
                 // }
+
+                float depth = 1-(p.z)*0.1;
+                depth = clamp(0,1,depth);
+            
+                float lines = sin(p.y * 20 + _Time * 100)*0.5+0.5;
+                float lineSMin = 0.3;
+                float lineSMax = 0.1;
+                lines = smoothstep(lineSMin, lineSMax, lines);
+                lines = clamp(0,1,lines);
+                // result = float3(lines,lines,lines);   
+                // result += lines*0.3;   
+
+                // result = float3(depth,depth,depth);   
                 
                 return result;
             }
@@ -203,7 +216,7 @@ Shader "Raymarch/RaymarchHDRP"
                     if (t > _MaxDistance || t >= depth)
                     {
                         // result = float4(rayDirection, 0); // color backround from ray direction for debugging
-                        result = 0;
+                        result = float4(0, 0, 0, 1);
                         break;
                     }
 
