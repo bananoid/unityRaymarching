@@ -158,16 +158,14 @@ Shader "Raymarch/RaymarchHDRP"
             float3  Shading(float3 p, float3 n, fixed3 color){
                 //Diffuse color;
                 // float3 result = color;
-                float3 result = float3(1,0,0);
+                float3 result = float3(0.8,0.4,0.4) * 0.7;
                 // float3 result = n.xxx + n.yyy * 0.5 + 0.5;
                 
-
                 float spherLight = distance(p, _sphere1.xyz);
                 spherLight = 1 - smoothstep(0, _sphere1.w, spherLight);
 
                 // result = (n *0.5 + 0.5);
                 result *= spherLight;
-
 
                 // Directional Light
                 // if(_LightIntensity > 0){
@@ -201,6 +199,7 @@ Shader "Raymarch/RaymarchHDRP"
                 lines = clamp(0,1,lines);
                 // result = float3(lines,lines,lines);   
                 // result += lines*0.3;   
+                // result = lines;   
 
                 // result = float3(depth,depth,depth);   
                 
@@ -208,7 +207,7 @@ Shader "Raymarch/RaymarchHDRP"
             }
 
             fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
-                fixed4 result = float4(0, 0, 0, 1);
+                fixed4 result = float4(0, 0, 0, 0);
                 float t = 0.01; // Distance Traveled from ray origin (ro) along the ray direction (rd)
 
                 for (int i = 0; i < _MaxIterations; i++)
@@ -216,8 +215,9 @@ Shader "Raymarch/RaymarchHDRP"
                     if (t > _MaxDistance || t >= depth)
                     {
                         // result = float4(rayDirection, 0); // color backround from ray direction for debugging
-                        result = float4(0, 0, 0, 1);
+                        result = float4(0, 0, 0, 0);
                         break;
+                        // discard;
                     }
 
                     float3 p = rayOrigin + rayDirection * t;    // This is our current position
@@ -248,8 +248,11 @@ Shader "Raymarch/RaymarchHDRP"
                 float3 rayOrigin = _CamWorldSpace;
                 float3 rayDirection = normalize(i.ray);
                 float4 result = raymarching(rayOrigin, rayDirection, depth);
+                
+                result.xyz =  lerp(col.xyz,result.xyz,result.w);
 
                 return fixed4(result.xyz,1.0);
+                // return col;
             }
 
             ENDHLSL

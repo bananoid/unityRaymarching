@@ -111,16 +111,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48a79b01ea5641d4aa6daa2e23605641, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
   intensity:
     overrideState: 1
-    value: 8.23
+    value: 3.25
   threshold:
     overrideState: 1
-    value: 0.8
+    value: 0.79
   softKnee:
     overrideState: 1
     value: 1
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e9bf7de8fe5d473689e3363d6de983c, type: 3}
   m_Name: RaymarchPostProcess
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
@@ -214,8 +214,8 @@ MonoBehaviour:
     overrideState: 1
     value: 59.01
   sceneIndex:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 3
   maxIterations:
     overrideState: 1
     value: 200
@@ -224,12 +224,12 @@ MonoBehaviour:
     value: 100
   minDistance:
     overrideState: 1
-    value: 0.01
+    value: 0.001
   shadowIntensity:
-    overrideState: 1
+    overrideState: 0
     value: 2.56
   shadowColor:
-    overrideState: 1
+    overrideState: 0
     value: {r: 0, g: 0, b: 0, a: 1}
   shadowDistance:
     overrideState: 0
@@ -238,20 +238,20 @@ MonoBehaviour:
     overrideState: 0
     value: 1.5
   aoIntensity:
-    overrideState: 1
+    overrideState: 0
     value: 1
   aoStepSize:
-    overrideState: 1
+    overrideState: 0
     value: 6
   aoIterations:
-    overrideState: 1
+    overrideState: 0
     value: 5
   sphere1:
     overrideState: 1
-    value: {x: 10.38, y: 20.15, z: 43.6, w: -4.89}
+    value: {x: 0, y: -0.5, z: 3.24, w: 10.97}
   sphere2:
     overrideState: 1
-    value: {x: -0.01, y: 0.03, z: 1.5, w: 1}
+    value: {x: 5.81, y: 5.15, z: 1.5, w: 0.82}
   sphereIntersectSmooth:
     overrideState: 1
     value: 0.46

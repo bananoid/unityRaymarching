@@ -1562,7 +1562,7 @@ MonoBehaviour:
     value: 1
   cumTime:
     overrideState: 1
-    value: 2.4752
+    value: 0
   sceneIndex:
     overrideState: 1
     value: 3
@@ -1598,7 +1598,7 @@ MonoBehaviour:
     value: 1
   sphere1:
     overrideState: 1
-    value: {x: 0, y: 0, z: 19.94, w: 23.33}
+    value: {x: 0, y: -1.81, z: -10.9, w: 23.33}
   sphere2:
     overrideState: 1
     value: {x: 0.78, y: -1.51, z: 0.59, w: 1.4}

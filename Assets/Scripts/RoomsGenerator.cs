@@ -29,17 +29,14 @@ public class RoomsGenerator : MonoBehaviour
     public int cols = 4;
     public int rows;
 
-    [SerializeField]
+    public uint maxSplits = 12;
+    public uint maxIteration = 3;
+
     private List<GameObject> roomsPool;
-    [SerializeField]
     private List<GameObject> rooms;
     private Unity.Mathematics.Random random;
 
-    public List<RoomData> roomsData;
-
-
-    public uint maxSplits = 12;
-    public uint maxIteration = 3;
+    private List<RoomData> roomsData;
 
     void Start()
     {
@@ -69,17 +66,29 @@ public class RoomsGenerator : MonoBehaviour
 
     void GenerateRooms()
     {
-        roomsData = GenerateRoomsData();
-
         float totW = cols * gridSize;
         float totH = rows * gridSize;
 
+        roomsData = GenerateRoomsData(
+            new RoomData { 
+                x = 0,
+                y = 0,
+                w = totW,
+                h = totH
+            });
+        
         GameObject room;
         float boundsOffset = 0.01f;
 
         RelaseAllRooms();
 
-        foreach(RoomData roomData in roomsData){
+        foreach(RoomData rd in roomsData){
+            RoomData roomData = rd; 
+            // roomData.x += gutter;
+            // roomData.y += gutter;
+            // roomData.w -= gutter * 2;
+            // roomData.h -= gutter * 2;
+
             room = GetRoomFromPool();    
             room.transform.parent = transform;
             room.SetActive(true);
@@ -101,46 +110,21 @@ public class RoomsGenerator : MonoBehaviour
 
     }
 
-    List<RoomData> GenerateRoomsData(uint iteration = 0){
+    List<RoomData> GenerateRoomsData(
+        RoomData inRect = new RoomData(),
+        uint iteration = 0,
+        List<RoomData> rd = null
+    )
+    {
         
-        if(iteration == 0){
-
+        if(rd == null){
+            rd = new List<RoomData>();
         }
 
         float maxSplits = this.maxSplits;    
         uint numSplits = (uint) ((random.NextFloat()*maxSplits) % maxSplits) + 1;
-        // int numSplits = random.NextInt(1,maxSplits+1);
-        Debug.Log(numSplits);
-
-        float totW = cols * gridSize;
-        float totH = rows * gridSize;
         
-        List<RoomData> rd = new List<RoomData>();
-
-        // for (int xi = 0; xi < cols; xi++)
-        // {
-        //     for (int yi = 0; yi < rows; yi++)
-        //     {
-        //         RoomData roomData = new RoomData();
-        //         roomData.x = xi * gridSize + gutter;
-        //         roomData.y = yi * gridSize + gutter;
-
-        //         roomData.w = gridSize - gutter*2;
-        //         roomData.h = gridSize - gutter*2;
-        //         roomData.d = gridSize * random.NextFloat(1.0f, 4.0f);
-                
-        //         roomsData.Add(roomData);
-        //     }
-        // }
-        
-        RoomData inRect = new RoomData { 
-            x = 0,
-            y = 0,
-            w = totW,
-            h = totH
-        };   
-
-        bool hSplit = true;
+        bool hSplit = iteration % 2 == 0;
 
         float parentCellPos;
         float parentCellSize;
@@ -169,21 +153,38 @@ public class RoomsGenerator : MonoBehaviour
             cellPos += i > 0 ? splitSize : 0;
             cellSize = splitSize;  
 
-            if(cellPos + cellSize > parentCellPos + parentCellSize){
-                break;
+            float rSize = (parentCellPos + parentCellSize) - (cellPos + cellSize);
+            Debug.Log("rSize "+ rSize);
+            if(rSize <= 0){
+                cellSize += rSize;
             }
 
             if(hSplit){
                 roomData.x = cellPos;
-                roomData.w = cellSize - gutter;
+                roomData.w = cellSize;
             }else{
                 roomData.y = cellPos;
-                roomData.h = cellSize - gutter;
+                roomData.h = cellSize;
             }
 
             roomData.d = gridSize * random.NextFloat(1.0f, 4.0f);
 
-            rd.Add(roomData);
+            if(iteration < maxIteration){
+                GenerateRoomsData(roomData, iteration+1, rd);
+            }else{
+                RoomData r = roomData;
+                
+                r.x += gutter;
+                r.y += gutter;
+                r.w -= gutter * 2;
+                r.h -= gutter * 2;
+
+                rd.Add(r);
+            }    
+
+            if(rSize <= 0){
+                break;
+            }
         }
 
         return rd;

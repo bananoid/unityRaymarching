@@ -21,6 +21,8 @@ Shader "Unlit/VJ"
         lineFade ("Line Fade", float) = 0.01
         lineSize ("Line Size", float) = 0.5
         lineFreq ("Line Freq", float) = 30.
+        lineSpeed ("Line Speed", float) = 30.
+        lineIntesity ("Line Intesity", float) = 1.
 
         minBounds ("Min Room Bounds", Vector) = (-2,-1,-5)
         maxBounds ("Min Room Bounds", Vector) = ( 2, 1, 5)
@@ -52,6 +54,9 @@ Shader "Unlit/VJ"
             float lineFade;
             float lineSize;
             float lineFreq;
+            float lineSpeed;
+            float lineIntesity;
+
 
             float3 minBounds;
             float3 maxBounds;
@@ -95,7 +100,7 @@ Shader "Unlit/VJ"
 
                 fixed4 col = float4(0,0,0,1);
 
-                float lines = sin(i.worldPos.z * lineFreq + _Time * 100) * 0.5 + 0.5;
+                float lines = sin(i.worldPos.z * lineFreq + _Time * lineSpeed) * 0.5 + 0.5;
                 lines = smoothstep(lineSize-lineFade,lineSize+lineFade,lines);
                 col.r = lines;
 
@@ -128,7 +133,10 @@ Shader "Unlit/VJ"
 
                 //gradient = sin(colorA.rgb * gradientPos * 2. + _Time * 1 ) * 0.5 + 0.5;
 
-                col.rgb *= gradient * lines;
+                col.rgb *= gradient;
+                // col.rgb += float3(lines,lines,lines);
+                col.rgb += lines * (1-i.localPos.z*2) * lineIntesity;
+                // col.rgb *= gradient;
 
 
                 //Bounds

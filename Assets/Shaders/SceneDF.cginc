@@ -41,7 +41,7 @@ float4 Scene02(float3 p){
 
 //Gyroid
 float4 Scene03(float3 p){
-    float plane = sdPlane(p, float4(0,0,-1,0));
+    float plane = sdPlane(p, float4(0,0,-1,0.3));
     // float box = sdBox(p, float3(10000,10000,5));
 
     float scale = 1.;
