@@ -18,8 +18,6 @@ Shader "Raymarch/RaymarchHDRP"
             //#include "HLSLSupport.cginc"
             #include "UnityCG.cginc"
 
-            Texture3D _VolumeATex;
-            
             //TEXTURE2D_SAMPLER2D(_MainTex, sampler_MainTex);
             uniform sampler2D _MainTex;
             uniform sampler2D_float _CameraDepthTexture, sampler_CameraDepthTexture;

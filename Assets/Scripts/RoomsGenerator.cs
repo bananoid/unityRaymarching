@@ -38,13 +38,17 @@ public class RoomsGenerator : MonoBehaviour
 
     private List<RoomData> roomsData;
 
+    private RaymarchHelper raymarchHelper;
     void Start()
     {
         rooms = new List<GameObject>();
         roomsPool = new List<GameObject>();
         roomsData = new List<RoomData>();
-    }
 
+        raymarchHelper = GetComponent<RaymarchHelper>();
+        
+    }
+    
     private void Update() {
         if(oldSeed != seed && seed > 0){
             oldSeed = seed;
