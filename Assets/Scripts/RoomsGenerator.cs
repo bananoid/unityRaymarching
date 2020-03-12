@@ -19,6 +19,7 @@ public class RoomsGenerator : MonoBehaviour
     private uint seed = 1;
 
     public GameObject roomBox;
+    public GameObject roomPlane;
     public List<GameObject> objects;
     public Camera mainCamera;
     private float oldCameraFov = 0;
@@ -46,8 +47,8 @@ public class RoomsGenerator : MonoBehaviour
         roomsData = new List<RoomData>();
 
         raymarchHelper = GetComponent<RaymarchHelper>();
-        
-    }
+        roomBox.SetActive(false);
+    }   
     
     private void Update() {
         if(oldSeed != seed && seed > 0){
@@ -107,9 +108,9 @@ public class RoomsGenerator : MonoBehaviour
             room.transform.localScale = scale;
             room.transform.localPosition = position;
 
-            Material mat = room.GetComponent<Renderer>().sharedMaterial;
-            mat.SetVector("minBounds", position - scale * .5f - Vector3.one * boundsOffset);
-            mat.SetVector("maxBounds", position + scale * .5f + Vector3.one * boundsOffset);
+            // Material mat = room.GetComponent<Renderer>().sharedMaterial;
+            // mat.SetVector("minBounds", position - scale * .5f - Vector3.one * boundsOffset);
+            // mat.SetVector("maxBounds", position + scale * .5f + Vector3.one * boundsOffset);
         }
 
     }
@@ -144,9 +145,6 @@ public class RoomsGenerator : MonoBehaviour
         float splitSize = parentCellSize / (float)numSplits;
         splitSize = math.ceil(splitSize / gridSize) * gridSize; 
        
-        Debug.Log("splitSize " +  splitSize);
-
-
         float cellPos = parentCellPos;
         float cellSize;
 
@@ -158,7 +156,6 @@ public class RoomsGenerator : MonoBehaviour
             cellSize = splitSize;  
 
             float rSize = (parentCellPos + parentCellSize) - (cellPos + cellSize);
-            Debug.Log("rSize "+ rSize);
             if(rSize <= 0){
                 cellSize += rSize;
             }

@@ -6,8 +6,13 @@ float4 SineSphere(float3 p){
     Sphere1.w = abs(sin(Sphere1.w * 2.0 + _CumTime )) - 0.6;
     // Sphere1.w = abs(sin(Sphere1.w * 2.0)) - 0.6;
     float4 Sphere2 = float4(float3(0.1,0.5,0.9), sdSphere(p - _sphere2.xyz, _sphere2.w));
-    float4 combine = opSS(Sphere1,Sphere2,_sphereIntersectSmooth);    
+    float4 combine = opSS(Sphere1,Sphere2,0.2);    
     return combine;    
+}
+
+float4 Scene00(float3 p){
+    float4 Sphere1 = float4(float3(1,0,1), sdSphere(p, 3.0));
+    return Sphere1;
 }
 
 float4 Scene01(float3 p){
@@ -104,3 +109,22 @@ float4 Scene04(float3 p){
     float4 scene = float4(float3(1.0,1.0,1.0),cone); 
     return combine;
 }  
+
+float4 distanceField(float3 p) {
+    // return SineSphere(p);
+    // return Corridor01(p);
+    
+    if(_SceneIndex == 0){
+        return Scene00(p);
+    }else if(_SceneIndex == 1){
+        return Scene01(p);
+    }else if(_SceneIndex == 2){
+        return Scene02(p);
+    }else if(_SceneIndex == 3){
+        return Scene03(p);
+    }else if(_SceneIndex == 4){
+        return Scene04(p);
+    }
+
+    return float4(float3(1.0,0.0,1.0), sdSphere(p, 4));
+}
