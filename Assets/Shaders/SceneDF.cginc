@@ -126,5 +126,5 @@ float4 distanceField(float3 p) {
         return Scene04(p);
     }
 
-    return float4(float3(1.0,0.0,1.0), sdSphere(p, 4));
+    return float4(float3(1.0,0.0,1.0), sdSphere(p, 1));
 }

@@ -25,7 +25,7 @@ public class RoomsGenerator : MonoBehaviour
     private float oldCameraFov = 0;
     public float maxRoomDepth = 4;
 
-    public float gridSize = 1;
+    private float gridSize = 1;
     public float gutter = 0.0f;
     public int cols = 4;
     public int rows;
@@ -67,6 +67,7 @@ public class RoomsGenerator : MonoBehaviour
 
     void CalcRows(){
         rows = (int)((float)cols/mainCamera.aspect);
+        gridSize = 6f/(float)cols;
     }
 
     void GenerateRooms()
