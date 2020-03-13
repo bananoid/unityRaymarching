@@ -1733,7 +1733,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 13.119884
-  field of view: 39.2
+  field of view: 10
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -2007,7 +2007,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6ad1360e30704d93b4d5550b0ea5772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 9883
+  seed: 9969
   roomBox: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1, type: 3}
   roomPlane: {fileID: 0}
   objects: []
@@ -2020,8 +2020,8 @@ MonoBehaviour:
   pointLight: {fileID: 632680737}
   sceneIndex: 0
   cameraShift: 0.278
-  cameraShiftAngle: 0.13
-  cameraShiftAngleDivergence: 18.85
+  cameraShiftAngle: -11.1
+  cameraShiftAngleDivergence: 132.4
 --- !u!4 &2005758700
 Transform:
   m_ObjectHideFlags: 0

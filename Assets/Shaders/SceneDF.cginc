@@ -19,21 +19,33 @@ float4 Scene00(float3 p){
     boxS.xy = _PlaneBox.zw * 0.5; 
     boxS.z = _RoomDepth;
 
-    // float3 boxP = float3(0,0,boxS.z);
-    // float3 boxCenter = float3(0,0,boxS.z*-1.0);
-    float3 boxCenter = float3(0,0,-boxS.z*0.5);
-
-    boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.5;
-    boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
-    boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
-
-    float sphere = sdSphere(p+boxCenter, 0.5);
     float box = sdOpenBox(p, boxS);
     
-    float combine = opU(box, sphere);
-    float3 col = float3(0.9,0.4,0.4);
+    float3 boxCenter = float3(0,0,-boxS.z*0.5);
 
-    return float4(col, combine);
+    boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.2;
+    boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
+    boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
+    float sphere1 = sdSphere(p+boxCenter, 0.5);
+    
+    boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.2;
+    boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
+    boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
+    float sphere2 = sdSphere(p+boxCenter, 0.5);
+    
+    float3 roomColor = float3(0.2,0.4,0.9) * 0.1;
+    float3 objColor = float3(0.9,0.4,0.4) * 2;
+
+    float4 combine = opUS(
+        float4(objColor,sphere1), 
+        float4(objColor,sphere2),
+        0.4);
+    combine = opUS(
+        combine, 
+        float4(roomColor,box),
+        0.0);    
+    
+    return combine;
 }
 
 float4 Scene01(float3 p){
