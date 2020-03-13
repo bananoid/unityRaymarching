@@ -2013,14 +2013,15 @@ MonoBehaviour:
   objects: []
   mainCamera: {fileID: 1517248415}
   roomDepthRange: {x: 1, y: 4}
-  gutter: 0.02
-  cols: 18
+  gutter: 0.01
+  cols: 12
   maxSplits: 2
   maxIteration: 4
   pointLight: {fileID: 632680737}
   sceneIndex: 0
-  rebuild: 1
-  spaceShift: 1
+  cameraShift: 0.278
+  cameraShiftAngle: 0.13
+  cameraShiftAngleDivergence: 18.85
 --- !u!4 &2005758700
 Transform:
   m_ObjectHideFlags: 0

@@ -2,7 +2,6 @@
 #define PHI (1.618033988749895)
 
 float4 _PlaneBox;
-float _SpaceShift;
 float _RoomDepth;
 
 // float4 SineSphere(float3 p){
@@ -24,7 +23,7 @@ float4 Scene00(float3 p){
     // float3 boxCenter = float3(0,0,boxS.z*-1.0);
     float3 boxCenter = float3(0,0,-boxS.z*0.5);
 
-    boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z;
+    boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.5;
     boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
     boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
 
@@ -32,7 +31,7 @@ float4 Scene00(float3 p){
     float box = sdOpenBox(p, boxS);
     
     float combine = opU(box, sphere);
-    float3 col = float3(1,0,0);
+    float3 col = float3(0.9,0.4,0.4);
 
     return float4(col, combine);
 }
@@ -133,10 +132,14 @@ float4 Scene04(float3 p){
     return combine;
 }  
 
+float _CameraShift;
+float _CameraShiftAngle;
+
 float4 distanceField(float3 p) {
-    p.xy -= _PlaneBox.xy * _SpaceShift;
-    // return SineSphere(p);
-    // return Corridor01(p);
+    p.xy -= _PlaneBox.xy;
+    
+    p.x += p.z * sin(_CameraShiftAngle) * _CameraShift;
+    p.y += p.z * cos(_CameraShiftAngle) * _CameraShift;
     
     if(_SceneIndex == 0){
         return Scene00(p);

@@ -44,8 +44,12 @@ public class RoomsGenerator : MonoBehaviour
 
     [Range(0,10)]
     public int sceneIndex = 0;
+
     [Range(0,1)]
-    public float spaceShift = 1;
+    public float cameraShift = 0;
+    public float cameraShiftAngle = 0;
+    public float cameraShiftAngleDivergence = 0;
+
     void Start()
     {
         rooms = new List<GameObject>();
@@ -121,7 +125,9 @@ public class RoomsGenerator : MonoBehaviour
     }
 
     void UpdateMaterial(){
+        int i = 0;
         foreach(GameObject room in rooms){
+            i++;
 
             GameObject plane = room.transform.GetChild(0)?.gameObject;
             
@@ -136,7 +142,6 @@ public class RoomsGenerator : MonoBehaviour
                 ));
                 planeMat.SetFloat("_RoomDepth", scale.z);
                 planeMat.SetInt("_SceneIndex", sceneIndex);
-                planeMat.SetFloat("_SpaceShift", spaceShift);
 
                 if(pointLight){
                     planeMat.SetVector("_PointLight", new Vector4(
@@ -147,6 +152,9 @@ public class RoomsGenerator : MonoBehaviour
                     ) );
                 } 
 
+                planeMat.SetFloat("_CameraShift", cameraShift);
+                float csa = cameraShiftAngle + cameraShiftAngleDivergence*i;
+                planeMat.SetFloat("_CameraShiftAngle", csa);
             }
         }
     }

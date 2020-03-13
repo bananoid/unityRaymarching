@@ -37,9 +37,9 @@ float softShadow(float3 ro, float3 rd, float mint, float maxt, float k){
 
 
 float AmbientOcclusion(float3 p, float3 n){
-    float _AoIntensity = 0.2; 
-    float _AoStepSize = 0.2; 
-    int _AoIterations = 30;
+    float _AoIntensity = 0.4; 
+    float _AoStepSize = 0.05; 
+    int _AoIterations = 15;
     
     float step = _AoStepSize;
     float ao = 0.0;
@@ -71,7 +71,6 @@ float3  Shading(float3 p, float3 n, float3 color){
     spherLight = 1 - smoothstep(0, _PointLight.w, spherLight);
 
     // result = (n *0.5 + 0.5);
-    result *= spherLight;
 
     // Directional Light
     // if(_LightIntensity > 0){
@@ -80,7 +79,8 @@ float3  Shading(float3 p, float3 n, float3 color){
     // }
 
     // float3 light = dot(-_LightDir, n) * _LightIntensity;
-    // result = result + light;
+    float3 light = dot(normalize(float3(1,1,0)), n) * .9;
+    result = result + max(light,0);
 
     // Shadows
     // if(_ShadowIntensity > 0){
@@ -96,21 +96,14 @@ float3  Shading(float3 p, float3 n, float3 color){
     // return float3(ao,ao,ao);
     // }
     
-
-    float depth = 1-(p.z)*0.1;
-    depth = clamp(0,1,depth);
-
-    float lines = sin(p.y * 20 + _Time * 100)*0.5+0.5;
+    float lines = sin(p.z * 20 + _Time * 100)*0.5+0.5;
     float lineSMin = 0.3;
     float lineSMax = 0.1;
     lines = smoothstep(lineSMin, lineSMax, lines);
     lines = clamp(0,1,lines);
-    // result = float3(lines,lines,lines);   
-    // result += lines*0.3;   
-    // result = lines;   
-
-    // result = float3(depth,depth,depth);   
+    // result *= lines;   
     
+    result *= spherLight;
     return result;
 }
 

@@ -12,13 +12,15 @@
         _PointLight ("Point Light", Vector) = (0,0,0,1)
         _PlaneBox ("Plane Box", Vector) = (0,0,1,1)
         _RoomDepth ("Room Depth", float) = 1
-        _SpaceShift ("SpaceShift", float) = 1
         // float _CumTime;
         // float4 _sphere1, _sphere2, _box1;
 
         // _AoIntensity ("Ao Intensity", float) = 0.01
         // _AoStepSize ("Ao StepSize", float) = 0.2
         // _AoIterations ("Ao Iterations", float) = 30
+
+        _CameraShift ("Camera Shift", float) = 0
+        _CameraShiftAngle ("Camera Shift Angle", float) = 0
     }
     SubShader
     {
