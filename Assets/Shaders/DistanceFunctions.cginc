@@ -1,65 +1,4 @@
-﻿// Plane
-float sdPlane(float3 p, float4 n){
-	return dot(p, n.xyz) + n.w;
-}
-
-
-// Sphere
-// s: radius
-float sdSphere(float3 p, float s)
-{
-	return length(p) - s;
-}
-
-// Box
-// b: size of box in x/y/z
-float sdBox(float3 p, float3 b)
-{
-	float3 d = abs(p) - b;
-	return min(max(d.x, max(d.y, d.z)), 0.0) +
-		length(max(d, 0.0));
-}
-
-//Round Box
-float sdRoundBox( in float3 p,  in float3 b, in float r){
-	float3 q =  abs(p) - b;
-	return min(max(q.x, max(q.y,q.z)),0.0) + length(max(q,0.0)) - r;
-} 
-
-//Gyroid
-float sdGyroid(in float3 p, in float scale){
-	p *= scale;
-    return dot(sin(p), cos(p.zxy * 0.35345))/scale;
-}
-// Cone
-float sdCone( float3 p, float2 c )
-{
-  // c is the sin/cos of the angle
-  float q = length(p.xy);
-  return dot(c,float2(q,p.z));
-}
-
-float sdRoundCone( in float3 p, in float r1, float r2, float h )
-{
-    float2 q = float2( length(p.xz), p.y );
-    
-    float b = (r1-r2)/h;
-    float a = sqrt(1.0-b*b);
-    float k = dot(q,float2(-b,a));
-    
-    if( k < 0.0 ) return length(q) - r1;
-    if( k > a*h ) return length(q-float2(0.0,h)) - r2;
-        
-    return dot(q, float2(a,b) ) - r1;
-}
-
-float sdTorus( float3 p, float2 t )
-{
-  float2 q = float2(length(p.xz)-t.x,p.y);
-  return length(q)-t.y;
-}
-
-// BOOLEAN OPERATORS //
+﻿// BOOLEAN OPERATORS //
 
 // Union
 float opU(float d1, float d2)
@@ -152,4 +91,84 @@ inline float DistanceFunctionTex3DFast(in float3 rayPosWS, in SDFrVolumeData dat
 	float sample = tex.SampleLevel(sdfr_sampler_linear_clamp, rayPosLocal, 0).r;
 	sample *= length(extents); //scale by magnitude of bound extent
 	return sample;
+}
+
+// SHAPES
+
+// Plane
+float sdPlane(float3 p, float4 n){
+	return dot(p, n.xyz) + n.w;
+}
+
+
+// Sphere
+// s: radius
+float sdSphere(float3 p, float s)
+{
+	return length(p) - s;
+}
+
+// Box
+// b: size of box in x/y/z
+float sdBox(float3 p, float3 b)
+{
+	float3 d = abs(p) - b;
+	return min(max(d.x, max(d.y, d.z)), 0.0) +
+		length(max(d, 0.0));
+}
+
+float sdOpenBox(float3 p, float3 b)
+{
+	float3 d = abs(p) - b;
+	float box = min(max(d.x, d.y), 0.0) +
+		length(max(d.xy, 0.0));
+
+	box = box * -1;
+	
+	float front = sdPlane(p, float4(0,0,-1,0));
+	box = max(box, front);
+	
+	// float back = sdPlane(p, float4(0,0,-1,b.z));
+	// box = min(-box, back);
+
+	return box;
+}
+
+//Round Box
+float sdRoundBox( in float3 p,  in float3 b, in float r){
+	float3 q =  abs(p) - b;
+	return min(max(q.x, max(q.y,q.z)),0.0) + length(max(q,0.0)) - r;
+} 
+
+//Gyroid
+float sdGyroid(in float3 p, in float scale){
+	p *= scale;
+    return dot(sin(p), cos(p.zxy * 0.35345))/scale;
+}
+// Cone
+float sdCone( float3 p, float2 c )
+{
+  // c is the sin/cos of the angle
+  float q = length(p.xy);
+  return dot(c,float2(q,p.z));
+}
+
+float sdRoundCone( in float3 p, in float r1, float r2, float h )
+{
+    float2 q = float2( length(p.xz), p.y );
+    
+    float b = (r1-r2)/h;
+    float a = sqrt(1.0-b*b);
+    float k = dot(q,float2(-b,a));
+    
+    if( k < 0.0 ) return length(q) - r1;
+    if( k > a*h ) return length(q-float2(0.0,h)) - r2;
+        
+    return dot(q, float2(a,b) ) - r1;
+}
+
+float sdTorus( float3 p, float2 t )
+{
+  float2 q = float2(length(p.xz)-t.x,p.y);
+  return length(q)-t.y;
 }

@@ -23,12 +23,12 @@ public class RoomsGenerator : MonoBehaviour
     public List<GameObject> objects;
     public Camera mainCamera;
     private float oldCameraFov = 0;
-    public float maxRoomDepth = 4;
+    public Vector2 roomDepthRange = new Vector2(1,4);
 
     private float gridSize = 1;
     public float gutter = 0.0f;
     public int cols = 4;
-    public int rows;
+    private int rows;
 
     public uint maxSplits = 12;
     public uint maxIteration = 3;
@@ -40,6 +40,13 @@ public class RoomsGenerator : MonoBehaviour
     private List<RoomData> roomsData;
 
     private RaymarchHelper raymarchHelper;
+    public Light pointLight;
+
+    [Range(0,10)]
+    public int sceneIndex = 0;
+    public bool rebuild = true;
+    [Range(0,1)]
+    public float spaceShift = 1;
     void Start()
     {
         rooms = new List<GameObject>();
@@ -51,7 +58,7 @@ public class RoomsGenerator : MonoBehaviour
     }   
     
     private void Update() {
-        if(oldSeed != seed && seed > 0){
+        if(oldSeed != seed && seed > 0 || rebuild){
             oldSeed = seed;
             random = new Unity.Mathematics.Random(seed + 2345831274); 
             CalcRows();
@@ -84,7 +91,7 @@ public class RoomsGenerator : MonoBehaviour
             });
         
         GameObject room;
-        float boundsOffset = 0.01f;
+        // float boundsOffset = 0.01f;
 
         RelaseAllRooms();
 
@@ -109,7 +116,29 @@ public class RoomsGenerator : MonoBehaviour
             room.transform.localScale = scale;
             room.transform.localPosition = position;
 
-            // Material mat = room.GetComponent<Renderer>().sharedMaterial;
+            GameObject plane = room.transform.GetChild(0)?.gameObject;
+            
+            if(plane){
+                Material planeMat = plane.GetComponent<Renderer>().material;
+                planeMat.SetVector("_PlaneBox", new Vector4(
+                    position.x,position.y,
+                    scale.x, scale.y
+                ));
+                planeMat.SetFloat("_RoomDepth", scale.z);
+                planeMat.SetInt("_SceneIndex", sceneIndex);
+                planeMat.SetFloat("_SpaceShift", spaceShift);
+
+                if(pointLight){
+                    planeMat.SetVector("_PointLight", new Vector4(
+                        pointLight.transform.position.x,
+                        pointLight.transform.position.y,
+                        pointLight.transform.position.z,
+                        pointLight.range
+                    ) );
+                } 
+
+            }
+            
             // mat.SetVector("minBounds", position - scale * .5f - Vector3.one * boundsOffset);
             // mat.SetVector("maxBounds", position + scale * .5f + Vector3.one * boundsOffset);
         }
@@ -169,7 +198,9 @@ public class RoomsGenerator : MonoBehaviour
                 roomData.h = cellSize;
             }
 
-            roomData.d = gridSize * random.NextFloat(1.0f, 4.0f);
+            roomData.d = random.NextFloat(
+                roomDepthRange.x, 
+                roomDepthRange.y);
 
             if(iteration < maxIteration){
                 GenerateRoomsData(roomData, iteration+1, rd);
@@ -207,7 +238,7 @@ public class RoomsGenerator : MonoBehaviour
         camDist = totW / (Mathf.Tan(radHFOV)*2.0f);
         
         mainCamera.transform.position = new Vector3(0,0,-camDist);
-        mainCamera.farClipPlane = camDist + gridSize * maxRoomDepth;
+        mainCamera.farClipPlane = camDist * roomDepthRange.y;
     }
 
     GameObject GetRoomFromPool(){

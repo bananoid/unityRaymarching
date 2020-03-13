@@ -10,9 +10,15 @@
         _SceneIndex ("Scene Index", int) = 0
         _CumTime ("Cum Time", float) = 0
         _PointLight ("Point Light", Vector) = (0,0,0,1)
-        
+        _PlaneBox ("Plane Box", Vector) = (0,0,1,1)
+        _RoomDepth ("Room Depth", float) = 1
+        _SpaceShift ("SpaceShift", float) = 1
         // float _CumTime;
         // float4 _sphere1, _sphere2, _box1;
+
+        // _AoIntensity ("Ao Intensity", float) = 0.01
+        // _AoStepSize ("Ao StepSize", float) = 0.2
+        // _AoIterations ("Ao Iterations", float) = 30
     }
     SubShader
     {
@@ -64,7 +70,8 @@
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.ro = _WorldSpaceCameraPos; 
-                o.hitPos = mul(v.vertex, unity_ObjectToWorld);
+                o.hitPos = mul(unity_ObjectToWorld, v.vertex);
+                // o.hitPos = mul(v.vertex, unity_WorldToObject);
                 return o;
             }
 
@@ -82,7 +89,7 @@
                 // return fixed4(result.xyz,1.0);
                 
                 // float3 col = 0;
-                // col = rayDirection;
+                // col.xy = _PlaneBox.xy;
                 // return fixed4(col,1.0);
                 
                 return fixed4(result.xyz,1.0);

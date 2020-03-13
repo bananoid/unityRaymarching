@@ -1,5 +1,6 @@
 float3 getNormal(float3 p, float d ){
-    const float2 offset = float2(0.03, 0.0);
+    // const float2 offset = float2(0.03, 0.0);
+    const float2 offset = float2(0.001, 0.0);
     float3 n = float3(
         distanceField(p + offset.xyy).w - d,
         distanceField(p + offset.yxy).w - d,
@@ -33,11 +34,13 @@ float softShadow(float3 ro, float3 rd, float mint, float maxt, float k){
     return result;
 }
 
-uniform float _AoStepSize; 
-uniform float _AoIntensity; 
-uniform int _AoIterations;
+
 
 float AmbientOcclusion(float3 p, float3 n){
+    float _AoIntensity = 0.2; 
+    float _AoStepSize = 0.2; 
+    int _AoIterations = 30;
+    
     float step = _AoStepSize;
     float ao = 0.0;
     float dist;
@@ -45,20 +48,23 @@ float AmbientOcclusion(float3 p, float3 n){
         dist = step * i;
         ao += max(0.0, (dist - distanceField(p + n * dist).w) / dist);  
     }
-    return 1.0 - ao * _AoIntensity;
+    return 1.0 - ao * _AoIntensity/_AoIterations;
 }
 
 //Light
-uniform float3 _LightDir, _LightCol;
-uniform float _LightIntensity;
-uniform fixed4 _ShadowColor;
-uniform float2 _ShadowDistance;
-uniform float _ShadowIntensity, _ShadowPenumbra;
+float3 _LightDir, _LightCol;
+float _LightIntensity;
+fixed4 _ShadowColor;
+float2 _ShadowDistance;
+float _ShadowIntensity, _ShadowPenumbra;
 
-float3  Shading(float3 p, float3 n, fixed3 color){
+float3  Shading(float3 p, float3 n, float3 color){
+    
     //Diffuse color;
-    // float3 result = color;
-    float3 result = float3(0.8,0.4,0.4) * 0.7;
+    float3 result = color;
+    // float3 result = float3(0.8,0.4,0.4) * 0.7;
+    // float3 result = float3(0.3,0.8,0.6) * 0.7;
+    // float3 result = float3(1,0,0);
     // float3 result = n.xxx + n.yyy * 0.5 + 0.5;
     
     float spherLight = distance(p, _PointLight.xyz);
@@ -73,8 +79,8 @@ float3  Shading(float3 p, float3 n, fixed3 color){
     //     result *= light;
     // }
 
-    float3 light = dot(-_LightDir, n) * _LightIntensity;
-    result = result + light;
+    // float3 light = dot(-_LightDir, n) * _LightIntensity;
+    // result = result + light;
 
     // Shadows
     // if(_ShadowIntensity > 0){
@@ -85,9 +91,11 @@ float3  Shading(float3 p, float3 n, fixed3 color){
 
     //Ambient Occlusion
     // if(_AoIntensity > 0){
-    //     float ao = AmbientOcclusion(p,n);
-    //     result *= ao + _ShadowColor * _AoIntensity;
+    float ao = AmbientOcclusion(p,n);
+    result *= ao ;
+    // return float3(ao,ao,ao);
     // }
+    
 
     float depth = 1-(p.z)*0.1;
     depth = clamp(0,1,depth);
@@ -129,6 +137,7 @@ fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
             float3 n = getNormal(p, d.w);
             float3 s = Shading(p, n, d.rgb);
             result = fixed4(s,1);
+            // result = fixed4(n*0.5 + 0.5,1);
             break;
         }
 

@@ -1,18 +1,40 @@
 #define PI 3.14159265359
 #define PHI (1.618033988749895)
 
-float4 SineSphere(float3 p){
-    float4 Sphere1 = float4(float3(0.5,0,1), sdSphere(p - _sphere1.xyz, _sphere1.w));
-    Sphere1.w = abs(sin(Sphere1.w * 2.0 + _CumTime )) - 0.6;
-    // Sphere1.w = abs(sin(Sphere1.w * 2.0)) - 0.6;
-    float4 Sphere2 = float4(float3(0.1,0.5,0.9), sdSphere(p - _sphere2.xyz, _sphere2.w));
-    float4 combine = opSS(Sphere1,Sphere2,0.2);    
-    return combine;    
-}
+float4 _PlaneBox;
+float _SpaceShift;
+float _RoomDepth;
+
+// float4 SineSphere(float3 p){
+//     float4 Sphere1 = float4(float3(0.5,0,1), sdSphere(p - _sphere1.xyz, _sphere1.w));
+//     Sphere1.w = abs(sin(Sphere1.w * 2.0 + _CumTime )) - 0.6;
+//     // Sphere1.w = abs(sin(Sphere1.w * 2.0)) - 0.6;
+//     float4 Sphere2 = float4(float3(0.1,0.5,0.9), sdSphere(p - _sphere2.xyz, _sphere2.w));
+//     float4 combine = opSS(Sphere1,Sphere2,0.2);    
+//     return combine;    
+// }
 
 float4 Scene00(float3 p){
-    float4 Sphere1 = float4(float3(1,0,1), sdSphere(p, 3.0));
-    return Sphere1;
+    
+    float3 boxS = 0;
+    boxS.xy = _PlaneBox.zw * 0.5; 
+    boxS.z = _RoomDepth;
+
+    // float3 boxP = float3(0,0,boxS.z);
+    // float3 boxCenter = float3(0,0,boxS.z*-1.0);
+    float3 boxCenter = float3(0,0,-boxS.z*0.5);
+
+    boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z;
+    boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
+    boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
+
+    float sphere = sdSphere(p+boxCenter, 0.5);
+    float box = sdOpenBox(p, boxS);
+    
+    float combine = opU(box, sphere);
+    float3 col = float3(1,0,0);
+
+    return float4(col, combine);
 }
 
 float4 Scene01(float3 p){
@@ -49,17 +71,18 @@ float4 Scene03(float3 p){
     float plane = sdPlane(p, float4(0,0,-1,0.3));
     // float box = sdBox(p, float3(10000,10000,5));
 
-    float scale = 1.;
-    p.y += _Time * 10.0;
+    float scale = 8.;
+    p.y += _Time * 1.02;
     p.z += _Time * 1.3450;
     p += _sphere2.xyz;
 
-    // p.y *= 0.5;
-    float gyroid = abs(sdGyroid(p,scale)) - 0.1;
+    p.y *= 0.5;
+    float gyroid = abs(sdGyroid(p,scale)) - 0.07;
     
     float combine = max(plane, gyroid);
 
-    float3 color = float3(1,0,1);
+    float3 color = float3(1,1,1);
+    color += smoothstep(0.4, 0.6,gyroid);
     return float4(color, combine);
 }
 
@@ -111,6 +134,7 @@ float4 Scene04(float3 p){
 }  
 
 float4 distanceField(float3 p) {
+    p.xy -= _PlaneBox.xy * _SpaceShift;
     // return SineSphere(p);
     // return Corridor01(p);
     
@@ -126,5 +150,5 @@ float4 distanceField(float3 p) {
         return Scene04(p);
     }
 
-    return float4(float3(1.0,0.0,1.0), sdSphere(p, 1));
+    return float4(float3(1.0,0.0,1.0), sdSphere(p, 2.5));
 }

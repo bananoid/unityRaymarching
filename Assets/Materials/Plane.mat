@@ -56,6 +56,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AoIntensity: 1.07
+    - _AoIterations: 11.73
+    - _AoStepSize: -2.56
     - _BumpScale: 1
     - _CumTime: 12.8
     - _Cutoff: 0.5
@@ -64,15 +67,17 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MaxDistance: 100
-    - _MaxIterations: 200
+    - _MaxDistance: 1000
+    - _MaxIterations: 300
     - _Metallic: 0
     - _MinDistance: 0.001
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _SceneIndex: 3.46
+    - _RoomDepth: 1
+    - _SceneIndex: 6.87
     - _SmoothnessTextureChannel: 0
+    - _SpaceShift: 1
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
@@ -80,4 +85,5 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _PointLight: {r: 0, g: 0, b: -0.1, a: 10.28}
+    - _PlaneBox: {r: 1.78, g: 0, b: 9.82, a: 8.8}
+    - _PointLight: {r: 0, g: 0, b: -1.69, a: 3.76}
