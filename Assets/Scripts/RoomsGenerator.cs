@@ -44,7 +44,6 @@ public class RoomsGenerator : MonoBehaviour
 
     [Range(0,10)]
     public int sceneIndex = 0;
-    public bool rebuild = true;
     [Range(0,1)]
     public float spaceShift = 1;
     void Start()
@@ -58,18 +57,21 @@ public class RoomsGenerator : MonoBehaviour
     }   
     
     private void Update() {
-        if(oldSeed != seed && seed > 0 || rebuild){
+        if(oldSeed != seed && seed > 0){
             oldSeed = seed;
             random = new Unity.Mathematics.Random(seed + 2345831274); 
             CalcRows();
             GenerateRooms();
             UpdateCameraPosizion();
         }
+        
         if(oldCameraFov != mainCamera.fieldOfView){
             oldCameraFov = mainCamera.fieldOfView;
-            CalcRows();
+            CalcRows(); 
             UpdateCameraPosizion();
         }
+
+        UpdateMaterial();
     }
 
     void CalcRows(){
@@ -115,9 +117,17 @@ public class RoomsGenerator : MonoBehaviour
 
             room.transform.localScale = scale;
             room.transform.localPosition = position;
+        }
+    }
+
+    void UpdateMaterial(){
+        foreach(GameObject room in rooms){
 
             GameObject plane = room.transform.GetChild(0)?.gameObject;
             
+            Vector3 scale = room.transform.localScale;
+            Vector3 position = room.transform.localPosition;
+
             if(plane){
                 Material planeMat = plane.GetComponent<Renderer>().material;
                 planeMat.SetVector("_PlaneBox", new Vector4(
@@ -138,11 +148,7 @@ public class RoomsGenerator : MonoBehaviour
                 } 
 
             }
-            
-            // mat.SetVector("minBounds", position - scale * .5f - Vector3.one * boundsOffset);
-            // mat.SetVector("maxBounds", position + scale * .5f + Vector3.one * boundsOffset);
         }
-
     }
 
     List<RoomData> GenerateRoomsData(

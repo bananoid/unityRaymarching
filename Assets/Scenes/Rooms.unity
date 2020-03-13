@@ -2050,8 +2050,7 @@ MonoBehaviour:
   _profile: {fileID: 11400000, guid: 63fd254c9318f443bb87871809fc576d, type: 2}
   audioPeakIntensity: 10
   speed: 1
-  raymarchPostProcess: {fileID: 2327189889564094119, guid: 63fd254c9318f443bb87871809fc576d,
-    type: 2}
+  raymarchPostProcess: {fileID: 0}
 --- !u!1 &2010068420 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7465190233194349034, guid: b342373f9fc0e4d0aa84c9ad44e12df6,

@@ -165,7 +165,6 @@ MonoBehaviour:
   - {fileID: -1655163976746986091}
   - {fileID: 1292558271526035133}
   - {fileID: 2979074742680933761}
-  - {fileID: 2327189889564094119}
 --- !u!114 &1292558271526035133
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -194,67 +193,6 @@ MonoBehaviour:
   lumContrib:
     overrideState: 1
     value: 0
---- !u!114 &2327189889564094119
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e9bf7de8fe5d473689e3363d6de983c, type: 3}
-  m_Name: RaymarchPostProcess
-  m_EditorClassIdentifier: 
-  active: 0
-  enabled:
-    overrideState: 1
-    value: 1
-  cumTime:
-    overrideState: 1
-    value: 0.64
-  sceneIndex:
-    overrideState: 1
-    value: 3
-  maxIterations:
-    overrideState: 1
-    value: 200
-  maxDistance:
-    overrideState: 1
-    value: 100
-  minDistance:
-    overrideState: 1
-    value: 0.001
-  shadowIntensity:
-    overrideState: 0
-    value: 2.56
-  shadowColor:
-    overrideState: 0
-    value: {r: 0, g: 0, b: 0, a: 1}
-  shadowDistance:
-    overrideState: 0
-    value: {x: 0.1, y: 100}
-  shadowPenumbra:
-    overrideState: 0
-    value: 1.5
-  aoIntensity:
-    overrideState: 0
-    value: 1
-  aoStepSize:
-    overrideState: 0
-    value: 6
-  aoIterations:
-    overrideState: 0
-    value: 5
-  sphere1:
-    overrideState: 1
-    value: {x: 0, y: -0.5, z: 3.24, w: 10.97}
-  sphere2:
-    overrideState: 1
-    value: {x: 5.81, y: 5.15, z: 1.5, w: 0.82}
-  sphereIntersectSmooth:
-    overrideState: 1
-    value: 0.46
 --- !u!114 &2979074742680933761
 MonoBehaviour:
   m_ObjectHideFlags: 3
