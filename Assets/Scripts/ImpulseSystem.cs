@@ -38,7 +38,7 @@ public class ImpulseSystem : JobComponentSystem
             float a = math.PI * (k * x - 1.0f);
             return math.sin(a) / a;
         }
-
+        public float deltaTime;
         public unsafe void Execute(
             ref PhysicsCollider collider,
             ref ImpulseData radius,
@@ -49,7 +49,7 @@ public class ImpulseSystem : JobComponentSystem
 
             SphereCollider* scPtr = (SphereCollider*)collider.ColliderPtr;
 
-            radius.Time += radius.Speed;
+            radius.Time += radius.Speed * deltaTime;
 
             float t = QuaImpulse(100f, radius.Time);
             radius.Value = math.lerp( radius.End, radius.Start, t);
@@ -61,22 +61,16 @@ public class ImpulseSystem : JobComponentSystem
             sphereGeometry.Radius = radius.Value;
             scPtr->Geometry = sphereGeometry;
 
-            scale = new Scale() { Value = radius.Value * 1f };
+            scale = new Scale() { Value = radius.Value * 2f };
         }
     }
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
-    {
-        JobHandle job = new ImpulseJob().Schedule(this, inputDeps);
-
+    {       
+        JobHandle job = new ImpulseJob { 
+            deltaTime = UnityEngine.Time.deltaTime
+        }.Schedule(this, inputDeps);
+    
         return job;
-    }
-}
-
-public class ImpulseTriggerSystem : ComponentSystem
-{
-    protected override void OnUpdate()
-    {
-        
     }
 }

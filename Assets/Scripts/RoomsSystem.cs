@@ -62,20 +62,23 @@ public class RoomsSystem : ComponentSystem
 
             if(random.NextFloat() > 0) { 
                 float startVal = random.NextFloat(1.0f, 10.0f) * 5/count;
+                startVal = 0.3f;
                 float endVal = startVal * 0.6f;
+                // endVal = startVal;
+                 
 
                 EntityManager.AddComponentData(obj, new ImpulseData
                 {
                     Start = startVal,
                     End = endVal,
                     Time = 0f,
-                    Speed = 0.03f
+                    Speed = 2f
                 });
 
 
                 EntityManager.AddComponentData(obj, new Scale
                 {
-                    Value = startVal * 2f,
+                    Value = startVal,
                 });
 
                 // EntityManager.AddSharedComponentData(obj, new TimeData)
