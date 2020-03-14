@@ -61,7 +61,7 @@ public class ImpulseSystem : JobComponentSystem
             sphereGeometry.Radius = radius.Value;
             scPtr->Geometry = sphereGeometry;
 
-            scale = new Scale() { Value = radius.Value * 2f };
+            scale = new Scale() { Value = radius.Value * 1f };
         }
     }
 

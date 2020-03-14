@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.AI;
-using UnityEngine.UIElements;
 using Unity.Mathematics;
+using Unity.Entities;
 
-public struct RoomData {
+public struct RoomData : IComponentData {
     public float w,h,x,y,d;
     public int id;
 }
 public class RoomsGenerator : MonoBehaviour
-{
+{   
+    public bool roomPlaneEnabled = true;
     private uint oldSeed = 0;
     [SerializeField]
     // [ShowProperty]
     private uint seed = 1;
 
-    public GameObject roomBox;
     public GameObject roomPlane;
     public List<GameObject> objects;
     public Camera mainCamera;
@@ -50,6 +46,8 @@ public class RoomsGenerator : MonoBehaviour
     public float cameraShiftAngle = 0;
     public float cameraShiftAngleDivergence = 0;
 
+
+
     void Start()
     {
         rooms = new List<GameObject>();
@@ -57,7 +55,7 @@ public class RoomsGenerator : MonoBehaviour
         roomsData = new List<RoomData>();
 
         raymarchHelper = GetComponent<RaymarchHelper>();
-        roomBox.SetActive(false);
+        roomPlane.SetActive(false);
     }   
     
     private void Update() {
@@ -101,27 +99,27 @@ public class RoomsGenerator : MonoBehaviour
 
         RelaseAllRooms();
 
-        foreach(RoomData rd in roomsData){
-            RoomData roomData = rd; 
-            // roomData.x += gutter;
-            // roomData.y += gutter;
-            // roomData.w -= gutter * 2;
-            // roomData.h -= gutter * 2;
+        if(roomPlaneEnabled){
+            foreach(RoomData rd in roomsData){
+                RoomData roomData = rd; 
 
-            room = GetRoomFromPool();    
-            room.transform.parent = transform;
-            room.SetActive(true);
+                room = GetRoomFromPool();    
+                room.transform.parent = transform;
+                room.SetActive(true);
 
-            Vector3 scale = new Vector3(roomData.w, roomData.h, roomData.d);
-            float z = roomData.d * 0.5f;
-            Vector3 position = new Vector3(roomData.x,roomData.y, z);
-            
-            position.x -= totW * 0.5f - roomData.w * 0.5f;
-            position.y -= totH * 0.5f - roomData.h * 0.5f;
+                Vector3 scale = new Vector3(roomData.w, roomData.h, roomData.d);
+                float z = roomData.d * 0.5f;
+                Vector3 position = new Vector3(roomData.x,roomData.y, z);
+                
+                position.x -= totW * 0.5f - roomData.w * 0.5f;
+                position.y -= totH * 0.5f - roomData.h * 0.5f;
 
-            room.transform.localScale = scale;
-            room.transform.localPosition = position;
+                room.transform.localScale = scale;
+                room.transform.localPosition = position;
+            }
         }
+
+        GenerateRoomEntity();
     }
 
     void UpdateMaterial(){
@@ -258,7 +256,7 @@ public class RoomsGenerator : MonoBehaviour
     GameObject GetRoomFromPool(){
         GameObject obj;
         if(roomsPool.Count == 0){
-            obj = Instantiate(roomBox);
+            obj = Instantiate(roomPlane);
         }else{
             obj = roomsPool[0];
             roomsPool.RemoveAt(0);
@@ -272,5 +270,16 @@ public class RoomsGenerator : MonoBehaviour
             roomsPool.Add(obj);
         }
         rooms = new List<GameObject>();
+    }
+
+    //ECS
+    void GenerateRoomEntity(){
+        EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+
+        var roomsSystem = World
+            .DefaultGameObjectInjectionWorld
+            .GetOrCreateSystem<RoomsSystem>();
+
+        roomsSystem.GenerateRooms(roomsData);
     }
 }

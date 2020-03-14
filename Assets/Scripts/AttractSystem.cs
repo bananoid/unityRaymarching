@@ -34,6 +34,8 @@ public class AttractSystem : JobComponentSystem
             float3 vortexForce = math.cross(obj.up, diff);
             
             float distSqrd = math.lengthsq(diff);
+            // float deltaTime = UnityEngine.Time.deltaTime;
+
             if (distSqrd < par.maxDistanceSqrd && distSqrd > par.minDistanceSqrd)
             {
                 // Alter linear velocity
@@ -41,6 +43,9 @@ public class AttractSystem : JobComponentSystem
                     obj.weight * par.vortexStrength * vortexForce * (1 / distSqrd)
                     +
                     obj.weight * par.strength * (diff / math.sqrt(distSqrd));
+                float magnitudo =  math.length(velocity.Linear);
+                magnitudo = math.min(magnitudo,2);
+                velocity.Linear = math.normalize(velocity.Linear) * magnitudo;
             }
         }).Schedule(inputDeps);
 
