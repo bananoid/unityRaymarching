@@ -7,6 +7,8 @@ public class AttractController : MonoBehaviour
     public float minDistance = 0.1f;
     public float strength = 1;
     public float vortexStrength = 1;
+    public float maxSpeed = 2;
+
     void Update()
     {
         var vortex = World
@@ -18,6 +20,7 @@ public class AttractController : MonoBehaviour
         vortex.parameters.minDistanceSqrd = minDistance * minDistance;
         vortex.parameters.strength = strength;
         vortex.parameters.vortexStrength = vortexStrength;
+        vortex.parameters.maxSpeed = maxSpeed;
     }
 }
   

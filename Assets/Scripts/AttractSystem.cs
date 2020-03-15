@@ -14,6 +14,7 @@ public class AttractSystem : JobComponentSystem
         public float minDistanceSqrd;
         public float strength;
         public float vortexStrength;
+        public float maxSpeed;
     }
 
     public Parameters parameters;
@@ -21,7 +22,7 @@ public class AttractSystem : JobComponentSystem
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         var par = this.parameters;
-
+        var deltaTime = UnityEngine.Time.deltaTime * 100; 
         var job = Entities.ForEach(
         (
             ref RoomObjectComponent obj,
@@ -39,12 +40,12 @@ public class AttractSystem : JobComponentSystem
             if (distSqrd < par.maxDistanceSqrd && distSqrd > par.minDistanceSqrd)
             {
                 // Alter linear velocity
-                velocity.Linear +=
+                velocity.Linear += (
                     obj.weight * par.vortexStrength * vortexForce * (1 / distSqrd)
                     +
-                    obj.weight * par.strength * (diff / math.sqrt(distSqrd));
+                    obj.weight * par.strength * (diff / math.sqrt(distSqrd))) * deltaTime;
                 float magnitudo =  math.length(velocity.Linear);
-                magnitudo = math.min(magnitudo,2);
+                magnitudo = math.min(magnitudo, par.maxSpeed);
                 velocity.Linear = math.normalize(velocity.Linear) * magnitudo;
             }
         }).Schedule(inputDeps);
