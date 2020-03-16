@@ -154,12 +154,13 @@ Shader "Unlit/VJ"
                 //     step( i.worldPos.y, maxBounds.y) *    
                 //     step( minBounds.y, i.worldPos.y) *
                 //     step( i.worldPos.z, maxBounds.z) *    
-                //     step( minBounds.z, i.worldPos.z);
-
-                // col.rgb *= boundsMask * facing;
-                // if(!facing){
+                //     step( minBounds.z, i.worldPos.z);                
+                // if(boundsMask == 0){
                 //     discard;
                 // }    
+    
+                return col * light;
+            
 
                 return col * light;
             }
