@@ -163,7 +163,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 490289402}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.54, y: 0, z: 1.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -561,7 +561,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2005758700}
   - component: {fileID: 2005758699}
-  - component: {fileID: 2005758701}
   m_Layer: 0
   m_Name: RoomsGenerator
   m_TagString: Untagged
@@ -581,20 +580,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6ad1360e30704d93b4d5550b0ea5772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomPlaneEnabled: 0
+  roomPlaneEnabled: 1
   seed: 9969
   roomPlane: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1,
     type: 3}
   objects: []
   mainCamera: {fileID: 1517248415}
   roomDepthRange: {x: 1, y: 4}
-  gutter: 0.01
+  gutter: 0.05
   cols: 12
   maxSplits: 2
   maxIteration: 4
   pointLight: {fileID: 632680737}
   sceneIndex: 0
-  cameraShift: 0.278
+  cameraShift: 0
   cameraShiftAngle: -11.1
   cameraShiftAngleDivergence: 132.4
   roomBoxPrefab: {fileID: 0}
@@ -618,19 +617,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2005758701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2005758698}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b16a798590af40d4855e73d4fb53a3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _profile: {fileID: 0}
-  audioPeakIntensity: 10
-  speed: 1
-  raymarchPostProcess: {fileID: 0}

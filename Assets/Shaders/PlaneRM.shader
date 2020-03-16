@@ -24,16 +24,22 @@
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Overlay" "Queue"="Overlay"}
         LOD 100
+        Cull Off ZWrite Off ZTest Always
 
+        GrabPass { "_GrabTexture" }
         Pass
         {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 3.5
 
             #include "UnityCG.cginc"
+
+            sampler2D _GrabTexture;
+            sampler2D_float _CameraDepthTexture;
 
             int _MaxIterations;
             float _MaxDistance;
@@ -61,6 +67,7 @@
                 float4 vertex : SV_POSITION;
                 float3 ro: TEXCOORD1;
                 float3 hitPos: TEXCOORD2;
+                float4 grabUv: TEXCOORD3;
             };
 
             sampler2D _MainTex;
@@ -73,28 +80,34 @@
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.ro = _WorldSpaceCameraPos; 
                 o.hitPos = mul(unity_ObjectToWorld, v.vertex);
-                // o.hitPos = mul(v.vertex, unity_WorldToObject);
+                o.grabUv = UNITY_PROJ_COORD(ComputeGrabScreenPos(o.vertex));
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float depth = 1;    
-
-                // float2 uv = i.uv-.5;
                 float3 rayOrigin = i.ro;
                 float3 rayDirection = normalize(i.hitPos - rayOrigin);
-                float4 result = raymarching(rayOrigin, rayDirection, depth);
-
-                // result.xyz =  lerp(col.xyz,result.xyz,result.w);
-
-                // return fixed4(result.xyz,1.0);
                 
-                // float3 col = 0;
-                // col.xy = _PlaneBox.xy;
-                // return fixed4(col,1.0);
+                float depth = tex2Dproj(_CameraDepthTexture, i.grabUv);
+                depth = Linear01Depth(depth);
+                // depth *= length(rayDirection);
+                // depth = distance(depth, rayOrigin);
+
+                float4 rmResult = raymarching(rayOrigin, rayDirection, depth);
+            
+                float4 col = tex2Dproj(_GrabTexture, i.grabUv);
                 
-                return fixed4(result.xyz,1.0);
+                // col = float4(1,1,1,1);
+
+                // col.rg = i.grabUv.zw;
+                // col.xyz = depth; 
+                // col.xyz = rayDirection;
+                // col.xyz = rmResult.w;
+                
+                col.xyz = lerp(col.xyz,rmResult.xyz, rmResult.w);
+
+                return col;
             }
             ENDCG
         }

@@ -80,6 +80,7 @@ Shader "Unlit/VJ"
                 float3 worldPos : TEXCOORD2;
                 float3 localPos : TEXCOORD3;
                 float3 normal : NORMAL;
+                float4 grabUv : TEXCOORD4;
             };
 
             v2f vert (appdata v)
@@ -91,6 +92,7 @@ Shader "Unlit/VJ"
                 o.localPos = v.vertex;
                 o.normal = v.normal;
                 o.uv = v.uv;
+                o.grabUv = UNITY_PROJ_COORD(ComputeGrabScreenPos(o.vertex));
                 return o;
             }
 
@@ -146,7 +148,6 @@ Shader "Unlit/VJ"
                 col.rgb += lines * (1-i.localPos.z*2) * lineIntesity;
                 // col.rgb *= gradient;
 
-
                 //Bounds
                 // float boundsMask =
                 //     step( i.worldPos.x, maxBounds.x) *    
@@ -158,10 +159,7 @@ Shader "Unlit/VJ"
                 // if(boundsMask == 0){
                 //     discard;
                 // }    
-    
-                return col * light;
-            
-
+                
                 return col * light;
             }
             ENDCG

@@ -23,9 +23,9 @@ float4 Scene00(float3 p){
     
     float3 boxCenter = float3(0,0,-boxS.z*0.5);
 
-    boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.2;
-    boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
-    boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
+    // boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.2;
+    // boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
+    // boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
     float sphere1 = sdSphere(p+boxCenter, 0.5);
     
     boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.2;

@@ -347,7 +347,8 @@ public class RoomsGenerator : MonoBehaviour
             entityManager.SetComponentData(obj,
                 new RoomObjectComponent
                 {
-                    weight = random.NextFloat(0.3f, 2f),
+                    // weight = random.NextFloat(0.3f, 2f),
+                    weight = 1,
                     up = math.up()
                 }
             );
@@ -364,7 +365,8 @@ public class RoomsGenerator : MonoBehaviour
                  
             entityManager.AddComponentData(obj, new ImpulseData
             {
-                Start = scale * 1.5f,
+                // Start = scale * 1.5f,
+                Start = scale,
                 End = scale,
                 Time = 0f,
                 Speed = 2f

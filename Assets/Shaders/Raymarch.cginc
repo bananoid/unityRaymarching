@@ -78,9 +78,8 @@ float3  Shading(float3 p, float3 n, float3 color){
     //     result *= light;
     // }
 
-    // float3 light = dot(-_LightDir, n) * _LightIntensity;
-    float3 light = dot(normalize(float3(1,1,0)), n) * .9;
-    result = result + max(light,0);
+    // float3 light = dot(normalize(float3(1,1,0)), n) * .9;
+    // result = result + max(light,0);
 
     // Shadows
     // if(_ShadowIntensity > 0){
@@ -116,7 +115,6 @@ fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
         // if (t > _MaxDistance || t >= depth)
         if (t > _MaxDistance)
         {
-            // result = float4(rayDirection, 0); // color backround from ray direction for debugging
             result = float4(0, 0, 0, 0);
             break;
             // discard;
@@ -136,6 +134,5 @@ fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
 
         t += d.w;
     }
-
     return result;
 }
