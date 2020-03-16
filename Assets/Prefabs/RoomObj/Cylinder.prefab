@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4431184828178910792
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5204356065843496504, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_Name
+      value: Cylinder
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496506, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -2144099104942900668, guid: b342373f9fc0e4d0aa84c9ad44e12df6,
+        type: 3}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5204356065843496509, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_ShapeType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_PrimitiveOrientation.Value.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_PrimitiveSize.x
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_PrimitiveSize.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_Capsule.Radius
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_Cylinder.Radius
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_ConvexHullGenerationParameters.m_BevelRadius
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_Capsule.Height
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_Capsule.Axis
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_SphereRadius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8960300005576280067, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f,
+        type: 3}
+      propertyPath: m_CylinderSideCount
+      value: 10
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f, type: 3}

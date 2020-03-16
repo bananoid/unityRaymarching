@@ -2,6 +2,7 @@
 using UnityEngine;
 using Unity.Mathematics;
 using Unity.Entities;
+using Unity.Transforms;
 
 public struct RoomData : IComponentData {
     public float w,h,x,y,d;
@@ -46,16 +47,21 @@ public class RoomsGenerator : MonoBehaviour
     public float cameraShiftAngle = 0;
     public float cameraShiftAngleDivergence = 0;
 
+    public GameObject roomBoxPrefab;
 
 
     void Start()
     {
+        random = new Unity.Mathematics.Random(seed + 2345831274); 
+
         rooms = new List<GameObject>();
         roomsPool = new List<GameObject>();
         roomsData = new List<RoomData>();
 
         raymarchHelper = GetComponent<RaymarchHelper>();
         roomPlane.SetActive(false);
+
+        InitializeObjEntities();
     }   
     
     private void Update() {
@@ -272,14 +278,103 @@ public class RoomsGenerator : MonoBehaviour
         rooms = new List<GameObject>();
     }
 
+    private EntityManager entityManager;
+    private BlobAssetStore blobAssetStore;
+    public List<GameObject> objPrefabs;
+    private List<Entity> masterObjsEntities;
+    private List<float> masterObjsScale;
+
+    private List<Entity> spawnedObjs;
+    void InitializeObjEntities(){
+        spawnedObjs = new List<Entity>();
+
+        var world = World.DefaultGameObjectInjectionWorld;
+        entityManager = world.EntityManager;
+        blobAssetStore = new BlobAssetStore();
+        var settings = GameObjectConversionSettings.FromWorld(world, blobAssetStore);
+
+        masterObjsEntities = new List<Entity>();
+        masterObjsScale = new List<float>();
+        
+        int variationsCount = 10;
+        foreach(var obj in objPrefabs){
+            for(int i=0; i<variationsCount; i++){
+
+                var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(obj,settings);
+                masterObjsEntities.Add(entity);
+
+                float scale = random.NextFloat(1.0f, 10.0f) * 0.04f;
+                masterObjsScale.Add(scale);
+            }
+        }
+    }
+
+    private void OnDestroy() {
+        blobAssetStore.Dispose();
+    }
+
     //ECS
     void GenerateRoomEntity(){
         EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-        var roomsSystem = World
-            .DefaultGameObjectInjectionWorld
-            .GetOrCreateSystem<RoomsSystem>();
+        // var roomsSystem = World
+        //     .DefaultGameObjectInjectionWorld
+        //     .GetOrCreateSystem<RoomsSystem>();
+        // roomsSystem.GenerateRooms(roomsData);
 
-        roomsSystem.GenerateRooms(roomsData);
+        float spawnRadius = 1;
+
+        foreach(var e in spawnedObjs){
+            entityManager.DestroyEntity(e);
+        }
+
+        int count = 10;
+        int rndInx;
+        
+        if(masterObjsEntities.Count==0){
+            return;
+        }
+
+        for(int i=0; i<count; i++){
+            rndInx = random.NextInt(masterObjsEntities.Count);
+            
+            var masterObj = masterObjsEntities[rndInx];
+            var scale = masterObjsScale[rndInx];
+
+            var obj = entityManager.Instantiate(masterObj);
+            spawnedObjs.Add(obj);
+
+            entityManager.SetComponentData(obj,
+                new RoomObjectComponent
+                {
+                    weight = random.NextFloat(0.3f, 2f),
+                    up = math.up()
+                }
+            );
+
+            var pos = random.NextFloat3(-spawnRadius, spawnRadius);
+            entityManager.SetComponentData(obj,
+                new Translation { Value = pos }
+            );
+
+            var rot = random.NextQuaternionRotation();
+            entityManager.SetComponentData(obj,
+                new Rotation { Value = rot }
+            );
+                 
+            entityManager.AddComponentData(obj, new ImpulseData
+            {
+                Start = scale,
+                End = scale,
+                Time = 0f,
+                Speed = 2f
+            });
+
+            entityManager.AddComponentData(obj, new Scale
+            {
+                Value = scale,
+            });
+        }
+
     }
 }
