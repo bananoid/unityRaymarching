@@ -82,6 +82,7 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
+    - gradientSize: 0.96
     - lineFade: 0.11
     - lineFreq: 30
     - lineIntesity: 0
@@ -91,10 +92,12 @@ Material:
     - _Color: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - center: {r: -0.84, g: -0.55, b: 0.13, a: 1}
-    - colorA: {r: 0.9150943, g: 0.22958475, b: 0.12517802, a: 1}
-    - colorB: {r: 0, g: 0, b: 0, a: 1}
+    - colorA: {r: 0.8773585, g: 0.2027857, b: 0.31215185, a: 1}
+    - colorB: {r: 0.16620687, g: 0.7830189, b: 0.7830189, a: 1}
     - colorC: {r: 0.7264151, g: 0.10622107, b: 0.3600194, a: 1}
-    - lightFalloff: {r: 0, g: 20, b: 8.1, a: 1.86}
-    - lightPos: {r: -0.01, g: -0.26, b: -0.47, a: 5.3}
+    - gradientDesc: {r: 1, g: 2.5, b: 1.25, a: 1.42}
+    - gradientDirection: {r: -1, g: 0.93, b: -0.26, a: 1.14}
+    - lightFalloff: {r: 0, g: 2.56, b: 8.1, a: 1.86}
+    - lightPos: {r: 0, g: 0, b: -0.19, a: 1}
     - maxBounds: {r: 4.48, g: 2.4800003, b: 1.03163, a: 0}
     - minBounds: {r: -4.48, g: 1.5200002, b: -0.01, a: 0}

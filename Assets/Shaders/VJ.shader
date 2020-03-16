@@ -15,6 +15,7 @@ Shader "Unlit/VJ"
         colorA ("ColorA", Color) = (1,0,0,1)
         colorB ("ColorB", Color) = (1,1,1,1)
         colorC ("ColorC", Color) = (0,0,1,1)
+        gradientDesc ("Gradient Direction", Vector) = (0,1,0,1)
 
         lightPos ("Light Posision", Vector) = (0,0,0)
         lightFalloff ("Light Fallof", Vector) = (0,1,0)
@@ -26,6 +27,7 @@ Shader "Unlit/VJ"
 
         minBounds ("Min Room Bounds", Vector) = (-2,-1,-5)
         maxBounds ("Min Room Bounds", Vector) = ( 2, 1, 5)
+
         
     }
 
@@ -48,6 +50,7 @@ Shader "Unlit/VJ"
             float4 colorA;
             float4 colorB;
             float4 colorC;
+            float4 gradientDesc;
 
             float3 lightPos;
             float2 lightFalloff;
@@ -91,8 +94,14 @@ Shader "Unlit/VJ"
                 return o;
             }
 
-            float fract(float v){
-                
+            float boxWF(float3 pos){
+                float boxWF;
+                float wfS = 0.1;
+                boxWF = smoothstep(1-wfS, 1.0, length(pos.y * 2));
+                boxWF += smoothstep(1-wfS, 1.0, length(pos.x * 2));
+                boxWF += smoothstep(1-wfS, 1.0, length(pos.z * 2));
+                boxWF = smoothstep(0.9, 1.0, boxWF*0.9);
+                return boxWF;
             }
 
             fixed4 frag (v2f i, fixed facing : VFACE) : SV_Target
@@ -115,22 +124,20 @@ Shader "Unlit/VJ"
                 //col.rgb = float3(light,light,light) * lines * 3.0;
                 col.rgb = light.xxx;
 
-                float3 gradient = float3(0,0,0);    
-                float gradientPos = i.localPos.y * 0.4 + 0.75;
-                gradientPos += _Time * 2;
-                //gradientPos += 0;
-    
-                //gradient = clamp(gradientPos*2.0,0,1) * lerp(colorB,colorC,  clamp(gradientPos*2.0 - 1.0,0,1) ).rgb;
-                //gradient += clamp(2-gradientPos*2.0,0,1) * lerp(colorA,colorB,  clamp(gradientPos*2.0,0,1) ).rgb;
+                float3 gradient = float3(0,0,0);
+                    
+                float gradientPos = 
+                    length((i.localPos + gradientDesc.w) * normalize(gradientDesc.xyz));
 
-                //gradient = colorA * (sin(gradientPos * pi - pi) * 0.5 + 0.5) * step( 0.5, cos(gradientPos * pi) * 0.5 + 0.5 );
-                //gradient += colorB * (sin(gradientPos * pi) * 0.5 + 0.5);
-                //gradient += colorC * (sin(gradientPos * pi - pi) * 0.5 + 0.5) * step( cos(gradientPos * pi) * 0.5 + 0.5, 0.5 );
+                
+                // gradientPos += _Time * 2;
 
-                gradient = colorA * (sin(gradientPos*pi*3 - pi*0.5) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5)*0.5+0.5);
-                gradient+= colorB * (sin(gradientPos*pi*3 - pi*0.5 - pi*3) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 - pi*0.5)*0.5+0.5);
-                gradient+= colorC * (sin(gradientPos*pi*3 - pi*0.5 - pi*6) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 + pi*3)*0.5+0.5);  
-                gradient+= colorA * (sin(gradientPos*pi*3 - pi*0.5 - pi*9) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 + pi*0.5)*0.5+0.5);  
+                gradient = colorA * gradientPos;
+
+                // gradient = colorA * (sin(gradientPos*pi*3 - pi*0.5) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5)*0.5+0.5);
+                // gradient+= colorB * (sin(gradientPos*pi*3 - pi*0.5 - pi*3) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 - pi*0.5)*0.5+0.5);
+                // gradient+= colorC * (sin(gradientPos*pi*3 - pi*0.5 - pi*6) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 + pi*3)*0.5+0.5);  
+                // gradient+= colorA * (sin(gradientPos*pi*3 - pi*0.5 - pi*9) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 + pi*0.5)*0.5+0.5);  
 
                 //gradient = sin(colorA.rgb * gradientPos * 2. + _Time * 1 ) * 0.5 + 0.5;
 
@@ -153,7 +160,8 @@ Shader "Unlit/VJ"
                 // if(!facing){
                 //     discard;
                 // }    
-                return col;
+
+                return col * light;
             }
             ENDCG
         }

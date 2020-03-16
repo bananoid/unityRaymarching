@@ -44,9 +44,7 @@ public class ImpulseSystem : JobComponentSystem
             ref ImpulseData scaleData,
             ref Scale scale)
         {
-            // make sure we are dealing with spheres
-
-
+            
             scaleData.Time += scaleData.Speed * deltaTime;
 
             float t = QuaImpulse(100f, scaleData.Time);
@@ -66,15 +64,15 @@ public class ImpulseSystem : JobComponentSystem
             if (collider.ColliderPtr->Type == ColliderType.Box) {
                 BoxCollider* scPtr = (BoxCollider*)collider.ColliderPtr;
                 var geometry = scPtr->Geometry;
-                geometry.Size = scaleData.Value*4;
+                geometry.Size = scaleData.Value*2;
                 scPtr->Geometry = geometry;
             }
 
             if (collider.ColliderPtr->Type == ColliderType.Cylinder) {
                 CylinderCollider* scPtr = (CylinderCollider*)collider.ColliderPtr;
                 var geometry = scPtr->Geometry;
-                geometry.Height = scaleData.Value;
-                geometry.Radius = scaleData.Value * 0.2f;
+                geometry.Height = scaleData.Value * 2f;
+                geometry.Radius = geometry.Height * 0.2f;
                 scPtr->Geometry = geometry;
             }
 

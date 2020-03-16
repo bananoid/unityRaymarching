@@ -49,6 +49,16 @@ public class RoomsGenerator : MonoBehaviour
 
     public GameObject roomBoxPrefab;
 
+    [Header("Entity objs")]
+    public List<GameObject> objPrefabs;
+    private EntityManager entityManager;
+    private BlobAssetStore blobAssetStore;
+    private List<Entity> masterObjsEntities;
+    private List<float> masterObjsScale;
+    private List<Entity> spawnedObjs;
+
+    [Header("Material")]
+    public Vector3 gradientDirection;
 
     void Start()
     {
@@ -278,13 +288,6 @@ public class RoomsGenerator : MonoBehaviour
         rooms = new List<GameObject>();
     }
 
-    private EntityManager entityManager;
-    private BlobAssetStore blobAssetStore;
-    public List<GameObject> objPrefabs;
-    private List<Entity> masterObjsEntities;
-    private List<float> masterObjsScale;
-
-    private List<Entity> spawnedObjs;
     void InitializeObjEntities(){
         spawnedObjs = new List<Entity>();
 
@@ -296,7 +299,7 @@ public class RoomsGenerator : MonoBehaviour
         masterObjsEntities = new List<Entity>();
         masterObjsScale = new List<float>();
         
-        int variationsCount = 10;
+        int variationsCount = 2;
         foreach(var obj in objPrefabs){
             for(int i=0; i<variationsCount; i++){
 
@@ -305,6 +308,8 @@ public class RoomsGenerator : MonoBehaviour
 
                 float scale = random.NextFloat(1.0f, 10.0f) * 0.04f;
                 masterObjsScale.Add(scale);
+                
+                // masterObjsScale.Add(0.3f);
             }
         }
     }
@@ -317,18 +322,13 @@ public class RoomsGenerator : MonoBehaviour
     void GenerateRoomEntity(){
         EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-        // var roomsSystem = World
-        //     .DefaultGameObjectInjectionWorld
-        //     .GetOrCreateSystem<RoomsSystem>();
-        // roomsSystem.GenerateRooms(roomsData);
-
         float spawnRadius = 1;
 
         foreach(var e in spawnedObjs){
             entityManager.DestroyEntity(e);
         }
 
-        int count = 10;
+        int count = 30;
         int rndInx;
         
         if(masterObjsEntities.Count==0){
@@ -364,7 +364,7 @@ public class RoomsGenerator : MonoBehaviour
                  
             entityManager.AddComponentData(obj, new ImpulseData
             {
-                Start = scale,
+                Start = scale * 1.5f,
                 End = scale,
                 Time = 0f,
                 Speed = 2f
