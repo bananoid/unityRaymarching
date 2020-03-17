@@ -40,10 +40,11 @@ float4 Scene00(float3 p){
         float4(objColor,sphere1), 
         float4(objColor,sphere2),
         0.4);
-    combine = opUS(
-        combine, 
-        float4(roomColor,box),
-        0.0);    
+
+    // combine = opUS(
+    //     combine, 
+    //     float4(roomColor,box),
+    //     0.0);    
     
     return combine;
 }

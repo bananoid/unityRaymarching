@@ -28,6 +28,7 @@ Shader "Unlit/VJ"
         minBounds ("Min Room Bounds", Vector) = (-2,-1,-5)
         maxBounds ("Min Room Bounds", Vector) = ( 2, 1, 5)
 
+        roomRect (" Room rect",Vector ) = (-1000,1000,2000,2000)
         
     }
 
@@ -65,6 +66,8 @@ Shader "Unlit/VJ"
             float3 minBounds;
             float3 maxBounds;
 
+            float4 roomRect;
+
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -80,7 +83,7 @@ Shader "Unlit/VJ"
                 float3 worldPos : TEXCOORD2;
                 float3 localPos : TEXCOORD3;
                 float3 normal : NORMAL;
-                float4 grabUv : TEXCOORD4;
+                float4 screenPos: TEXCOORD5;
             };
 
             v2f vert (appdata v)
@@ -92,7 +95,7 @@ Shader "Unlit/VJ"
                 o.localPos = v.vertex;
                 o.normal = v.normal;
                 o.uv = v.uv;
-                o.grabUv = UNITY_PROJ_COORD(ComputeGrabScreenPos(o.vertex));
+                o.screenPos = ComputeScreenPos(o.vertex); 
                 return o;
             }
 
@@ -108,6 +111,16 @@ Shader "Unlit/VJ"
 
             fixed4 frag (v2f i, fixed facing : VFACE) : SV_Target
             {
+                float2 screenUV = i.screenPos.xy / i.screenPos.w;
+                float roomMask = 
+                    step( roomRect.x, screenUV.x)*
+                    step( screenUV.x, roomRect.z)*
+                    step( roomRect.y, screenUV.y)*
+                    step( screenUV.y, roomRect.w);
+                if(roomMask == 0){
+                    discard;
+                }    
+                
                 const float pi = 3.141592653589793238462;
 
                 fixed4 col = float4(0,0,0,1);
@@ -146,20 +159,8 @@ Shader "Unlit/VJ"
                 col.rgb *= gradient;
                 // col.rgb += float3(lines,lines,lines);
                 col.rgb += lines * (1-i.localPos.z*2) * lineIntesity;
-                // col.rgb *= gradient;
-
-                //Bounds
-                // float boundsMask =
-                //     step( i.worldPos.x, maxBounds.x) *    
-                //     step( minBounds.x, i.worldPos.x) *
-                //     step( i.worldPos.y, maxBounds.y) *    
-                //     step( minBounds.y, i.worldPos.y) *
-                //     step( i.worldPos.z, maxBounds.z) *    
-                //     step( minBounds.z, i.worldPos.z);                
-                // if(boundsMask == 0){
-                //     discard;
-                // }    
-                
+                // col.rgb *= gradient;               
+               
                 return col * light;
             }
             ENDCG

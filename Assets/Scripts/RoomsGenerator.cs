@@ -3,6 +3,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using Unity.Entities;
 using Unity.Transforms;
+using Unity.Rendering;
 
 public struct RoomData : IComponentData {
     public float w,h,x,y,d;
@@ -58,6 +59,8 @@ public class RoomsGenerator : MonoBehaviour
     private List<Entity> spawnedObjs;
 
     [Header("Material")]
+    public Shader objectShader;
+    public Mesh objectMesh;
     public Vector3 gradientDirection;
 
     void Start()
@@ -302,6 +305,9 @@ public class RoomsGenerator : MonoBehaviour
         int variationsCount = 2;
         foreach(var obj in objPrefabs){
             for(int i=0; i<variationsCount; i++){
+                // var color = random.NextFloat4();
+                // color.z = 1;
+                // obj.GetComponent<MeshRenderer>().material.SetVector("colorA", color );
 
                 var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(obj,settings);
                 masterObjsEntities.Add(entity);
@@ -320,6 +326,9 @@ public class RoomsGenerator : MonoBehaviour
 
     //ECS
     void GenerateRoomEntity(){
+        float totW = cols * gridSize;
+        float totH = rows * gridSize;
+
         EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         float spawnRadius = 1;
@@ -328,54 +337,78 @@ public class RoomsGenerator : MonoBehaviour
             entityManager.DestroyEntity(e);
         }
 
-        int count = 30;
+        int count = 1;
         int rndInx;
         
         if(masterObjsEntities.Count==0){
             return;
         }
 
-        for(int i=0; i<count; i++){
-            rndInx = random.NextInt(masterObjsEntities.Count);
-            
-            var masterObj = masterObjsEntities[rndInx];
-            var scale = masterObjsScale[rndInx];
+        foreach(var roomData in roomsData){
+            for(int i=0; i<count; i++){
+                rndInx = random.NextInt(masterObjsEntities.Count);
+                
+                var masterObj = masterObjsEntities[rndInx];
+                var scale = masterObjsScale[rndInx];
 
-            var obj = entityManager.Instantiate(masterObj);
-            spawnedObjs.Add(obj);
+                var obj = entityManager.Instantiate(masterObj);
+                spawnedObjs.Add(obj);
 
-            entityManager.SetComponentData(obj,
-                new RoomObjectComponent
+                entityManager.SetComponentData(obj,
+                    new RoomObjectComponent
+                    {
+                        // weight = random.NextFloat(0.3f, 2f),
+                        weight = 1,
+                        up = math.up()
+                    }
+                );
+
+                var pos = new float3(roomData.x,roomData.y,0);//roomData.d * 0.5f);
+                pos.x -= totW * 0.5f - roomData.w * 0.5f;
+                pos.y -= totH * 0.5f - roomData.h * 0.5f;
+                // random.NextFloat3(-spawnRadius, spawnRadius);
+
+                entityManager.SetComponentData(obj,
+                    new Translation { Value = pos }
+                );
+
+                var rot = random.NextQuaternionRotation();
+                entityManager.SetComponentData(obj,
+                    new Rotation { Value = rot }
+                );
+                    
+                entityManager.AddComponentData(obj, new ImpulseData
                 {
-                    // weight = random.NextFloat(0.3f, 2f),
-                    weight = 1,
-                    up = math.up()
-                }
-            );
+                    // Start = scale * 1.5f,
+                    Start = scale,
+                    End = scale,
+                    Time = 0f,
+                    Speed = 2f
+                });
 
-            var pos = random.NextFloat3(-spawnRadius, spawnRadius);
-            entityManager.SetComponentData(obj,
-                new Translation { Value = pos }
-            );
+                entityManager.AddComponentData(obj, new Scale
+                {
+                    Value = scale,
+                });
+                
+                var renderMesh = entityManager.GetSharedComponentData<RenderMesh>(obj);
+                
+                // var material = new Material(objectShader);
+                var material = renderMesh.material;
 
-            var rot = random.NextQuaternionRotation();
-            entityManager.SetComponentData(obj,
-                new Rotation { Value = rot }
-            );
-                 
-            entityManager.AddComponentData(obj, new ImpulseData
-            {
-                // Start = scale * 1.5f,
-                Start = scale,
-                End = scale,
-                Time = 0f,
-                Speed = 2f
-            });
+                var color = random.NextFloat4();
+                color.z = 1;
+                material.SetVector("colorA", color );
+                
+                // Mesh mesh = objectMesh;
 
-            entityManager.AddComponentData(obj, new Scale
-            {
-                Value = scale,
-            });
+                // entityManager.AddSharedComponentData(obj, new RenderMesh
+                // {
+                //     mesh = mesh,
+                //     material = material,
+                // });
+            }
+
         }
 
     }
