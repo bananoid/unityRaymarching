@@ -22,7 +22,7 @@ public class RoomsGenerator : MonoBehaviour
     [Header("Camera")]
     public Camera mainCamera;
     [Range(0,1)] public float cameraFov01 = 0.4f; 
-    private float2 camFovRange = new float2(2.0f,170f);
+    private float2 camFovRange = new float2(4.0f,170f);
     private float oldCameraFov01 = 0;
     [Range(0,1)] public float cameraShift = 0;
     public float cameraShiftAngle = 0;
@@ -45,8 +45,8 @@ public class RoomsGenerator : MonoBehaviour
     [Header("RM Panels")]
     public bool roomPlaneEnabled = true;
     public GameObject roomPlanelPref;
-    [Range(0,10)]
-    public int rmSceneIndex = 0;
+    [Range(0,10)] public int rmSceneIndex = 0;
+    [Range(0,2)] public float rmRndScale = 0; 
 
     private List<RoomData> roomsData;
 
@@ -151,6 +151,8 @@ public class RoomsGenerator : MonoBehaviour
                 planeMat.SetFloat("_CameraShift", cameraShift);
                 float csa = cameraShiftAngle + cameraShiftAngleDivergence*i;
                 planeMat.SetFloat("_CameraShiftAngle", csa);
+
+                planeMat.SetFloat("rndScale", rmRndScale);
             }
         }
     }
@@ -291,6 +293,7 @@ public class RoomsGenerator : MonoBehaviour
                 masterObjsEntities.Add(entity);
 
                 float scale = random.NextFloat(1.0f, 10.0f) * 0.04f;
+                scale = 10;
                 masterObjsScale.Add(scale);                
             }
         }
@@ -346,12 +349,16 @@ public class RoomsGenerator : MonoBehaviour
         foreach(var roomData in roomsData){
             float4 roomRect; 
 
+            float tH = totW / mainCamera.aspect;
+            float hOff = (tH - totH) * 0.5f;
+
             roomRect.x = roomData.x/totW;
-            roomRect.y = roomData.y/totH;
+            roomRect.y = (roomData.y+hOff)/tH;
             roomRect.z = roomRect.x + roomData.w/totW;
-            roomRect.w = roomRect.y + roomData.h/totH;
+            roomRect.w = roomRect.y + roomData.h/tH;
             
-            int count = (int)((roomData.w*roomData.h)/6 * 10) + 1;
+            // int count = (int)((roomData.w*roomData.h)/6 * 100) + 1;
+            int count = 1;
 
             for(int i=0; i<count; i++){
                 rndInx = random.NextInt(masterObjsEntities.Count);
@@ -386,8 +393,8 @@ public class RoomsGenerator : MonoBehaviour
                     
                 entityManager.AddComponentData(obj, new ImpulseData
                 {
-                    Start = scale * 1.5f,
-                    // Start = scale,
+                    // Start = scale * 1.5f,
+                    Start = scale,
                     End = scale,
                     Time = 0f,
                     Speed = 2f

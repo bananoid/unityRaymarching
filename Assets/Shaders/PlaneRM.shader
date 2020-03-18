@@ -21,6 +21,8 @@
 
         _CameraShift ("Camera Shift", float) = 0
         _CameraShiftAngle ("Camera Shift Angle", float) = 0
+
+        rndScale ("Random Scale", float) = 0
     }
     SubShader
     {

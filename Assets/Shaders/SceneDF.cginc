@@ -12,6 +12,23 @@ float _RoomDepth;
 //     float4 combine = opSS(Sphere1,Sphere2,0.2);    
 //     return combine;    
 // }
+// float random (vec3 st) {
+//     return fract(sin(dot(st.xy,
+//                          vec3(12.9898,78.233,92.3214)))*
+//         43758.5453123);
+// }
+
+float random(float st){
+    return frac(sin(dot(st, 12.9898))* 43758.5453123);
+}
+
+float3 randomPos (float3 st) {
+    float3 res; 
+    res.x = random(st.x+32.432234);   
+    res.y = random(st.y+22.423432);   
+    res.z = random(st.z+12.543432);   
+    return res;
+}
 
 float4 Scene00(float3 p){
     
@@ -19,6 +36,12 @@ float4 Scene00(float3 p){
     boxS.xy = _PlaneBox.zw * 0.5; 
     boxS.z = _RoomDepth;
 
+    // float qPosR = 1.1;
+    // float3 qPos = floor(p/qPosR)*qPosR;
+    // float3 rndPos = randomPos(p+frac(_Time))*2-1;//
+    // float rndScale = 0.8;
+    // rndPos *= rndScale;    
+        
     float box = sdOpenBox(p, boxS);
     
     float3 boxCenter = float3(0,0,-boxS.z*0.5);
@@ -26,7 +49,7 @@ float4 Scene00(float3 p){
     // boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.2;
     // boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
     // boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
-    float sphere1 = sdSphere(p+boxCenter, 0.5);
+    float sphere1 = sdSphere(p + boxCenter, 0.5);
     
     boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.2;
     boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
@@ -147,8 +170,15 @@ float4 Scene04(float3 p){
 
 float _CameraShift;
 float _CameraShiftAngle;
+float rndScale;
 
-float4 distanceField(float3 p) {
+float4 distanceField(float3 p) {    
+    if(rndScale > 0){
+        float3 rndPos = randomPos(p+frac(_Time))*2-1;
+        rndPos *= rndScale;
+        p += rndPos;
+    }
+
     p.xy -= _PlaneBox.xy;
     
     p.x += p.z * sin(_CameraShiftAngle) * _CameraShift;
