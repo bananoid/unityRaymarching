@@ -56,18 +56,18 @@ float4 Scene00(float3 p){
     boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
     float sphere2 = sdSphere(p+boxCenter, 0.5);
     
-    float3 roomColor = float3(0.2,0.4,0.9) * 0.1;
-    float3 objColor = float3(0.9,0.4,0.4) * 2;
+    float3 roomColor = float3(0.2,0.4,0.9) * 0.4;
+    float3 objColor = float3(0.9,0.2,0.1) * 3;
 
     float4 combine = opUS(
         float4(objColor,sphere1), 
         float4(objColor,sphere2),
         0.4);
 
-    // combine = opUS(
-    //     combine, 
-    //     float4(roomColor,box),
-    //     0.0);    
+    combine = opUS(
+        combine, 
+        float4(roomColor,box),
+        0.0);    
     
     return combine;
 }
@@ -175,7 +175,7 @@ float rndScale;
 float4 distanceField(float3 p) {    
     if(rndScale > 0){
         float3 rndPos = randomPos(p+frac(_Time))*2-1;
-        rndPos *= rndScale;
+        rndPos *= rndScale * max( pow(p.z,0.4) , 0.01);
         p += rndPos;
     }
 

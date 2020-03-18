@@ -46,7 +46,7 @@ public class RoomsGenerator : MonoBehaviour
     public bool roomPlaneEnabled = true;
     public GameObject roomPlanelPref;
     [Range(0,10)] public int rmSceneIndex = 0;
-    [Range(0,2)] public float rmRndScale = 0; 
+    [Range(0,0.1f)] public float rmRndScale = 0; 
 
     private List<RoomData> roomsData;
 
@@ -135,7 +135,7 @@ public class RoomsGenerator : MonoBehaviour
                     scale.x, scale.y
                 ));
                 planeMat.SetFloat("_RoomDepth", scale.z);
-                planeMat.SetInt("_SceneIndex", rmSceneIndex);
+                // planeMat.SetInt("_SceneIndex", rmSceneIndex);
 
                 if(pointLight){
                     planeMat.SetVector("_PointLight", new Vector4(
@@ -286,14 +286,13 @@ public class RoomsGenerator : MonoBehaviour
         masterObjsEntities = new List<Entity>();
         masterObjsScale = new List<float>();
         
-        int variationsCount = 2;
+        int variationsCount = 10;
         foreach(var obj in objPrefabs){
             for(int i=0; i<variationsCount; i++){     
                 var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(obj,settings);
                 masterObjsEntities.Add(entity);
 
                 float scale = random.NextFloat(1.0f, 10.0f) * 0.04f;
-                scale = 10;
                 masterObjsScale.Add(scale);                
             }
         }
@@ -327,6 +326,15 @@ public class RoomsGenerator : MonoBehaviour
 
             room.transform.localScale = scale;
             room.transform.localPosition = position;
+
+            GameObject plane = room.transform.GetChild(0)?.gameObject;
+            if(plane){
+                
+                int rndSceneInx = random.NextInt(0,4);
+                Material planeMat = plane.GetComponent<Renderer>().material;
+                planeMat.SetInt("_SceneIndex", rndSceneInx);
+
+            }
         }
     }
 
@@ -357,8 +365,7 @@ public class RoomsGenerator : MonoBehaviour
             roomRect.z = roomRect.x + roomData.w/totW;
             roomRect.w = roomRect.y + roomData.h/tH;
             
-            // int count = (int)((roomData.w*roomData.h)/6 * 100) + 1;
-            int count = 1;
+            int count = (int)((roomData.w*roomData.h)/6 * 10) + 1;
 
             for(int i=0; i<count; i++){
                 rndInx = random.NextInt(masterObjsEntities.Count);

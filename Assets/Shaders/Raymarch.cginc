@@ -69,6 +69,7 @@ float3  Shading(float3 p, float3 n, float3 color){
     
     float spherLight = distance(p, _PointLight.xyz);
     spherLight = 1 - smoothstep(0, _PointLight.w, spherLight);
+    // spherLight = 1 - smoothstep(0, 3, spherLight);
 
     // result = (n *0.5 + 0.5);
 
@@ -78,8 +79,8 @@ float3  Shading(float3 p, float3 n, float3 color){
     //     result *= light;
     // }
 
-    // float3 light = dot(normalize(float3(1,1,0)), n) * .9;
-    // result = result + max(light,0);
+    float3 light = dot(normalize(float3(1,1,0)), n) * .9;
+    result = result + max(light,0);
 
     // Shadows
     // if(_ShadowIntensity > 0){
@@ -100,7 +101,6 @@ float3  Shading(float3 p, float3 n, float3 color){
     float lineSMax = 0.1;
     lines = smoothstep(lineSMin, lineSMax, lines);
     lines = clamp(0,1,lines);
-    // result *= lines;   
     
     result *= spherLight;
     return result;

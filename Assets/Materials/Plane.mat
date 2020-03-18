@@ -84,8 +84,9 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
+    - rndScale: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _PlaneBox: {r: 1.78, g: 0, b: 9.82, a: 8.8}
-    - _PointLight: {r: 0, g: 0, b: -1.69, a: 3.76}
+    - _PlaneBox: {r: 1.6, g: 0, b: 12.69, a: 8.8}
+    - _PointLight: {r: 0, g: 0, b: -1.65, a: 3.76}
