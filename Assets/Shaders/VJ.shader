@@ -15,21 +15,17 @@ Shader "Unlit/VJ"
         colorA ("ColorA", Color) = (1,0,0,1)
         colorB ("ColorB", Color) = (1,1,1,1)
         colorC ("ColorC", Color) = (0,0,1,1)
-        gradientDesc ("Gradient Direction", Vector) = (0,1,0,1)
+        gradientDesc ("Gradient Desc", Vector) = (1,0.2,0.6,1)
 
         lightPos ("Light Posision", Vector) = (0,0,0)
-        lightFalloff ("Light Fallof", Vector) = (0,1,0)
+        lightFalloff ("Light Fallof", Vector) = (0,100,0)
         lineFade ("Line Fade", float) = 0.01
         lineSize ("Line Size", float) = 0.5
         lineFreq ("Line Freq", float) = 30.
         lineSpeed ("Line Speed", float) = 30.
-        lineIntesity ("Line Intesity", float) = 1.
+        lineIntesity ("Line Intesity", float) = 0.
 
-        minBounds ("Min Room Bounds", Vector) = (-2,-1,-5)
-        maxBounds ("Min Room Bounds", Vector) = ( 2, 1, 5)
-
-        roomRect (" Room rect",Vector ) = (-1000,1000,2000,2000)
-        
+        roomRect ("Room rect",Vector ) = (0,0,1,1)
     }
 
     SubShader
@@ -61,10 +57,6 @@ Shader "Unlit/VJ"
             float lineFreq;
             float lineSpeed;
             float lineIntesity;
-
-
-            float3 minBounds;
-            float3 maxBounds;
 
             float4 roomRect;
 
@@ -111,7 +103,10 @@ Shader "Unlit/VJ"
 
             fixed4 frag (v2f i, fixed facing : VFACE) : SV_Target
             {
+                const float pi = 3.141592653589793238462;
+
                 float2 screenUV = i.screenPos.xy / i.screenPos.w;
+                
                 float roomMask = 
                     step( roomRect.x, screenUV.x)*
                     step( screenUV.x, roomRect.z)*
@@ -119,10 +114,8 @@ Shader "Unlit/VJ"
                     step( screenUV.y, roomRect.w);
                 if(roomMask == 0){
                     discard;
-                }    
+                }  
                 
-                const float pi = 3.141592653589793238462;
-
                 fixed4 col = float4(0,0,0,1);
 
                 float lines = sin(i.worldPos.z * lineFreq + _Time * lineSpeed) * 0.5 + 0.5;
@@ -161,7 +154,10 @@ Shader "Unlit/VJ"
                 col.rgb += lines * (1-i.localPos.z*2) * lineIntesity;
                 // col.rgb *= gradient;               
                
-                return col * light;
+                return col * light; 
+                // return lerp(float4(1,0,0,1), col,roomMask) * light; 
+                
+
             }
             ENDCG
         }

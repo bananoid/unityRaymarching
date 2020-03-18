@@ -1074,15 +1074,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomPlaneEnabled: 1
-  seed: 9969
+  seed: 9989
   roomPlane: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1,
     type: 3}
   objects: []
   mainCamera: {fileID: 1517248415}
   roomDepthRange: {x: 1, y: 4}
-  gutter: 0.05
-  cols: 12
-  maxSplits: 2
+  gutter: 0.02
+  cols: 32
+  maxSplits: 3
   maxIteration: 4
   pointLight: {fileID: 632680737}
   sceneIndex: 0

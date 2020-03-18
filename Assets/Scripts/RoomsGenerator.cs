@@ -9,6 +9,7 @@ public struct RoomData : IComponentData {
     public float w,h,x,y,d;
     public int id;
 }
+
 public class RoomsGenerator : MonoBehaviour
 {   
     public bool roomPlaneEnabled = true;
@@ -113,6 +114,8 @@ public class RoomsGenerator : MonoBehaviour
                 h = totH
             });
         
+        GenerateRoomEntity();
+
         GameObject room;
         // float boundsOffset = 0.01f;
 
@@ -138,7 +141,6 @@ public class RoomsGenerator : MonoBehaviour
             }
         }
 
-        GenerateRoomEntity();
     }
 
     void UpdateMaterial(){
@@ -331,20 +333,26 @@ public class RoomsGenerator : MonoBehaviour
 
         EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-        float spawnRadius = 1;
-
         foreach(var e in spawnedObjs){
             entityManager.DestroyEntity(e);
         }
 
-        int count = 1;
         int rndInx;
         
         if(masterObjsEntities.Count==0){
             return;
         }
-
+    
         foreach(var roomData in roomsData){
+            float4 roomRect; 
+
+            roomRect.x = roomData.x/totW;
+            roomRect.y = roomData.y/totH;
+            roomRect.z = roomRect.x + roomData.w/totW;
+            roomRect.w = roomRect.y + roomData.h/totH;
+            
+            int count = (int)((roomData.w*roomData.h)/6 * 10) + 1;
+
             for(int i=0; i<count; i++){
                 rndInx = random.NextInt(masterObjsEntities.Count);
                 
@@ -379,8 +387,8 @@ public class RoomsGenerator : MonoBehaviour
                     
                 entityManager.AddComponentData(obj, new ImpulseData
                 {
-                    // Start = scale * 1.5f,
-                    Start = scale,
+                    Start = scale * 1.5f,
+                    // Start = scale,
                     End = scale,
                     Time = 0f,
                     Speed = 2f
@@ -393,20 +401,34 @@ public class RoomsGenerator : MonoBehaviour
                 
                 var renderMesh = entityManager.GetSharedComponentData<RenderMesh>(obj);
                 
-                // var material = new Material(objectShader);
-                var material = renderMesh.material;
+                var material = new Material(objectShader);
+                // var material = renderMesh.material;
+                
+                material.SetVector("roomRect", roomRect );
 
-                var color = random.NextFloat4();
-                color.z = 1;
+                float h = random.NextFloat(-0.1f,0.1f);
+                h = h%1;
+                if(h<0){
+                    h = 1+h;
+                }
+                var color = Color.HSVToRGB(
+                    h,
+                    0.9f,
+                    1
+                );
                 material.SetVector("colorA", color );
                 
-                // Mesh mesh = objectMesh;
+                var gradient = random.NextFloat4();
+                gradient.w = random.NextFloat(0.5f,1.1f);
+                material.SetVector("gradientDesc", gradient );
 
-                // entityManager.AddSharedComponentData(obj, new RenderMesh
-                // {
-                //     mesh = mesh,
-                //     material = material,
-                // });
+                Mesh mesh = renderMesh.mesh;
+
+                entityManager.AddSharedComponentData(obj, new RenderMesh
+                {
+                    mesh = mesh,
+                    material = material,
+                });
             }
 
         }
