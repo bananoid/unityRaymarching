@@ -12,11 +12,12 @@ float _RoomDepth;
 //     float4 combine = opSS(Sphere1,Sphere2,0.2);    
 //     return combine;    
 // }
-// float random (vec3 st) {
-//     return fract(sin(dot(st.xy,
-//                          vec3(12.9898,78.233,92.3214)))*
-//         43758.5453123);
-// }
+
+float random(float2 st) {
+    return frac(sin(dot(st.xy,
+                         float2(12.9898,78.233)))*
+        43758.5453123);
+}
 
 float random(float st){
     return frac(sin(dot(st, 12.9898))* 43758.5453123);
@@ -116,7 +117,7 @@ float4 Scene03(float3 p){
     
     float combine = max(plane, gyroid);
 
-    float3 color = float3(1,1,1);
+    float3 color = float3(0.94,0.2,0.1);
     color += smoothstep(0.4, 0.6,gyroid);
     return float4(color, combine);
 }
@@ -164,7 +165,7 @@ float4 Scene04(float3 p){
     float combine = plane;
     combine  = opSS( cone,combine, 4.3);
     combine = opSS( sphere, combine, 0);
-    float4 scene = float4(float3(1.0,1.0,1.0),cone); 
+    float4 scene = float4(float3(9.4,0.2,0.1),cone); 
     return combine;
 }  
 

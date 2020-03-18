@@ -7,6 +7,8 @@
         _MaxDistance ("Max Distance", float) = 100   
         _MinDistance ("Min Distance", float) = 0.001
 
+        _Id ("Id", float) = 0
+
         _SceneIndex ("Scene Index", int) = 0
         _CumTime ("Cum Time", float) = 0
         _PointLight ("Point Light", Vector) = (0,0,0,1)
@@ -52,10 +54,12 @@
             float4 _sphere1, _sphere2, _box1;
 
             float4 _PointLight;
+            float _Id;
 
             #include "DistanceFunctions.cginc"
             #include "SceneDF.cginc"
             #include "Raymarch.cginc"
+            #include "Glitch.cginc"
 
             struct appdata
             {
@@ -87,7 +91,12 @@
             }
 
             fixed4 frag (v2f i) : SV_Target
-            {
+            {   
+                float2 screenPos = i.grabUv.xy/i.grabUv.w;
+                // float4 gh = glitch(screenPos); 
+                float4 gh = glitch(i.uv) * 1.0;
+                // float2 ghPos = gh.w; 
+
                 float3 rayOrigin = i.ro;
                 float3 rayDirection = normalize(i.hitPos - rayOrigin);
                 
@@ -98,7 +107,7 @@
 
                 float4 rmResult = raymarching(rayOrigin, rayDirection, depth);
             
-                float4 col = tex2Dproj(_GrabTexture, i.grabUv);
+                float4 col = tex2Dproj(_GrabTexture, i.grabUv + gh);
                 
                 // col = float4(1,1,1,1);
 
@@ -107,8 +116,12 @@
                 // col.xyz = rayDirection;
                 // col.xyz = rmResult.w;
                 
-                col.xyz = lerp(col.xyz,rmResult.xyz, rmResult.w);
-
+                col.rgb = lerp(col.rgb, step(0.2,gh.rgb), step(0.99,gh.w) );
+                col.xyz = lerp(col.xyz,rmResult.xyz, rmResult.w * step(0.5,gh.w) );
+                
+                
+                // col = gh;
+                    
                 return col;
             }
             ENDCG

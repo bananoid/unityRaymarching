@@ -7,7 +7,7 @@ using Unity.Rendering;
 
 public struct RoomData : IComponentData {
     public float w,h,x,y,d;
-    public int id;
+    public float id;
 }
 
 public class RoomsGenerator : MonoBehaviour
@@ -223,6 +223,7 @@ public class RoomsGenerator : MonoBehaviour
                 r.y += gutter;
                 r.w -= gutter * 2;
                 r.h -= gutter * 2;
+                r.id = random.NextFloat();
 
                 rd.Add(r);
             }    
@@ -332,6 +333,7 @@ public class RoomsGenerator : MonoBehaviour
                 
                 int rndSceneInx = random.NextInt(0,4);
                 Material planeMat = plane.GetComponent<Renderer>().material;
+                planeMat.SetFloat("_Id", rd.id);
                 planeMat.SetInt("_SceneIndex", rndSceneInx);
 
             }
@@ -400,8 +402,8 @@ public class RoomsGenerator : MonoBehaviour
                     
                 entityManager.AddComponentData(obj, new ImpulseData
                 {
-                    // Start = scale * 1.5f,
-                    Start = scale,
+                    Start = scale * 1.5f,
+                    // Start = scale,
                     End = scale,
                     Time = 0f,
                     Speed = 2f
