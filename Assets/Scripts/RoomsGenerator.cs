@@ -21,7 +21,9 @@ public class RoomsGenerator : MonoBehaviour
 
     [Header("Camera")]
     public Camera mainCamera;
-    private float oldCameraFov = 0;
+    [Range(0,1)] public float cameraFov01 = 0.4f; 
+    private float2 camFovRange = new float2(2.0f,170f);
+    private float oldCameraFov01 = 0;
     [Range(0,1)] public float cameraShift = 0;
     public float cameraShiftAngle = 0;
     public float cameraShiftAngleDivergence = 0;
@@ -54,15 +56,13 @@ public class RoomsGenerator : MonoBehaviour
     [Header("Entity objs")]
     public bool entityObjsEnabled = true;
     public GameObject roomBoxPrefab;
+    public Shader objectShader;
     public List<GameObject> objPrefabs;
     private EntityManager entityManager;
     private BlobAssetStore blobAssetStore;
     private List<Entity> masterObjsEntities;
     private List<float> masterObjsScale;
     private List<Entity> spawnedObjs;
-
-    [Header("Material")]
-    public Shader objectShader;
 
     void Start()
     {
@@ -83,13 +83,13 @@ public class RoomsGenerator : MonoBehaviour
             random = new Unity.Mathematics.Random(seed + 2345831274); 
             CalcRows();
             GenerateRooms();
-            UpdateCameraPosizion();
+            UpdateCamera();
         }
         
-        if(oldCameraFov != mainCamera.fieldOfView){
-            oldCameraFov = mainCamera.fieldOfView;
+        if(oldCameraFov01 != cameraFov01){
+            oldCameraFov01 = cameraFov01;
             CalcRows(); 
-            UpdateCameraPosizion();
+            UpdateCamera();
         }
 
         UpdateMaterial();
@@ -144,7 +144,9 @@ public class RoomsGenerator : MonoBehaviour
                         pointLight.transform.position.z,
                         pointLight.range
                     ) );
-                } 
+                }else{
+                    Debug.Log("no point light");
+                }   
 
                 planeMat.SetFloat("_CameraShift", cameraShift);
                 float csa = cameraShiftAngle + cameraShiftAngleDivergence*i;
@@ -231,20 +233,24 @@ public class RoomsGenerator : MonoBehaviour
         return rd;
     }
 
-    void UpdateCameraPosizion(){
+    void UpdateCamera(){
         float camDist;
 
+        float fov = math.remap(0,1,camFovRange.x,camFovRange.y ,cameraFov01); 
+
         //Vertical Fit
-        // float fovRad = mainCamera.fieldOfView * Mathf.Deg2Rad * 0.5f;
+        // float fovRad = fov * Mathf.Deg2Rad * 0.5f;
         // camDist = totH / (Mathf.Tan(fovRad)*2.0f);
 
         //Horizontal Fit
-        var radAngle = mainCamera.fieldOfView * Mathf.Deg2Rad;
+        var radAngle = fov * Mathf.Deg2Rad;
         var radHFOV = Mathf.Atan(Mathf.Tan(radAngle / 2) * mainCamera.aspect);
         camDist = totW / (Mathf.Tan(radHFOV)*2.0f);
         
         mainCamera.transform.position = new Vector3(0,0,-camDist);
         mainCamera.farClipPlane = camDist * roomDepthRange.y;
+
+        mainCamera.fieldOfView = fov;
     }
 
     GameObject GetRMPanelFromPool(){
