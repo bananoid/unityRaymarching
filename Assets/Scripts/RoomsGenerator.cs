@@ -12,46 +12,48 @@ public struct RoomData : IComponentData {
 
 public class RoomsGenerator : MonoBehaviour
 {   
-    public bool roomPlaneEnabled = true;
+    [Header("Seed")]
     private uint oldSeed = 0;
     [SerializeField]
-    // [ShowProperty]
     private uint seed = 1;
-
-    public GameObject roomPlane;
-    public List<GameObject> objects;
-    public Camera mainCamera;
-    private float oldCameraFov = 0;
-    public Vector2 roomDepthRange = new Vector2(1,4);
-
-    private float gridSize = 1;
-    public float gutter = 0.0f;
-    public int cols = 4;
-    private int rows;
-
-    public uint maxSplits = 12;
-    public uint maxIteration = 3;
-
-    private List<GameObject> roomsPool;
-    private List<GameObject> rooms;
+    
     private Unity.Mathematics.Random random;
 
-    private List<RoomData> roomsData;
-
-    private RaymarchHelper raymarchHelper;
-    public Light pointLight;
-
-    [Range(0,10)]
-    public int sceneIndex = 0;
-
-    [Range(0,1)]
-    public float cameraShift = 0;
+    [Header("Camera")]
+    public Camera mainCamera;
+    private float oldCameraFov = 0;
+    [Range(0,1)] public float cameraShift = 0;
     public float cameraShiftAngle = 0;
     public float cameraShiftAngleDivergence = 0;
 
-    public GameObject roomBoxPrefab;
+    [Header("Light")]
+    public Light pointLight;
+    
+    [Header("Room Layout")]
+    public int cols = 4;
+    public uint maxSplits = 12;
+    public uint maxIteration = 3;
+    public float gutter = 0.0f;
+    public Vector2 roomDepthRange = new Vector2(1,4);
+    private float gridSize = 1;
+    private int rows;
+    private float totW;
+    private float totH;
+
+    [Header("RM Panels")]
+    public bool roomPlaneEnabled = true;
+    public GameObject roomPlanelPref;
+    [Range(0,10)]
+    public int rmSceneIndex = 0;
+
+    private List<RoomData> roomsData;
+
+    private List<GameObject> rmPanelsPool;
+    private List<GameObject> rmPanels;
 
     [Header("Entity objs")]
+    public bool entityObjsEnabled = true;
+    public GameObject roomBoxPrefab;
     public List<GameObject> objPrefabs;
     private EntityManager entityManager;
     private BlobAssetStore blobAssetStore;
@@ -61,19 +63,16 @@ public class RoomsGenerator : MonoBehaviour
 
     [Header("Material")]
     public Shader objectShader;
-    public Mesh objectMesh;
-    public Vector3 gradientDirection;
 
     void Start()
     {
         random = new Unity.Mathematics.Random(seed + 2345831274); 
 
-        rooms = new List<GameObject>();
-        roomsPool = new List<GameObject>();
+        rmPanels = new List<GameObject>();
+        rmPanelsPool = new List<GameObject>();
         roomsData = new List<RoomData>();
 
-        raymarchHelper = GetComponent<RaymarchHelper>();
-        roomPlane.SetActive(false);
+        roomPlanelPref.SetActive(false);
 
         InitializeObjEntities();
     }   
@@ -99,13 +98,12 @@ public class RoomsGenerator : MonoBehaviour
     void CalcRows(){
         rows = (int)((float)cols/mainCamera.aspect);
         gridSize = 6f/(float)cols;
+        totW = cols * gridSize;
+        totH = rows * gridSize;
     }
 
     void GenerateRooms()
     {
-        float totW = cols * gridSize;
-        float totH = rows * gridSize;
-
         roomsData = GenerateRoomsData(
             new RoomData { 
                 x = 0,
@@ -113,39 +111,16 @@ public class RoomsGenerator : MonoBehaviour
                 w = totW,
                 h = totH
             });
+    
+        GenerateRaymarchPanels();    
         
         GenerateRoomEntity();
-
-        GameObject room;
-        // float boundsOffset = 0.01f;
-
-        RelaseAllRooms();
-
-        if(roomPlaneEnabled){
-            foreach(RoomData rd in roomsData){
-                RoomData roomData = rd; 
-
-                room = GetRoomFromPool();    
-                room.transform.parent = transform;
-                room.SetActive(true);
-
-                Vector3 scale = new Vector3(roomData.w, roomData.h, roomData.d);
-                float z = roomData.d * 0.5f;
-                Vector3 position = new Vector3(roomData.x,roomData.y, z);
-                
-                position.x -= totW * 0.5f - roomData.w * 0.5f;
-                position.y -= totH * 0.5f - roomData.h * 0.5f;
-
-                room.transform.localScale = scale;
-                room.transform.localPosition = position;
-            }
-        }
 
     }
 
     void UpdateMaterial(){
         int i = 0;
-        foreach(GameObject room in rooms){
+        foreach(GameObject room in rmPanels){
             i++;
 
             GameObject plane = room.transform.GetChild(0)?.gameObject;
@@ -160,7 +135,7 @@ public class RoomsGenerator : MonoBehaviour
                     scale.x, scale.y
                 ));
                 planeMat.SetFloat("_RoomDepth", scale.z);
-                planeMat.SetInt("_SceneIndex", sceneIndex);
+                planeMat.SetInt("_SceneIndex", rmSceneIndex);
 
                 if(pointLight){
                     planeMat.SetVector("_PointLight", new Vector4(
@@ -258,8 +233,6 @@ public class RoomsGenerator : MonoBehaviour
 
     void UpdateCameraPosizion(){
         float camDist;
-        float totH = rows * gridSize;
-        float totW = cols * gridSize;
 
         //Vertical Fit
         // float fovRad = mainCamera.fieldOfView * Mathf.Deg2Rad * 0.5f;
@@ -274,23 +247,24 @@ public class RoomsGenerator : MonoBehaviour
         mainCamera.farClipPlane = camDist * roomDepthRange.y;
     }
 
-    GameObject GetRoomFromPool(){
+    GameObject GetRMPanelFromPool(){
         GameObject obj;
-        if(roomsPool.Count == 0){
-            obj = Instantiate(roomPlane);
+        if(rmPanelsPool.Count == 0){
+            obj = Instantiate(roomPlanelPref);
         }else{
-            obj = roomsPool[0];
-            roomsPool.RemoveAt(0);
+            obj = rmPanelsPool[0];
+            rmPanelsPool.RemoveAt(0);
         }
-        rooms.Add(obj);
+        rmPanels.Add(obj);
         return obj;        
     }
-    void RelaseAllRooms(){
-        foreach(GameObject obj in rooms){
+
+    void ClearRMPanels(){
+        foreach(GameObject obj in rmPanels){
             obj.SetActive(false);
-            roomsPool.Add(obj);
+            rmPanelsPool.Add(obj);
         }
-        rooms = new List<GameObject>();
+        rmPanels.Clear();
     }
 
     void InitializeObjEntities(){
@@ -306,18 +280,12 @@ public class RoomsGenerator : MonoBehaviour
         
         int variationsCount = 2;
         foreach(var obj in objPrefabs){
-            for(int i=0; i<variationsCount; i++){
-                // var color = random.NextFloat4();
-                // color.z = 1;
-                // obj.GetComponent<MeshRenderer>().material.SetVector("colorA", color );
-
+            for(int i=0; i<variationsCount; i++){     
                 var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(obj,settings);
                 masterObjsEntities.Add(entity);
 
                 float scale = random.NextFloat(1.0f, 10.0f) * 0.04f;
-                masterObjsScale.Add(scale);
-                
-                // masterObjsScale.Add(0.3f);
+                masterObjsScale.Add(scale);                
             }
         }
     }
@@ -326,15 +294,41 @@ public class RoomsGenerator : MonoBehaviour
         blobAssetStore.Dispose();
     }
 
+    void GenerateRaymarchPanels(){
+        ClearRMPanels();
+
+        if(!roomPlaneEnabled){
+            return;
+        }
+
+        GameObject room;
+        foreach(RoomData rd in roomsData){
+            RoomData roomData = rd; 
+
+            room = GetRMPanelFromPool();    
+            room.transform.parent = transform;
+            room.SetActive(true);
+
+            Vector3 scale = new Vector3(roomData.w, roomData.h, roomData.d);
+            float z = roomData.d * 0.5f;
+            Vector3 position = new Vector3(roomData.x,roomData.y, z);
+            
+            position.x -= totW * 0.5f - roomData.w * 0.5f;
+            position.y -= totH * 0.5f - roomData.h * 0.5f;
+
+            room.transform.localScale = scale;
+            room.transform.localPosition = position;
+        }
+    }
+
     //ECS
     void GenerateRoomEntity(){
-        float totW = cols * gridSize;
-        float totH = rows * gridSize;
-
-        EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-
         foreach(var e in spawnedObjs){
             entityManager.DestroyEntity(e);
+        }
+
+        if(!entityObjsEnabled){
+            return;
         }
 
         int rndInx;
@@ -365,16 +359,15 @@ public class RoomsGenerator : MonoBehaviour
                 entityManager.SetComponentData(obj,
                     new RoomObjectComponent
                     {
-                        // weight = random.NextFloat(0.3f, 2f),
-                        weight = 1,
+                        weight = random.NextFloat(0.3f, 2f),
+                        // weight = 1,
                         up = math.up()
                     }
                 );
 
-                var pos = new float3(roomData.x,roomData.y,0);//roomData.d * 0.5f);
+                var pos = new float3(roomData.x,roomData.y,0);
                 pos.x -= totW * 0.5f - roomData.w * 0.5f;
                 pos.y -= totH * 0.5f - roomData.h * 0.5f;
-                // random.NextFloat3(-spawnRadius, spawnRadius);
 
                 entityManager.SetComponentData(obj,
                     new Translation { Value = pos }

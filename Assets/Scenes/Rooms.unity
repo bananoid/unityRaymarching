@@ -1073,22 +1073,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6ad1360e30704d93b4d5550b0ea5772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomPlaneEnabled: 1
-  seed: 9989
-  roomPlane: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1,
-    type: 3}
-  objects: []
+  seed: 10003
   mainCamera: {fileID: 1517248415}
   roomDepthRange: {x: 1, y: 4}
-  gutter: 0.02
-  cols: 32
-  maxSplits: 3
-  maxIteration: 4
-  pointLight: {fileID: 632680737}
-  sceneIndex: 0
   cameraShift: 0
   cameraShiftAngle: -11.1
   cameraShiftAngleDivergence: 132.4
+  pointLight: {fileID: 632680737}
+  cols: 32
+  maxSplits: 3
+  maxIteration: 4
+  gutter: 0.02
+  roomPlaneEnabled: 1
+  roomPlanelPref: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1,
+    type: 3}
+  rmSceneIndex: 0
+  entityObjsEnabled: 0
   roomBoxPrefab: {fileID: 0}
   objPrefabs:
   - {fileID: 1896622421753256580, guid: 497910a32706e4b6f83f5bae81decddd, type: 3}
