@@ -10,5 +10,6 @@ public enum MidiMapNote{
 
 public enum MidiMapCC{
     ClockPrecisionDown = 0x6A,
-    ClockPrecisionUp = 0x6B
+    ClockPrecisionUp = 0x6B,
+    RGMaxSplit = 0x31,
 }

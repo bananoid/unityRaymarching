@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using Unity.Entities;
 using Unity.Transforms;
 using Unity.Rendering;
+using MidiJack;
 
 public struct RoomData : IComponentData {
     public float w,h,x,y,d;
@@ -116,7 +117,9 @@ public class RoomsGenerator : MonoBehaviour
     }   
     
     private void Update() {
+        UpdateParamsFromMidi();
         UpdateCurrentPreset();
+
         CalcRows();
 
         if(oldSeed != seed && seed > 0){
@@ -217,6 +220,7 @@ public class RoomsGenerator : MonoBehaviour
 
         float maxSplits = this.maxSplits;    
         uint numSplits = (uint) ((random.NextFloat()*maxSplits) % maxSplits) + 1;
+        numSplits = math.max(numSplits, 1);
         
         bool hSplit = iteration % 2 == 0;
 
@@ -509,7 +513,7 @@ public class RoomsGenerator : MonoBehaviour
 
         RoomPreset preset;
 
-        float defIntSpeed = 4.0f;
+        float defIntSpeed = 2f;
         //Preset 0
         preset = new RoomPreset{
             parameters = new Dictionary<RoomPresetKeys, RoomPresetParam>()
@@ -572,5 +576,10 @@ public class RoomsGenerator : MonoBehaviour
 
     public float getCurParam(RoomPresetKeys key){
         return currentPreset.parameters[key].value;
+    }
+
+    void UpdateParamsFromMidi(){
+        float maxSplitsF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGMaxSplit ); 
+        maxSplits = (uint)math.remap(0,1,1,10,maxSplitsF);
     }
 }
