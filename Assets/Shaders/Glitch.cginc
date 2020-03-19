@@ -2,6 +2,11 @@
 //     return length(uv);
 // }
 
+float _GlitchIntensity;
+float _GlitchSpeed;
+float _GlitchScale;
+int _GlitchType;
+
 float4 glitch(float2 uv){
     float seed = _Id;
     // seed = random(seed);

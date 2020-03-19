@@ -9,6 +9,8 @@
 
         _Id ("Id", float) = 0
 
+        _EnableRM ("Scene Index", int) = 1
+
         _SceneIndex ("Scene Index", int) = 0
         _CumTime ("Cum Time", float) = 0
         _PointLight ("Point Light", Vector) = (0,0,0,1)
@@ -25,6 +27,12 @@
         _CameraShiftAngle ("Camera Shift Angle", float) = 0
 
         rndScale ("Random Scale", float) = 0
+     
+        _GlitchIntensity ("Glitch Intensity", float) = 1
+        _GlitchSpeed ("Glitch Speed", float) = 1
+        _GlitchScale ("Glitch Scale", float) = 1
+        _GlitchType ("Glitch Type", int) = 1
+
     }
     SubShader
     {
@@ -55,7 +63,9 @@
 
             float4 _PointLight;
             float _Id;
+            int _EnableRM;
 
+            #include "Random.cginc"
             #include "DistanceFunctions.cginc"
             #include "SceneDF.cginc"
             #include "Raymarch.cginc"
@@ -93,33 +103,35 @@
             fixed4 frag (v2f i) : SV_Target
             {   
                 float2 screenPos = i.grabUv.xy/i.grabUv.w;
-                // float4 gh = glitch(screenPos); 
-                float4 gh = glitch(i.uv) * 1.0;
-                // float2 ghPos = gh.w; 
+                float4 col = 1;
+                float4 gh = 0;
+                   
+                if(_EnableRM > 0){
+                    float3 rayOrigin = i.ro;
+                    float3 rayDirection = normalize(i.hitPos - rayOrigin);
 
-                float3 rayOrigin = i.ro;
-                float3 rayDirection = normalize(i.hitPos - rayOrigin);
-                
-                float depth = tex2Dproj(_CameraDepthTexture, i.grabUv);
-                depth = Linear01Depth(depth);
-                // depth *= length(rayDirection);
-                // depth = distance(depth, rayOrigin);
+                    float depth = 1;    
+                    
+                    // depth = tex2Dproj(_CameraDepthTexture, i.grabUv + gh);
+                    // depth = Linear01Depth(depth);
+                    // depth *= length(rayDirection);
 
-                float4 rmResult = raymarching(rayOrigin, rayDirection, depth);
+                    float4 rmResult = raymarching(rayOrigin, rayDirection, depth);
+                    
+                    col.xyz = rmResult.xyz;
+
+                }else{
+                    if(_GlitchIntensity > 0){
+                        gh = glitch(i.uv);
+                        float4 projPos = i.grabUv; 
+                        projPos += gh * _GlitchIntensity;
+                        col = tex2Dproj(_GrabTexture, projPos);
+                        col.rgb = lerp(col.rgb, step(0.2,gh.rgb), step(0.99,gh.w));
+                    }else{
+                        col = tex2Dproj(_GrabTexture, i.grabUv);
+                    }      
+                }    
             
-                float4 col = tex2Dproj(_GrabTexture, i.grabUv + gh);
-                
-                // col = float4(1,1,1,1);
-
-                // col.rg = i.grabUv.zw;
-                // col.xyz = depth; 
-                // col.xyz = rayDirection;
-                // col.xyz = rmResult.w;
-                
-                col.rgb = lerp(col.rgb, step(0.2,gh.rgb), step(0.99,gh.w) );
-                col.xyz = lerp(col.xyz,rmResult.xyz, rmResult.w * step(0.5,gh.w) );
-                
-                
                 // col = gh;
                     
                 return col;

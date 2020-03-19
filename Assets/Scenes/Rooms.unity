@@ -495,10 +495,10 @@ MonoBehaviour:
   cameraShiftAngle: -11.1
   cameraShiftAngleDivergence: 132.4
   pointLight: {fileID: 632680737}
-  cols: 64
+  cols: 32
   maxSplits: 3
-  maxIteration: 2
-  gutter: 0.005
+  maxIteration: 3
+  gutter: 0.02
   roomDepthRange: {x: 1, y: 4}
   roomPlaneEnabled: 1
   roomPlanelPref: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1,

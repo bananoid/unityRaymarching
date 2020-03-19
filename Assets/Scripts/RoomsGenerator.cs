@@ -43,7 +43,7 @@ public class RoomsGenerator : MonoBehaviour
     private float totH;
 
     [Header("RM Panels")]
-    public bool roomPlaneEnabled = true;
+    public bool raymarchEnabled = true;
     public GameObject roomPlanelPref;
     [Range(0,10)] public int rmSceneIndex = 0;
     [Range(0,0.1f)] public float rmRndScale = 0; 
@@ -54,7 +54,6 @@ public class RoomsGenerator : MonoBehaviour
     private List<GameObject> rmPanels;
 
     [Header("Entity objs")]
-    public bool entityObjsEnabled = true;
     public GameObject roomBoxPrefab;
     public Shader objectShader;
     public List<GameObject> objPrefabs;
@@ -63,6 +62,12 @@ public class RoomsGenerator : MonoBehaviour
     private List<Entity> masterObjsEntities;
     private List<float> masterObjsScale;
     private List<Entity> spawnedObjs;
+
+    [Header("Glitch")]
+    public int glitchType = 1;
+    [Range(0,1)] public float glitchIntensity = 1;
+    public float glitchSpeed = 1;
+    public float glitchScale = 1;
 
     void Start()
     {
@@ -153,6 +158,12 @@ public class RoomsGenerator : MonoBehaviour
                 planeMat.SetFloat("_CameraShiftAngle", csa);
 
                 planeMat.SetFloat("rndScale", rmRndScale);
+                planeMat.SetInt("_EnableRM", raymarchEnabled ? 1 : 0);
+                
+                planeMat.SetFloat("_GlitchIntensity", glitchIntensity);
+                planeMat.SetFloat("_GlitchSpeed", glitchSpeed);
+                planeMat.SetFloat("_GlitchScale", glitchScale);
+                planeMat.SetInt("_GlitchType", glitchType);
             }
         }
     }
@@ -306,9 +317,9 @@ public class RoomsGenerator : MonoBehaviour
     void GenerateRaymarchPanels(){
         ClearRMPanels();
 
-        if(!roomPlaneEnabled){
-            return;
-        }
+        // if(!roomPlaneEnabled){
+        //     return;
+        // }
 
         GameObject room;
         foreach(RoomData rd in roomsData){
@@ -346,7 +357,7 @@ public class RoomsGenerator : MonoBehaviour
             entityManager.DestroyEntity(e);
         }
 
-        if(!entityObjsEnabled){
+        if(raymarchEnabled){
             return;
         }
 
