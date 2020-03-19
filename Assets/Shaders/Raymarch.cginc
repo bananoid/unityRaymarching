@@ -79,7 +79,7 @@ float3  Shading(float3 p, float3 n, float3 color){
     //     result *= light;
     // }
 
-    float3 light = dot(normalize(float3(1,1,0)), n) * .2;
+    float3 light = dot(normalize(float3(1,1,0)), n) * .01;
     result = result + max(light,0);
 
     // Shadows

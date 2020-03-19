@@ -154,7 +154,7 @@ MonoBehaviour:
   minDistance: 0.1
   strength: 0.1
   vortexStrength: 0.1
-  maxSpeed: 0
+  maxSpeed: 2.02
 --- !u!4 &490289404
 Transform:
   m_ObjectHideFlags: 0
@@ -902,7 +902,8 @@ MonoBehaviour:
   mainCamera: {fileID: 1517248415}
   cameraShiftAngleDivergence: 132.4
   pointLight: {fileID: 632680737}
-  cols: 32
+  pointLightRoomCenter: 0
+  cols: 21
   maxSplits: 3
   maxIteration: 3
   gutter: 0.02

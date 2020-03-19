@@ -17,8 +17,8 @@ Shader "Unlit/VJ"
         colorC ("ColorC", Color) = (0,0,1,1)
         gradientDesc ("Gradient Desc", Vector) = (1,0.2,0.6,1)
 
-        lightPos ("Light Posision", Vector) = (0,0,0)
-        lightFalloff ("Light Fallof", Vector) = (0,100,0)
+        lightDesc ("Light Posision", Vector) = (0,0,0,100)
+        
         lineFade ("Line Fade", float) = 0.01
         lineSize ("Line Size", float) = 0.5
         lineFreq ("Line Freq", float) = 30.
@@ -49,8 +49,7 @@ Shader "Unlit/VJ"
             float4 colorC;
             float4 gradientDesc;
 
-            float3 lightPos;
-            float2 lightFalloff;
+            float4 lightDesc;
 
             float lineFade;
             float lineSize;
@@ -122,8 +121,8 @@ Shader "Unlit/VJ"
                 lines = smoothstep(lineSize-lineFade,lineSize+lineFade,lines);
                 col.r = lines;
 
-                float light = distance(i.worldPos, lightPos);
-                light = smoothstep(lightFalloff.x, lightFalloff.y, light);
+                float light = distance(i.worldPos, lightDesc.xyz);
+                light = smoothstep(0, lightDesc.w, light);
                     
                 //circle = sin(circle * 70. - _Time * 100) * 0.5 + 0.5;
                 //circle = smoothstep(0.45,0.55, circle);       

@@ -110,8 +110,13 @@ public class RoomsGenerator : MonoBehaviour
     private int currentPresetIndex = -1;
     private RoomPreset currentPreset;
 
+    RoomsSystem roomsSystem;
     void Start()
     {
+        roomsSystem = World
+                        .DefaultGameObjectInjectionWorld
+                        .GetOrCreateSystem<RoomsSystem>();
+
         random = new Unity.Mathematics.Random(seed + 2345831274); 
 
         SetFactoryPreset();
@@ -194,13 +199,17 @@ public class RoomsGenerator : MonoBehaviour
                     );
 
                     float3 lp = math.lerp(worldCenter, roomCenter, pointLightRoomCenter);
-
-                    planeMat.SetVector("_PointLight", new Vector4(
+                    
+                    float4 lightDesc = new float4(
                         lp.x,
                         lp.y,
                         lp.z,
                         pointLight.range
-                    ) );
+                    );
+
+                    planeMat.SetVector("_PointLight", lightDesc);    
+                    roomsSystem.lightDesc = lightDesc;
+                
                 }else{
                     Debug.Log("no point light");
                 }   
@@ -261,6 +270,10 @@ public class RoomsGenerator : MonoBehaviour
         
             cellPos += i > 0 ? splitSize : 0;
             cellSize = splitSize;  
+            
+            if(cellSize < gridSize){
+                break;
+            }
 
             float rSize = (parentCellPos + parentCellSize) - (cellPos + cellSize);
             if(rSize <= 0){
@@ -454,6 +467,8 @@ public class RoomsGenerator : MonoBehaviour
                 pos.x -= totW * 0.5f - roomData.w * 0.5f;
                 pos.y -= totH * 0.5f - roomData.h * 0.5f;
 
+                pos += random.NextFloat3(-0.2f,0.2f) * new float3(roomData.w,roomData.h,1);
+
                 entityManager.SetComponentData(obj,
                     new Translation { Value = pos }
                 );
@@ -465,7 +480,7 @@ public class RoomsGenerator : MonoBehaviour
                     
                 entityManager.AddComponentData(obj, new ImpulseData
                 {
-                    Start = scale * 1.5f,
+                    Start = scale * 1.1f,
                     // Start = scale,
                     End = scale,
                     Time = 0f,
@@ -484,7 +499,7 @@ public class RoomsGenerator : MonoBehaviour
                 
                 material.SetVector("roomRect", roomRect );
 
-                float h = random.NextFloat(-0.1f,0.1f);
+                float h = random.NextFloat(-0.05f,0.05f);
                 h = h%1;
                 if(h<0){
                     h = 1+h;
@@ -640,7 +655,7 @@ public class RoomsGenerator : MonoBehaviour
         glitchIntensity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.GlitchIntesity );
 
         //PointLight
-        float smoothSpeed = 1;
+        float smoothSpeed = 3;
 
         float lrc = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightRoomCenter );
         pointLightRoomCenter =  math.lerp(pointLightRoomCenter, lrc, smoothSpeed * Time.deltaTime);

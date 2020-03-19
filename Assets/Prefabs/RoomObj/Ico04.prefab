@@ -62,6 +62,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1896622421753256579, guid: 497910a32706e4b6f83f5bae81decddd,
+        type: 3}
+      propertyPath: m_LinearDamping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896622421753256579, guid: 497910a32706e4b6f83f5bae81decddd,
+        type: 3}
+      propertyPath: m_AngularDamping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896622421753256579, guid: 497910a32706e4b6f83f5bae81decddd,
+        type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896622421753256579, guid: 497910a32706e4b6f83f5bae81decddd,
+        type: 3}
+      propertyPath: m_OverrideDefaultMassDistribution
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1896622421753256580, guid: 497910a32706e4b6f83f5bae81decddd,
         type: 3}
       propertyPath: m_Name
@@ -73,5 +93,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -8057178652176331306, guid: b342373f9fc0e4d0aa84c9ad44e12df6,
         type: 3}
+    - target: {fileID: 3328968463336772799, guid: 497910a32706e4b6f83f5bae81decddd,
+        type: 3}
+      propertyPath: m_Material.m_Restitution.m_Value.Value
+      value: 0.913
+      objectReference: {fileID: 0}
+    - target: {fileID: 3328968463336772799, guid: 497910a32706e4b6f83f5bae81decddd,
+        type: 3}
+      propertyPath: m_Material.m_Friction.m_Value.Value
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 3328968463336772799, guid: 497910a32706e4b6f83f5bae81decddd,
+        type: 3}
+      propertyPath: m_Material.m_RaisesCollisionEvents.m_Value
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 497910a32706e4b6f83f5bae81decddd, type: 3}

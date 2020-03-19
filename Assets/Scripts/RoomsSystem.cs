@@ -4,14 +4,13 @@ using Unity.Entities;
 using Unity.Transforms;
 using Unity.Mathematics;
 using Unity.Collections;
-// using System.Numerics;
-// using Unity.Physics;
-// using Unity.Physics.Authoring;
-// using Unity.Rendering;
+using Unity.Rendering;
 
 public class RoomsSystem : ComponentSystem
 {
     private Random random;
+
+    public float4 lightDesc = new float4(0,0,0,100);
 
     protected override void OnCreate()
     {
@@ -20,6 +19,17 @@ public class RoomsSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
-        
+        Entities.ForEach( (Entity entity, ref RoomObjectComponent roomObject) =>
+       {    
+            //Does it already have a RenderMesh?
+            // bool hasRenderMesh = EntityManager.HasComponent<RenderMesh>(entity);
+            // if(!hasRenderMesh){
+            var renderMesh = EntityManager.GetSharedComponentData<RenderMesh>(entity); 
+            renderMesh.material.SetVector("lightDesc", lightDesc);
+            // }
+       });
+
     }
+
+
 }

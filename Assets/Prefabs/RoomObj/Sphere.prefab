@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3328968463336772799}
   - component: {fileID: 1896622421753256578}
   m_Layer: 0
-  m_Name: RoomObject
+  m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,9 +95,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MotionType: 0
-  m_Mass: 10
-  m_LinearDamping: 0.2
-  m_AngularDamping: 0.2
+  m_Mass: 1
+  m_LinearDamping: 1
+  m_AngularDamping: 1
   m_InitialLinearVelocity:
     x: 0
     y: 0
@@ -184,12 +184,12 @@ MonoBehaviour:
     m_Friction:
       m_Override: 0
       m_Value:
-        Value: 0.8
+        Value: 0.005
         CombineMode: 0
     m_Restitution:
       m_Override: 0
       m_Value:
-        Value: 0
+        Value: 0.913
         CombineMode: 2
     m_BelongsTo:
       m_Override: 0
