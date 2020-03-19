@@ -101,10 +101,6 @@ public class RoomsGenerator : MonoBehaviour
     private int currentPresetIndex = -1;
     private RoomPreset currentPreset;
 
-    private void Awake() {
-        Screen.SetResolution(1920,1080,false);    
-    }
-
     void Start()
     {
         random = new Unity.Mathematics.Random(seed + 2345831274); 
@@ -121,10 +117,6 @@ public class RoomsGenerator : MonoBehaviour
     }   
     
     private void Update() {
-        if(Input.GetKeyDown(KeyCode.F)){
-            Screen.SetResolution(1920,1080,false);    
-        }
-
         UpdateParamsFromMidi();
         UpdateCurrentPreset();
 
