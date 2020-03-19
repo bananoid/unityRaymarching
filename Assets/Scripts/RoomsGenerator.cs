@@ -10,6 +10,14 @@ public struct RoomData : IComponentData {
     public float id;
 }
 
+[System.Serializable]
+public struct RoomPreset {
+    [Header("Room Layout")]
+    public int cols;
+    public uint maxSplits;
+    public uint maxIteration;    
+}
+
 public class RoomsGenerator : MonoBehaviour
 {   
     [Header("Seed")]
@@ -68,6 +76,13 @@ public class RoomsGenerator : MonoBehaviour
     [Range(0,1)] public float glitchIntensity = 1;
     public float glitchSpeed = 1;
     public float glitchScale = 1;
+
+    [Header("Clock")]
+    public ClockEventType seedClockSpeed = 0;
+
+    [Header("Presets")]
+    public int currentPresetIndex = 0;
+    public List<RoomPreset> roomPresets;
 
     void Start()
     {
@@ -460,4 +475,14 @@ public class RoomsGenerator : MonoBehaviour
         }
 
     }
+
+    //Clock Triggers
+    public void ClockTrigged(ClockEventType type){
+        Debug.Log("ClockTrigged " + type);
+
+        if(type == seedClockSpeed){
+            seed += 1;
+        }
+    }
+    
 }

@@ -1,12 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
+public enum ClockEventType{
+    Off = -1,
+    Beat = 0,
+    Bar = 1,
+    Bar4 = 2,
+    Bar8 = 3,
+    Bar16 = 4
+}
+
+[System.Serializable]
+public class ClockEnvent : UnityEvent<ClockEventType>{}
+
 public class ClockTrigger : MonoBehaviour
 {
     [Header("Time")]
+    [Range(0,4)] public int clockPrecision = 4;
     public static ClockTrigger instance;
     public float bpm = 120;
     private float clockInterval, clockTimer;
@@ -37,11 +49,7 @@ public class ClockTrigger : MonoBehaviour
     public Text beatCountText;
 
     [Header("Events")]
-    public UnityEvent beatTrigEvent;
-    public UnityEvent barTrigEvent;
-    public UnityEvent bar4TrigEvent;
-    public UnityEvent bar8TrigEvent;
-    public UnityEvent bar16TrigEvent;
+    public ClockEnvent clockEnvent;
 
     void Awake()
     {
@@ -115,8 +123,7 @@ public class ClockTrigger : MonoBehaviour
                 }
                 averageTime /= tap-1;
 
-                bpm = (float)System.Math.Round((double)60 / averageTime, 4);
-                //bpm = 60 / averageTime;
+                bpm = (float)System.Math.Round((double)60 / averageTime, clockPrecision);
 
             }
 
@@ -182,7 +189,7 @@ public class ClockTrigger : MonoBehaviour
             {
                 if (enableBeatTrack)
                 {
-                    beatTrigEvent.Invoke();
+                    clockEnvent.Invoke(ClockEventType.Beat);
                 }
 
                 beatCount++;
@@ -191,7 +198,7 @@ public class ClockTrigger : MonoBehaviour
                 {
                     if (enableBarTrack)
                     {
-                        barTrigEvent.Invoke();
+                        clockEnvent.Invoke(ClockEventType.Bar);
                     }
 
                     barCount++;
@@ -199,19 +206,19 @@ public class ClockTrigger : MonoBehaviour
 
                 if (beatCount % 8 == 0)
                 {
-                    bar4TrigEvent.Invoke();
+                    clockEnvent.Invoke(ClockEventType.Bar4);
                     bar4Count++;
                 }
 
                 if (beatCount % 16 == 0)
                 {
-                    bar8TrigEvent.Invoke();
+                    clockEnvent.Invoke(ClockEventType.Bar8);
                     bar8Count++;
                 }
 
                 if (beatCount % 32 == 0)
                 {
-                    bar16TrigEvent.Invoke();
+                    clockEnvent.Invoke(ClockEventType.Bar16);
                     bar16Count++;
                 }
 
