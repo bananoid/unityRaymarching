@@ -551,7 +551,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1517248413}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d59ae4f317f9b4f8b8d64f71768aaea6, type: 3}
   m_Name: 
@@ -589,8 +589,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seed: 10151
   mainCamera: {fileID: 1517248415}
-  cameraFov01: 0.2
-  cameraShift: 0
   cameraShiftAngleDivergence: 132.4
   pointLight: {fileID: 632680737}
   cols: 32
