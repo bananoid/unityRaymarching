@@ -10,15 +10,17 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         syphonServer = GetComponent<SyphonServer>();
+        Screen.SetResolution(1920,1080,false);
+        syphonServer.enabled = true;
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.F))
-        {
-            Screen.SetResolution(1920,1080,!Screen.fullScreen);
-            syphonServer.enabled = true;
-        }
-    }
+    // void Update()
+    // {
+    //     if(Input.GetKeyDown(KeyCode.S))
+    //     {
+    //         Screen.SetResolution(1920,1080,false);
+    //         syphonServer.enabled = true;
+    //     }
+    // }
 }

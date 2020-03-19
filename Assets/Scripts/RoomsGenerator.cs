@@ -24,7 +24,7 @@ public class RoomPresetParam{
 public enum RoomPresetKeys {
     // cols,
     // maxSplits,
-    cameraFov01,
+    cameraFov,
     cameraShift,
     cameraShiftAngle,
 }
@@ -46,7 +46,7 @@ public class RoomsGenerator : MonoBehaviour
     [Header("Camera")]
     public Camera mainCamera;
     // [Range(0,1)] public float cameraFov01 = 0.4f; 
-    private float2 camFovRange = new float2(4.0f,170f);
+    // private float2 camFovRange = new float2(4.0f,170f);
     private float oldCameraFov01 = 0;
     // [Range(0,1)] public float cameraShift = 0;
     // public float cameraShiftAngle = 0;
@@ -129,10 +129,6 @@ public class RoomsGenerator : MonoBehaviour
             UpdateCamera();
         }
         
-        // if(oldCameraFov01 != cameraFov01){
-        //     oldCameraFov01 = cameraFov01;
-        //     CalcRows(); 
-        // }
         UpdateCamera();
 
         UpdateMaterial();
@@ -290,8 +286,7 @@ public class RoomsGenerator : MonoBehaviour
     void UpdateCamera(){
         float camDist;
 
-        float fov = math.remap(0,1,camFovRange.x,camFovRange.y, 
-            getCurParam(RoomPresetKeys.cameraFov01)); 
+        float fov = getCurParam(RoomPresetKeys.cameraFov); 
 
         //Vertical Fit
         // float fovRad = fov * Mathf.Deg2Rad * 0.5f;
@@ -518,8 +513,8 @@ public class RoomsGenerator : MonoBehaviour
         preset = new RoomPreset{
             parameters = new Dictionary<RoomPresetKeys, RoomPresetParam>()
             {
-                {RoomPresetKeys.cameraFov01, new RoomPresetParam{
-                    range = new float2(0.2f,0.8f),
+                {RoomPresetKeys.cameraFov, new RoomPresetParam{
+                    range = new float2(4f,170f),
                     interpolate = true,
                     speed = defIntSpeed,
                 }},
@@ -580,6 +575,6 @@ public class RoomsGenerator : MonoBehaviour
 
     void UpdateParamsFromMidi(){
         float maxSplitsF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGMaxSplit ); 
-        maxSplits = (uint)math.remap(0,1,1,10,maxSplitsF);
+        maxSplits = (uint)math.remap(0,1,1,4,maxSplitsF);
     }
 }
