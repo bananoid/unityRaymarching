@@ -12,4 +12,6 @@ public enum MidiMapCC{
     ClockPrecisionDown = 0x6A,
     ClockPrecisionUp = 0x6B,
     RGMaxSplit = 0x31,
+    RGSceneIndex = 0x0D,
+    RGSceneIndexSpread = 0x1D,
 }

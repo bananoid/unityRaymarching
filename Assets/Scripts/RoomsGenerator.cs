@@ -5,6 +5,7 @@ using Unity.Entities;
 using Unity.Transforms;
 using Unity.Rendering;
 using MidiJack;
+using UnityEngine.UI;
 
 public struct RoomData : IComponentData {
     public float w,h,x,y,d;
@@ -36,6 +37,13 @@ public class RoomPreset {
 
 public class RoomsGenerator : MonoBehaviour
 {   
+    [Header("UI")]
+    public Text textSeedSpeed;
+    public Text textSceneIndexMin;
+    public Text textSceneIndexMax;
+    public Text textSceneIndex;
+    private int2 sceneIndexRange = new int2(0,4);
+
     [Header("Seed")]
     private uint oldSeed = 0;
     [SerializeField]
@@ -372,12 +380,14 @@ public class RoomsGenerator : MonoBehaviour
             room.transform.localPosition = position;
 
             GameObject plane = room.transform.GetChild(0)?.gameObject;
-            if(plane){
-                
-                int rndSceneInx = random.NextInt(0,4);
+            if(plane){            
+                int rndSceneInx = random.NextInt(sceneIndexRange.x,sceneIndexRange.y+1);
                 Material planeMat = plane.GetComponent<Renderer>().material;
+                
                 planeMat.SetFloat("_Id", rd.id);
                 planeMat.SetInt("_SceneIndex", rndSceneInx);
+
+                textSceneIndex.text = "SINX "+ rndSceneInx;
 
             }
         }
@@ -576,5 +586,46 @@ public class RoomsGenerator : MonoBehaviour
     void UpdateParamsFromMidi(){
         float maxSplitsF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGMaxSplit ); 
         maxSplits = (uint)math.remap(0,1,1,4,maxSplitsF);
+
+        //Seed Clocl Speed
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            seedClockSpeed = ClockEventType.Beat;
+            textSeedSpeed.text = "SS: Beat";
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            seedClockSpeed = ClockEventType.Bar;
+            textSeedSpeed.text = "SS: Bar";
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            seedClockSpeed = ClockEventType.Bar4;
+            textSeedSpeed.text = "SS: Bar4";
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            seedClockSpeed = ClockEventType.Bar8;
+            textSeedSpeed.text = "SS: Bar8";
+        }
+
+        //Scene Index Random Range 
+        int maxScene = 4;
+        float sceneIndexF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGSceneIndex ) * maxScene; 
+        float sceneIndexSpreadF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGSceneIndexSpread ) * maxScene * 0.5f;      
+        sceneIndexRange.x = (int)(sceneIndexF - sceneIndexSpreadF);
+        sceneIndexRange.y = (int)(sceneIndexF + sceneIndexSpreadF);
+        sceneIndexRange.x = math.clamp(sceneIndexRange.x, 0,maxScene);
+        sceneIndexRange.y = math.clamp(sceneIndexRange.y, 0,maxScene);
+        textSceneIndexMin.text = "SINX min "+sceneIndexRange.x;
+        textSceneIndexMax.text = "SINX max "+sceneIndexRange.y;
+
+        //RayMarch Enable toggle
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            raymarchEnabled = !raymarchEnabled;
+        }
+
+        
     }
 }

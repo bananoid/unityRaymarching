@@ -77,15 +77,15 @@ public class ClockTrigger : MonoBehaviour
             ResetBeat();
         }
 
-        if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            enableBeatTrack = !enableBeatTrack;
-        }
+        // if(Input.GetKeyDown(KeyCode.Alpha1))
+        // {
+        //     enableBeatTrack = !enableBeatTrack;
+        // }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            enableBarTrack = !enableBarTrack;
-        }
+        // if (Input.GetKeyDown(KeyCode.Alpha2))
+        // {
+        //     enableBarTrack = !enableBarTrack;
+        // }
 
         if (
             MidiMaster.GetKnob(
