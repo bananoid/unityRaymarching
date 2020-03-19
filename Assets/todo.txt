@@ -1,9 +1,7 @@
-Controller parameters
-- Random Seed Spraed
 
-- Cum Time Speed
+- Cumulative time
 
-- Glitch intensity
+x Glitch intensity
 - Glitch speed
 - Glitch size
 
@@ -11,13 +9,12 @@ Controller parameters
 - Line speed
 - line size
 
-- RM Scene index random spread size
+x RM Scene index random spread size
 
 - Sphere Light size
 - Sphere Light Z pos
 - Sphere Light oscillation
 
-Cumulative time
 
 Random Color system
 

@@ -62,6 +62,7 @@ public class RoomsGenerator : MonoBehaviour
 
     [Header("Light")]
     public Light pointLight;
+    public float pointLightRoomCenter;
     
     [Header("Room Layout")]
     public int cols = 4;
@@ -185,10 +186,19 @@ public class RoomsGenerator : MonoBehaviour
                 // planeMat.SetInt("_SceneIndex", rmSceneIndex);
 
                 if(pointLight){
+                    float3 worldCenter = pointLight.transform.position;
+                    float3 roomCenter = new float3(
+                        position.x,
+                        position.y,
+                        pointLight.transform.position.z
+                    );
+
+                    float3 lp = math.lerp(worldCenter, roomCenter, pointLightRoomCenter);
+
                     planeMat.SetVector("_PointLight", new Vector4(
-                        pointLight.transform.position.x,
-                        pointLight.transform.position.y,
-                        pointLight.transform.position.z,
+                        lp.x,
+                        lp.y,
+                        lp.z,
                         pointLight.range
                     ) );
                 }else{
@@ -629,5 +639,17 @@ public class RoomsGenerator : MonoBehaviour
         //Glitch
         glitchIntensity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.GlitchIntesity );
 
+        //PointLight
+        float smoothSpeed = 1;
+
+        float lrc = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightRoomCenter );
+        pointLightRoomCenter =  math.lerp(pointLightRoomCenter, lrc, smoothSpeed * Time.deltaTime);
+
+        float lr = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightSize ) * 10;
+        pointLight.range = math.lerp(pointLight.range, lr, smoothSpeed * Time.deltaTime);
+        
+        float3 plPos = pointLight.transform.position; 
+        plPos.z = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightZ ) * 15 - 5;
+        pointLight.transform.position = math.lerp(pointLight.transform.position, plPos, smoothSpeed * Time.deltaTime);
     }
 }
