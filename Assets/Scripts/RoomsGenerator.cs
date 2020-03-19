@@ -524,7 +524,7 @@ public class RoomsGenerator : MonoBehaviour
             parameters = new Dictionary<RoomPresetKeys, RoomPresetParam>()
             {
                 {RoomPresetKeys.cameraFov, new RoomPresetParam{
-                    range = new float2(4f,170f),
+                    range = new float2(5f,30f),
                     interpolate = true,
                     speed = defIntSpeed,
                 }},
@@ -621,11 +621,13 @@ public class RoomsGenerator : MonoBehaviour
         textSceneIndexMax.text = "SINX max "+sceneIndexRange.y;
 
         //RayMarch Enable toggle
-        if(Input.GetKeyDown(KeyCode.Q))
+        if(Input.GetKeyDown(KeyCode.Alpha0))
         {
             raymarchEnabled = !raymarchEnabled;
         }
 
-        
+        //Glitch
+        glitchIntensity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.GlitchIntesity );
+
     }
 }
