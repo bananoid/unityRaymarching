@@ -1,0 +1,32 @@
+Controller parameters
+- Random Seed Spraed
+
+- Cum Time Speed
+
+- Glitch intensity
+- Glitch speed
+- Glitch size
+
+- Line intensity
+- Line speed
+- line size
+
+- RM Scene index random spread size
+
+- Sphere Light size
+- Sphere Light Z pos
+- Sphere Light oscillation
+
+Cumulative time
+
+Random Color system
+
+RM Scene
+- Scared parameter 
+- Perlin noise
+
+Entyti scene
+- Perlin noise
+- Per room attractor
+- Attractor random vortex axe
+
