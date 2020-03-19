@@ -591,7 +591,6 @@ MonoBehaviour:
   mainCamera: {fileID: 1517248415}
   cameraFov01: 0.2
   cameraShift: 0
-  cameraShiftAngle: -11.1
   cameraShiftAngleDivergence: 132.4
   pointLight: {fileID: 632680737}
   cols: 32
@@ -615,11 +614,7 @@ MonoBehaviour:
   glitchIntensity: 1
   glitchSpeed: 1
   glitchScale: 1
-  currentPresetIndex: 0
-  roomPresets:
-  - cols: 1
-    maxSplits: 1
-    maxIteration: 1
+  seedClockSpeed: 0
 --- !u!4 &2005758700
 Transform:
   m_ObjectHideFlags: 0

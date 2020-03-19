@@ -11,11 +11,26 @@ public struct RoomData : IComponentData {
 }
 
 [System.Serializable]
-public struct RoomPreset {
-    [Header("Room Layout")]
-    public int cols;
-    public uint maxSplits;
-    public uint maxIteration;    
+public class RoomPresetParam{
+    public float2 range;
+    public bool interpolate;
+    public float speed;
+    public float endValue;
+    public float value;
+}
+
+[System.Serializable]
+public enum RoomPresetKeys {
+    // cols,
+    // maxSplits,
+    cameraFov01,
+    cameraShift,
+    cameraShiftAngle,
+}
+
+[System.Serializable]
+public class RoomPreset {
+    public Dictionary<RoomPresetKeys, RoomPresetParam> parameters;
 }
 
 public class RoomsGenerator : MonoBehaviour
@@ -29,11 +44,11 @@ public class RoomsGenerator : MonoBehaviour
 
     [Header("Camera")]
     public Camera mainCamera;
-    [Range(0,1)] public float cameraFov01 = 0.4f; 
+    // [Range(0,1)] public float cameraFov01 = 0.4f; 
     private float2 camFovRange = new float2(4.0f,170f);
     private float oldCameraFov01 = 0;
-    [Range(0,1)] public float cameraShift = 0;
-    public float cameraShiftAngle = 0;
+    // [Range(0,1)] public float cameraShift = 0;
+    // public float cameraShiftAngle = 0;
     public float cameraShiftAngleDivergence = 0;
 
     [Header("Light")]
@@ -81,12 +96,15 @@ public class RoomsGenerator : MonoBehaviour
     public ClockEventType seedClockSpeed = 0;
 
     [Header("Presets")]
-    public int currentPresetIndex = 0;
-    public List<RoomPreset> roomPresets;
+    private List<RoomPreset> presets;
+    private int currentPresetIndex = -1;
+    private RoomPreset currentPreset;
 
     void Start()
     {
         random = new Unity.Mathematics.Random(seed + 2345831274); 
+
+        SetFactoryPreset();
 
         rmPanels = new List<GameObject>();
         rmPanelsPool = new List<GameObject>();
@@ -98,19 +116,21 @@ public class RoomsGenerator : MonoBehaviour
     }   
     
     private void Update() {
+        UpdateCurrentPreset();
+        CalcRows();
+
         if(oldSeed != seed && seed > 0){
             oldSeed = seed;
             random = new Unity.Mathematics.Random(seed + 2345831274); 
-            CalcRows();
             GenerateRooms();
             UpdateCamera();
         }
         
-        if(oldCameraFov01 != cameraFov01){
-            oldCameraFov01 = cameraFov01;
-            CalcRows(); 
-            UpdateCamera();
-        }
+        // if(oldCameraFov01 != cameraFov01){
+        //     oldCameraFov01 = cameraFov01;
+        //     CalcRows(); 
+        // }
+        UpdateCamera();
 
         UpdateMaterial();
     }
@@ -168,8 +188,9 @@ public class RoomsGenerator : MonoBehaviour
                     Debug.Log("no point light");
                 }   
 
-                planeMat.SetFloat("_CameraShift", cameraShift);
-                float csa = cameraShiftAngle + cameraShiftAngleDivergence*i;
+                planeMat.SetFloat("_CameraShift", getCurParam(RoomPresetKeys.cameraShift));
+                
+                float csa = getCurParam(RoomPresetKeys.cameraShiftAngle) + cameraShiftAngleDivergence*i;
                 planeMat.SetFloat("_CameraShiftAngle", csa);
 
                 planeMat.SetFloat("rndScale", rmRndScale);
@@ -265,7 +286,8 @@ public class RoomsGenerator : MonoBehaviour
     void UpdateCamera(){
         float camDist;
 
-        float fov = math.remap(0,1,camFovRange.x,camFovRange.y ,cameraFov01); 
+        float fov = math.remap(0,1,camFovRange.x,camFovRange.y, 
+            getCurParam(RoomPresetKeys.cameraFov01)); 
 
         //Vertical Fit
         // float fovRad = fov * Mathf.Deg2Rad * 0.5f;
@@ -331,10 +353,6 @@ public class RoomsGenerator : MonoBehaviour
 
     void GenerateRaymarchPanels(){
         ClearRMPanels();
-
-        // if(!roomPlaneEnabled){
-        //     return;
-        // }
 
         GameObject room;
         foreach(RoomData rd in roomsData){
@@ -481,7 +499,78 @@ public class RoomsGenerator : MonoBehaviour
 
         if(type == seedClockSpeed){
             seed += 1;
+            LoadPreset(0);
         }
     }
-    
+
+    //Presets
+    public void SetFactoryPreset(){
+        presets = new List<RoomPreset>();
+
+        RoomPreset preset;
+
+        float defIntSpeed = 4.0f;
+        //Preset 0
+        preset = new RoomPreset{
+            parameters = new Dictionary<RoomPresetKeys, RoomPresetParam>()
+            {
+                {RoomPresetKeys.cameraFov01, new RoomPresetParam{
+                    range = new float2(0.2f,0.8f),
+                    interpolate = true,
+                    speed = defIntSpeed,
+                }},
+                {RoomPresetKeys.cameraShift, new RoomPresetParam{
+                    range = new float2(0,1),
+                    interpolate = true,
+                    speed = defIntSpeed,
+                }},
+                {RoomPresetKeys.cameraShiftAngle, new RoomPresetParam{
+                    range = new float2(0,10),
+                    interpolate = true,
+                    speed = defIntSpeed,
+                }},
+            }    
+        };
+        presets.Add(preset);
+
+        LoadPreset(0);
+    }
+
+    public void LoadPreset(int inx){
+        inx = math.clamp(inx, 0, presets.Count-1);
+        currentPresetIndex = inx;
+        currentPreset = presets[inx];
+        RandomizePreset(currentPreset);
+    }
+
+    public void RandomizePreset(RoomPreset preset){
+        foreach(var dVal in preset.parameters){    
+            var param = dVal.Value;
+
+            param.value = random.NextFloat(param.range.x,param.range.y);    
+            if(param.interpolate){
+                param.endValue = random.NextFloat(param.range.x,param.range.y);    
+            }else{
+                param.endValue = param.value;
+            }
+        }
+    }
+
+    public void UpdateCurrentPreset(){
+        if(currentPreset == null){
+            return;
+        }
+
+        foreach(var dVal in currentPreset.parameters){   
+            var param = dVal.Value; 
+            if(!param.interpolate){
+                continue;
+            }
+            param.value = math.lerp(param.value, param.endValue, param.speed * Time.deltaTime);
+        }
+    }
+
+    public float getCurParam(RoomPresetKeys key){
+        return currentPreset.parameters[key].value;
+    }
 }
