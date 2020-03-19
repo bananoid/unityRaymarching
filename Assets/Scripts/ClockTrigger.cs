@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using MidiJack;
 
 public enum ClockEventType{
     Off = -1,
@@ -86,6 +87,24 @@ public class ClockTrigger : MonoBehaviour
             enableBarTrack = !enableBarTrack;
         }
 
+        if (
+            MidiMaster.GetKnob(
+                MidiMap.channel, 
+                (int)MidiMapCC.ClockPrecisionUp) > 0
+        ){
+            clockPrecision = 4;
+            Debug.Log("clockPrecision up");
+        }
+
+        if (
+            MidiMaster.GetKnob(
+                MidiMap.channel, 
+                (int)MidiMapCC.ClockPrecisionDown) > 0
+        ){
+            clockPrecision = 0;
+            Debug.Log("clockPrecision down");
+        }
+
         Tapping();
         BeatDetection();
     }
@@ -93,8 +112,14 @@ public class ClockTrigger : MonoBehaviour
     void Tapping()
     {
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (
+            Input.GetKeyDown(KeyCode.Space) ||
+            MidiMaster.GetKeyDown(MidiMap.channel, (int)MidiMapNote.ClockTap)
+        )
         {
+            Debug.Log("Clock Tap ");
+
+
             float deltaTime = Time.realtimeSinceStartup - lastTapTime;
             lastTapTime = Time.realtimeSinceStartup;
 
@@ -140,7 +165,10 @@ public class ClockTrigger : MonoBehaviour
             bpmText.color = Color.red;
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (
+            Input.GetKeyUp(KeyCode.Space) ||
+            MidiMaster.GetKeyUp(MidiMap.channel, (int)MidiMapNote.ClockTap)
+        )
         {
             bpmText.color = Color.white;
         }
@@ -190,6 +218,7 @@ public class ClockTrigger : MonoBehaviour
                 if (enableBeatTrack)
                 {
                     clockEnvent.Invoke(ClockEventType.Beat);
+                
                 }
 
                 beatCount++;

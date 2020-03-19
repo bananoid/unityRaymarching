@@ -478,7 +478,6 @@ public class RoomsGenerator : MonoBehaviour
 
     //Clock Triggers
     public void ClockTrigged(ClockEventType type){
-        Debug.Log("ClockTrigged " + type);
 
         if(type == seedClockSpeed){
             seed += 1;
