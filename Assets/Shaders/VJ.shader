@@ -14,11 +14,9 @@ Shader "Unlit/VJ"
 
         _MainTex ("Texture", 2D) = "white" {}
 
+        _Seed ("float", float) = 0
         _ObjId ("float", float) = 0
 
-        colorA ("ColorA", Color) = (1,0,0,1)
-        colorB ("ColorB", Color) = (1,1,1,1)
-        colorC ("ColorC", Color) = (0,0,1,1)
         gradientDesc ("Gradient Desc", Vector) = (1,0.2,0.6,1)
 
         lightDesc ("Light Posision", Vector) = (0,0,0,100)
@@ -29,6 +27,10 @@ Shader "Unlit/VJ"
         lineSpeed ("Line Speed", float) = 30.
         lineIntesity ("Line Intesity", float) = 0.
 
+        ColorMaskTh ("ColorMaskTh", float) = 0.
+        ColorMaskIntesity ("ColorMaskIntesity", float) = 0.3
+        ColorSpread ("ColorSpread", float) = 1.
+        
         roomRect ("Room rect",Vector ) = (0,0,1,1)
     }
 
@@ -50,11 +52,14 @@ Shader "Unlit/VJ"
             #include "Random.cginc"
 
             sampler2D _MainTex;
+            
+            float _Seed;
             float _ObjId;
 
-            float4 colorA;
-            float4 colorB;
-            float4 colorC;
+            float ColorMaskTh;    
+            float ColorMaskIntesity;
+            float ColorSpread;
+
             float4 gradientDesc;
 
             float4 lightDesc;
@@ -146,39 +151,36 @@ Shader "Unlit/VJ"
 
                 
                 // gradientPos += _Time * 2;
+                float marbleScale = 0.002; 
+                float gradientMarble = (gradientPos+_Time*10)*marbleScale;
 
-                float2 texUV = gradientPos*0.001 + _ObjId;
-                texUV.x += sin(_Time * 0.02134);    
-                texUV.y += cos(_Time * 0.03434);
+                float2 texUV = gradientMarble + randomUV(_ObjId) * ColorSpread + randomUV(_Seed);
+                texUV.x += sin(_Time * 0.02134) * ColorSpread;    
+                texUV.y += cos(_Time * 0.03434) * ColorSpread;
 
                 float4 texCol = tex2D(_MainTex, texUV );    
                 col = texCol;
 
-                float maskThreshold = 0.5;
                 float maskThresholdRadius = 0.01;
-                float mtA = maskThreshold + maskThresholdRadius;
-                float mtB = maskThreshold - maskThresholdRadius;
+                float mtA = ColorMaskTh + maskThresholdRadius;
+                float mtB = ColorMaskTh - maskThresholdRadius;
 
-                float colorMask = smoothstep(mtA, mtB, sin(_ObjId*7 + _Time*5.2) * 0.5 + 0.5);
-                colorMask += 0.4;
-                colorMask = clamp(0,1,colorMask);
+                // float objIdOsc = sin(_ObjId*7 + _Time*100.2) * 0.5 + 0.5;    
+                float colorMask = smoothstep(mtA, mtB, _ObjId);
                 col *= colorMask;
-                // col += (1-colorMask)*0.5;
+                col += (1-colorMask)*ColorMaskIntesity*_ObjId;
+                
                 // col = colorMask.xxxx;
+                // col = _Seed.xxxx;
+                // col = objIdOsc.xxxx;
 
                 gradient = col * gradientPos;
 
                 col.rgb *= gradient;
-                // col.rgb += float3(lines,lines,lines);
                 col.rgb += lines * (1-i.localPos.z*2) * lineIntesity;
-                // col.rgb *= gradient;               
-
-                
-                   
-                return col * light; 
-                // return lerp(float4(1,0,0,1), col,roomMask) * light; 
-
-
+                col *= light;    
+                       
+                return col; 
             }
             ENDCG
         }

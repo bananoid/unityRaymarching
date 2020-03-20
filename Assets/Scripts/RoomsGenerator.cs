@@ -38,9 +38,15 @@ public class RoomPreset {
 public class RoomsGenerator : MonoBehaviour
 {       
     [Header("Texture")]
-    public Texture colorTexture;
-    
+    public List<Texture> colorTextures;
+    private Texture colorTexture;
+    [Range(0,1)] public float colorTextureInxF = 0;
+    [Range(0,1)] public float colorMaskTh = 0;
+    [Range(0,1)] public float colorMaskIntesity = 0.5f; 
+    [Range(0,1)] public float colorSpread = 1; 
+
     [Header("UI")]
+    public Text textColorTexInx;
     public Text textSeedSpeed;
     public Text textSceneIndexMin;
     public Text textSceneIndexMax;
@@ -135,6 +141,7 @@ public class RoomsGenerator : MonoBehaviour
     
     private void Update() {
         UpdateParamsFromInput();
+        SetColorTexture();
         UpdateCurrentPreset();
 
         CalcRows();
@@ -156,6 +163,12 @@ public class RoomsGenerator : MonoBehaviour
         gridSize = 6f/(float)cols;
         totW = cols * gridSize;
         totH = rows * gridSize;
+    }
+
+    void SetColorTexture(){
+        int inx = (int)math.round(colorTextureInxF * (colorTextures.Count-1));
+        colorTexture = colorTextures[inx];   
+        textColorTexInx.text = "CtInx: "+ inx; 
     }
 
     void GenerateRooms()
@@ -229,6 +242,11 @@ public class RoomsGenerator : MonoBehaviour
                 planeMat.SetFloat("_GlitchSpeed", glitchSpeed);
                 planeMat.SetFloat("_GlitchScale", glitchScale);
                 planeMat.SetInt("_GlitchType", glitchType);
+
+                // planeMat.SetFloat("ColorMaskTh", colorMaskTh);
+                // planeMat.SetFloat("ColorMaskIntesity", colorMaskIntesity);
+                // planeMat.SetFloat("ColorSpread", colorSpread);
+
             }
         }
     }
@@ -434,6 +452,8 @@ public class RoomsGenerator : MonoBehaviour
         if(masterObjsEntities.Count==0){
             return;
         }
+
+        float seed = random.NextFloat();
     
         foreach(var roomData in roomsData){
             float4 roomRect; 
@@ -502,24 +522,29 @@ public class RoomsGenerator : MonoBehaviour
                 
                 material.SetVector("roomRect", roomRect );
 
-                float h = random.NextFloat(-0.05f,0.05f);
-                h = h%1;
-                if(h<0){
-                    h = 1+h;
-                }
-                var color = Color.HSVToRGB(
-                    h,
-                    0.9f,
-                    1
-                );
-                material.SetVector("colorA", color );
+                // float h = random.NextFloat(-0.05f,0.05f);
+                // h = h%1;
+                // if(h<0){
+                //     h = 1+h;
+                // }
+                // var color = Color.HSVToRGB(
+                //     h,
+                //     0.9f,
+                //     1
+                // );
+                // material.SetVector("colorA", color );
                 
                 var gradient = random.NextFloat4();
                 gradient.w = random.NextFloat(0.5f,1.1f);
                 material.SetTexture("_MainTex", colorTexture);
                 material.SetVector("gradientDesc", gradient);
+                
+                material.SetFloat("_Seed", seed);
                 material.SetFloat("_ObjId", random.NextFloat());
 
+                material.SetFloat("ColorMaskTh", colorMaskTh);
+                material.SetFloat("ColorMaskIntesity", colorMaskIntesity);
+                material.SetFloat("ColorSpread", colorSpread);
 
                 Mesh mesh = renderMesh.mesh;
 
@@ -673,5 +698,12 @@ public class RoomsGenerator : MonoBehaviour
         float3 plPos = pointLight.transform.position; 
         plPos.z = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightZ, 0.5f ) * 15 - 5;
         pointLight.transform.position = math.lerp(pointLight.transform.position, plPos, smoothSpeed * Time.deltaTime);
+
+        //Color
+        colorTextureInxF =  MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorTexInx, 0.5f );
+        colorMaskTh = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorMaskTh, 0.5f );
+        colorMaskIntesity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorMaskIntesity, 0.5f );
+        colorSpread = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorSpread, 0.5f );
+
     }
 }
