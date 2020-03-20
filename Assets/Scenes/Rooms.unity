@@ -673,7 +673,11 @@ MonoBehaviour:
   - {fileID: 2800000, guid: d4bc925b962f6452f9cd16d372463c79, type: 3}
   - {fileID: 2800000, guid: bdd4d3edb127843bd99889cf9aa6cd75, type: 3}
   - {fileID: 2800000, guid: eee9455daa8ec442dacfc810dcfd1690, type: 3}
+  - {fileID: 2800000, guid: 7904b76030a354a8aa53dd1cb8f25429, type: 3}
   colorTextureInxF: 0
+  colorMaskTh: 0
+  colorMaskIntesity: 0.5
+  colorSpread: 1
   textColorTexInx: {fileID: 699404606}
   textSeedSpeed: {fileID: 1182529808}
   textSceneIndexMin: {fileID: 2092557575}
@@ -681,6 +685,7 @@ MonoBehaviour:
   textSceneIndex: {fileID: 612755661}
   seed: 10151
   mainCamera: {fileID: 1517248415}
+  cameraShiftIntensity: 1
   cameraShiftAngleDivergence: 132.4
   pointLight: {fileID: 632680737}
   pointLightRoomCenter: 0
@@ -689,7 +694,8 @@ MonoBehaviour:
   maxIteration: 4
   gutter: 0.02
   roomDepthRange: {x: 1, y: 4}
-  raymarchEnabled: 0
+  RMSceneCount: 4
+  raymarchEnabled: 1
   roomPlanelPref: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1,
     type: 3}
   rmSceneIndex: 4

@@ -1,6 +1,8 @@
 #define PI 3.14159265359
 #define PHI (1.618033988749895)
 
+#include "noise/ClassicNoise2D.hlsl"
+
 float4 _PlaneBox;
 float _RoomDepth;
 
@@ -54,13 +56,26 @@ float4 Scene01(float3 p){
     float3 col = WorldColor(p);
 
     float3 surfP = p;
-    // surfP.y += 1/p.z * 0.01;
-
+    float3 waveP = p;
+    waveP.xy /= roomBox.xy; 
+    
     float height = roomBox.y;
-    height *= 1-p.z*0.1;
+    height *= 1-p.z*0.03;
+    
+    float waveSize = 0.3;
+    float waveFreq = 4;
+    float waveSpeed = 0.4;
+
+    waveP.z += _Time * waveSpeed * 120;
+    float wave = cnoise(waveP.xz * waveSize * waveFreq) * waveSize;
+
+    // wave = clamp(wave,-0.2,0.2);
+
+    surfP.y += wave * height;
+
     float planeBot = sdPlane(surfP, float4(0,1,0,height));
     float planeTop = sdPlane(surfP, float4(0,-1,0,height));
-    float frontPlane = sdPlane(p, float4(0,0,1,0));
+    float frontPlane = sdPlane(p, float4(0,0,1,0.4)) + waveSize;
 
     float combine; 
     combine = opU(planeBot,planeTop);
@@ -218,11 +233,11 @@ float _CameraShiftAngle;
 float rndScale;
 
 float4 distanceField(float3 p) {    
-    if(rndScale > 0){
-        float3 rndPos = randomPos(p+frac(_Time))*2-1;
-        rndPos *= rndScale * max( pow(p.z,0.4) , 0.01);
-        p += rndPos;
-    }
+    // if(rndScale > 0){
+    //     float3 rndPos = randomPos(p+frac(_Time))*2-1;
+    //     rndPos *= rndScale * max( pow(p.z,0.4) , 0.01);
+    //     p += rndPos;
+    // }
 
     p.xy -= _PlaneBox.xy;
     
