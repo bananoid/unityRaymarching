@@ -100,7 +100,7 @@ float4 Scene01(float3 p){
     return result;
 }
 
-float4 _Scene00(float3 p){
+float4 Scene02(float3 p){
     
     float3 boxS = 0;
     boxS.xy = _PlaneBox.zw * 0.5; 
@@ -142,42 +142,36 @@ float4 _Scene00(float3 p){
     return combine;
 }
 
-float4 _Scene01(float3 p){
+// float4 _Scene01(float3 p){
 
-    rotateAxe(0.2, p.yz);
-    // float3 color = (1,0,0);
-    // return float4(color, box);
-    float zPos = _Time * 20.0;
-    float xPos = cos(_Time * 15.0 + 1.3) * 3.;
+//     rotateAxe(0.2, p.yz);
+//     // float3 color = (1,0,0);
+//     // return float4(color, box);
+//     float zPos = _Time * 20.0;
+//     float xPos = cos(_Time * 15.0 + 1.3) * 3.;
 
-    float3 sPos = p + _sphere2.xyz + float3(xPos,0,zPos);
+//     float3 sPos = p + _sphere2.xyz + float3(xPos,0,zPos);
 
-    sPos.y += sin(sPos.z * 1.3 + _Time * 10)*0.1;
+//     sPos.y += sin(sPos.z * 1.3 + _Time * 10)*0.1;
     
-    float mod = 2;
-    sPos.xz = (frac((sPos.xz+0.5)/mod)-0.5)*mod;
+//     float mod = 2;
+//     sPos.xz = (frac((sPos.xz+0.5)/mod)-0.5)*mod;
 
-    float4 Sphere1 = float4(float3(0.5,0.3,0.5), sdSphere(sPos, _sphere2.w));
+//     float4 Sphere1 = float4(float3(0.5,0.3,0.5), sdSphere(sPos, _sphere2.w));
 
-    float box = sdBox(p, float3(20,0.0,30)) * -1.;
-    float4 boxC = float4(float3(0.0,0.5,1.0), box); 
-    float4 combine = opSS(Sphere1,boxC,0.0);    
-    return combine;
-}
-
-float4 Scene02(float3 p){   
-    float box = sdBox(p, float3(20,1.0,10)) * -1.;
-    float4 boxC = float4(float3(0.0,0.5,1.0), box); 
-    return boxC;
-}  
+//     float box = sdBox(p, float3(20,0.0,30)) * -1.;
+//     float4 boxC = float4(float3(0.0,0.5,1.0), box); 
+//     float4 combine = opSS(Sphere1,boxC,0.0);    
+//     return combine;
+// }
 
 //Gyroid
 float4 Scene03(float3 p){
+    float4 roomBox = RoomBox(p); 
     float plane = sdPlane(p, float4(0,0,-1,0.3));
-    // float box = sdBox(p, float3(10000,10000,5));
 
-    float scale = 8.;
-    p.y += _Time * 1.02;
+    float scale = 10. / pow(roomBox.x*roomBox.y,0.3);
+    p.y += _CumTime * 10.0;
     p.z += _Time * 1.3450;
     p += _sphere2.xyz;
 
@@ -186,7 +180,8 @@ float4 Scene03(float3 p){
     
     float combine = max(plane, gyroid);
 
-    float3 color = float3(0.94,0.2,0.1);
+    //Color
+    float3 color = WorldColor(p);
     color += smoothstep(0.4, 0.6,gyroid);
     return float4(color, combine);
 }
