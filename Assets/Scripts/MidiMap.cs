@@ -13,6 +13,7 @@ public enum MidiMapCC{
     ClockPrecisionUp = 0x6B,
     
     //Col 1
+    RGCameraShiftIntensity = 0x4D,
     RGMaxSplit = 0x31,
     RGSceneIndex = 0x1D,
     RGSceneIndexSpread = 0x0D,
@@ -30,6 +31,6 @@ public enum MidiMapCC{
     ColorTexInx = 0x50,
     ColorMaskTh = 0x20,
     ColorMaskIntesity = 0x10,
-    ColorSpread =0x34, // not assigned
+    ColorSpread =0x34,
 
 }

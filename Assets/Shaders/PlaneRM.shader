@@ -3,6 +3,7 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        
         _MaxIterations ("Max Iterations", int) = 200
         _MaxDistance ("Max Distance", float) = 100   
         _MinDistance ("Min Distance", float) = 0.001

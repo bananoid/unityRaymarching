@@ -65,7 +65,7 @@ public class RoomsGenerator : MonoBehaviour
     // [Range(0,1)] public float cameraFov01 = 0.4f; 
     // private float2 camFovRange = new float2(4.0f,170f);
     private float oldCameraFov01 = 0;
-    // [Range(0,1)] public float cameraShift = 0;
+    [Range(0,1)] public float cameraShiftIntensity = 1;
     // public float cameraShiftAngle = 0;
     public float cameraShiftAngleDivergence = 0;
 
@@ -85,6 +85,8 @@ public class RoomsGenerator : MonoBehaviour
     private float totH;
 
     [Header("RM Panels")]
+    public int RMSceneCount = 4;
+
     public bool raymarchEnabled = true;
     public GameObject roomPlanelPref;
     [Range(0,10)] public int rmSceneIndex = 0;
@@ -230,7 +232,7 @@ public class RoomsGenerator : MonoBehaviour
                     Debug.Log("no point light");
                 }   
 
-                planeMat.SetFloat("_CameraShift", getCurParam(RoomPresetKeys.cameraShift));
+                planeMat.SetFloat("_CameraShift", getCurParam(RoomPresetKeys.cameraShift) * cameraShiftIntensity);
                 
                 float csa = getCurParam(RoomPresetKeys.cameraShiftAngle) + cameraShiftAngleDivergence*i;
                 planeMat.SetFloat("_CameraShiftAngle", csa);
@@ -429,7 +431,9 @@ public class RoomsGenerator : MonoBehaviour
                 Material planeMat = plane.GetComponent<Renderer>().material;
                 
                 planeMat.SetFloat("_Id", rd.id);
+
                 planeMat.SetInt("_SceneIndex", rndSceneInx);
+                planeMat.SetTexture("_MainTex", colorTexture);
 
                 textSceneIndex.text = "SINX "+ rndSceneInx;
 
@@ -666,14 +670,16 @@ public class RoomsGenerator : MonoBehaviour
             textSeedSpeed.text = "SS: Bar8";
         }
 
+        //Camera shift
+        cameraShiftIntensity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGCameraShiftIntensity );
+
         //Scene Index Random Range 
-        int maxScene = 4;
-        float sceneIndexF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGSceneIndex ) * maxScene; 
-        float sceneIndexSpreadF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGSceneIndexSpread ) * maxScene * 0.5f;      
+        float sceneIndexF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGSceneIndex ) * RMSceneCount; 
+        float sceneIndexSpreadF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGSceneIndexSpread ) * RMSceneCount * 0.5f;      
         sceneIndexRange.x = (int)(sceneIndexF - sceneIndexSpreadF);
         sceneIndexRange.y = (int)(sceneIndexF + sceneIndexSpreadF);
-        sceneIndexRange.x = math.clamp(sceneIndexRange.x, 0,maxScene);
-        sceneIndexRange.y = math.clamp(sceneIndexRange.y, 0,maxScene);
+        sceneIndexRange.x = math.clamp(sceneIndexRange.x, 0,RMSceneCount);
+        sceneIndexRange.y = math.clamp(sceneIndexRange.y, 0,RMSceneCount);
         textSceneIndexMin.text = "SINX min "+sceneIndexRange.x;
         textSceneIndexMax.text = "SINX max "+sceneIndexRange.y;
 

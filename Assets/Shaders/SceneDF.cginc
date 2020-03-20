@@ -13,7 +13,69 @@ float _RoomDepth;
 //     return combine;    
 // }
 
+float4 RoomBox(float3 p){
+    float4 boxS;
+
+    boxS.xy = _PlaneBox.zw * 0.5; 
+    boxS.z = _RoomDepth;
+    boxS.w = float3(0,0,-boxS.z*0.5);
+
+    return boxS;
+}
+
+float3 WorldColor(float3 p){
+    float3 col = float3(0.9,0.2,0.1);
+    return col;
+}
+
+//Box Room
 float4 Scene00(float3 p){
+    //Room Box
+    float4 roomBox = RoomBox(p); 
+
+    //Color
+    float3 col = WorldColor(p);
+
+    float box = sdOpenBox(p, roomBox.xyz);   
+    
+    //Result
+    float4 result;
+    result.xyz = col;
+    result.w = box;
+    return result;
+}
+
+//Landscape Room
+float4 Scene01(float3 p){
+    //Room Box
+    float4 roomBox = RoomBox(p); 
+    
+    //Color
+    float3 col = WorldColor(p);
+
+    float3 surfP = p;
+    // surfP.y += 1/p.z * 0.01;
+
+    float height = roomBox.y;
+    height *= 1-p.z*0.1;
+    float planeBot = sdPlane(surfP, float4(0,1,0,height));
+    float planeTop = sdPlane(surfP, float4(0,-1,0,height));
+    float frontPlane = sdPlane(p, float4(0,0,1,0));
+
+    float combine; 
+    combine = opU(planeBot,planeTop);
+    // combine = planeBot;
+    // combine = planeTop;
+    combine = opS(frontPlane,combine);
+
+    //Result
+    float4 result;
+    result.xyz = col;
+    result.w = combine;
+    return result;
+}
+
+float4 _Scene00(float3 p){
     
     float3 boxS = 0;
     boxS.xy = _PlaneBox.zw * 0.5; 
@@ -55,7 +117,7 @@ float4 Scene00(float3 p){
     return combine;
 }
 
-float4 Scene01(float3 p){
+float4 _Scene01(float3 p){
 
     rotateAxe(0.2, p.yz);
     // float3 color = (1,0,0);
