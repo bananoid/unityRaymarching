@@ -29,7 +29,7 @@ float3 WorldColor(float3 p){
     float3 col = palette(
         p.y*0.024512 + 
         p.x*0.01312 + 
-        p.z*0.01643 + _Time, 
+        p.z*0.01643 + _Time * 0.1, 
         float3(0.5, 0.5, 0.5), 
         float3(0.5, 0.5, 0.5), 
         float3(1.0, 1.0, 1.0), 
@@ -175,6 +175,8 @@ float4 Scene02(float3 p){
 
 //Gyroid
 float4 Scene03(float3 p){
+    float3 color = WorldColor(p);
+
     float4 roomBox = RoomBox(p); 
     float plane = sdPlane(p, float4(0,0,-1,0.3));
 
@@ -189,7 +191,6 @@ float4 Scene03(float3 p){
     float combine = max(plane, gyroid);
 
     //Color
-    float3 color = WorldColor(p);
     color += smoothstep(0.4, 0.6,gyroid);
     return float4(color, combine);
 }

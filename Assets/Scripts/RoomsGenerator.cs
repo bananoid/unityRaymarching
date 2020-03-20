@@ -151,11 +151,10 @@ public class RoomsGenerator : MonoBehaviour
     private void Update() {
 
         cumTime += Time.deltaTime * cumTimeSpeed;
-        // if(cumTime > 0){
-
-        // }
-
-
+        if(cumTime > 1000){
+            cumTime = 0;
+        }
+        
         UpdateParamsFromInput();
         SetColorTexture();
         UpdateCurrentPreset();
