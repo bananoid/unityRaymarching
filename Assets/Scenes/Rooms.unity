@@ -345,6 +345,11 @@ PrefabInstance:
       propertyPath: clockEnvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2005758699}
+    - target: {fileID: 2226428428256368925, guid: d46e27b7019cc4c4495d950b94f015a7,
+        type: 3}
+      propertyPath: clockPrecision
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d46e27b7019cc4c4495d950b94f015a7, type: 3}
 --- !u!114 &699404606 stripped

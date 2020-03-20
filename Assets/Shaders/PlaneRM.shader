@@ -50,7 +50,7 @@
             #pragma target 3.5
 
             #include "UnityCG.cginc"
-
+            sampler2D _MainTex;
             sampler2D _GrabTexture;
             sampler2D_float _CameraDepthTexture;
 
@@ -87,7 +87,7 @@
                 float4 grabUv: TEXCOORD3;
             };
 
-            sampler2D _MainTex;
+            // sampler2D _MainTex;
             float4 _MainTex_ST;
 
             v2f vert (appdata v)

@@ -698,7 +698,7 @@ public class RoomsGenerator : MonoBehaviour
         float lrc = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightRoomCenter, 0.5f );
         pointLightRoomCenter =  math.lerp(pointLightRoomCenter, lrc, smoothSpeed * Time.deltaTime);
 
-        float lr = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightSize, 1 ) * 10;
+        float lr = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightSize, 1 ) * 20;
         pointLight.range = math.lerp(pointLight.range, lr, smoothSpeed * Time.deltaTime);
         
         float3 plPos = pointLight.transform.position; 

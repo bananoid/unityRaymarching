@@ -26,7 +26,8 @@ float4 RoomBox(float3 p){
 }
 
 float3 WorldColor(float3 p){
-    float3 col = float3(0.9,0.2,0.1);
+    // float3 col = tex2D(_MainTex, p.xz ).rgb;
+    float3 col = float3(1,0,0);
     return col;
 }
 
