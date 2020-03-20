@@ -274,11 +274,11 @@ float _CameraShiftAngle;
 float rndScale;
 
 float4 distanceField(float3 p) {    
-    // if(rndScale > 0){
-    //     float3 rndPos = randomPos(p+frac(_Time))*2-1;
-    //     rndPos *= rndScale * max( pow(p.z,0.4) , 0.01);
-    //     p += rndPos;
-    // }
+    if(rndScale > 0){
+        float3 rndPos = randomPos(p+frac(_Time))*2-1;
+        rndPos *= rndScale * max( pow(p.z,0.4) , 0.01);
+        p += rndPos;
+    }
 
     p.xy -= _PlaneBox.xy;
     

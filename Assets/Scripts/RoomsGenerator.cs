@@ -733,9 +733,12 @@ public class RoomsGenerator : MonoBehaviour
         colorSpread = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorSpread, 0.5f );
 
         //Line
-        cumTimeSpeed = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.cumTimeSpeed,1);
-        lineIntesity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineIntesity,1);
+        cumTimeSpeed = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.cumTimeSpeed,0.1f);
+        lineIntesity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineIntesity,0);
         lineSize = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineSize,0.5f);
-        lineFreq = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineFreq,30f);
+        lineFreq = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineFreq,0f);
+        
+        //rmRndScale
+        rmRndScale = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.rmRndScale,0f) * 1;
     }
 }

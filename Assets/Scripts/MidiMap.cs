@@ -39,4 +39,9 @@ public enum MidiMapCC{
     lineSize = 0x21,
     lineFreq = 0x11,
 
+    //Col8
+    // 0x14
+    // 0x24
+    // 0x38
+    rmRndScale = 0x54,
 }
