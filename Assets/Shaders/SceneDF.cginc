@@ -116,18 +116,24 @@ float4 Scene02(float3 p){
     
     float3 boxCenter = float3(0,0,-boxS.z*0.5);
 
-    // boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.2;
-    // boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
-    // boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
-    float sphere1 = sdSphere(p + boxCenter, 0.5);
+    float scale = pow(boxS.x*boxS.y,0.3);
+
+    float t = _CumTime;
+
+    boxCenter.z += sin(t * 10 * boxS.x) * boxS.z * 0.2;
+    boxCenter.x += cos(t * 10.2345 * boxS.x) * boxS.x;
+    boxCenter.y = sin(t * 2.45 * boxS.x) * boxS.y;
+    float sphere1 = sdSphere(p + boxCenter, 0.5 * scale);
     
-    boxCenter.z += sin(_Time * 10 * boxS.x) * boxS.z * 0.2;
-    boxCenter.x += cos(_Time * 10.2345 * boxS.x) * boxS.x;
-    boxCenter.y = sin(_Time * 2.45 * boxS.x) * boxS.y;
-    float sphere2 = sdSphere(p+boxCenter, 0.5);
+    boxCenter.z += sin(t * 10 * boxS.x) * boxS.z * 0.2;
+    boxCenter.x += cos(t * 10.2345 * boxS.x) * boxS.x;
+    boxCenter.y = sin(t * 2.45 * boxS.x) * boxS.y;
+    float sphere2 = sdSphere(p+boxCenter, 0.5 * scale);
     
-    float3 roomColor = float3(0.2,0.4,0.9) * 0.4;
-    float3 objColor = float3(0.9,0.2,0.1) * 3;
+    float3 col = WorldColor(p);
+
+    float3 roomColor = col;
+    float3 objColor = col + float3(0.9,0.2,0.1) * 3;
 
     float4 combine = opUS(
         float4(objColor,sphere1), 
@@ -185,7 +191,6 @@ float4 Scene03(float3 p){
     color += smoothstep(0.4, 0.6,gyroid);
     return float4(color, combine);
 }
-
 
 //Petal 6
 float4 Scene04(float3 p){  
