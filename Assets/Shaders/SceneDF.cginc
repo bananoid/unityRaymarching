@@ -26,9 +26,18 @@ float4 RoomBox(float3 p){
 }
 
 float3 WorldColor(float3 p){
-    // float3 col = tex2D(_MainTex, p.xz ).rgb;
-    float3 col = float3(1,0,0);
-    return col;
+    float3 col = palette(
+        p.y*0.024512 + 
+        p.x*0.01312 + 
+        p.z*0.01643 + _Time, 
+        float3(0.5, 0.5, 0.5), 
+        float3(0.5, 0.5, 0.5), 
+        float3(1.0, 1.0, 1.0), 
+        // float3(0.00, 0.33, 0.67)
+        float3(0.00, 0.33, 0.67	)
+    );
+    col.g *= 0.8;
+    return col + 0.2;
 }
 
 //Box Room

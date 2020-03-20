@@ -59,19 +59,11 @@ float2 _ShadowDistance;
 float _ShadowIntensity, _ShadowPenumbra;
 
 float3  Shading(float3 p, float3 n, float3 color){
-    
     //Diffuse color;
     float3 result = color;
-    // float3 result = float3(0.8,0.4,0.4) * 0.7;
-    // float3 result = float3(0.3,0.8,0.6) * 0.7;
-    // float3 result = float3(1,0,0);
-    // float3 result = n.xxx + n.yyy * 0.5 + 0.5;
     
     float spherLight = distance(p, _PointLight.xyz);
     spherLight = 1 - smoothstep(0, _PointLight.w, spherLight);
-    // spherLight = 1 - smoothstep(0, 3, spherLight);
-
-    // result = (n *0.5 + 0.5);
 
     // Directional Light
     // if(_LightIntensity > 0){
@@ -91,12 +83,13 @@ float3  Shading(float3 p, float3 n, float3 color){
 
     //Ambient Occlusion
     // if(_AoIntensity > 0){
-    float ao = AmbientOcclusion(p,n);
-    result *= ao ;
     // return float3(ao,ao,ao);
     // }
+
+    float ao = AmbientOcclusion(p,n);
+    result *= ao ;
     
-    float lines = sin(p.z * 20 + _Time * 100)*0.5+0.5;
+    float lines = sin(p.z * 2 + _Time * 100)*0.5+0.5;
     float lineSMin = 0.3;
     float lineSMax = 0.1;
     lines = smoothstep(lineSMin, lineSMax, lines);
