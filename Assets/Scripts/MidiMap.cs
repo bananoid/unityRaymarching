@@ -33,4 +33,10 @@ public enum MidiMapCC{
     ColorMaskIntesity = 0x10,
     ColorSpread =0x34,
 
+    //Col 5
+    cumTimeSpeed = 0x51,
+    lineIntesity = 0x35,
+    lineSize = 0x21,
+    lineFreq = 0x11,
+
 }

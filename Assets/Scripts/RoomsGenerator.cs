@@ -121,6 +121,13 @@ public class RoomsGenerator : MonoBehaviour
     private int currentPresetIndex = -1;
     private RoomPreset currentPreset;
 
+    [Header("Line")]
+    float cumTime = 0;
+    float cumTimeSpeed = 1;
+    public float lineIntesity = 1;
+    public float lineSize = 0.5f;
+    public float lineFreq = 30f;
+
     RoomsSystem roomsSystem;
     void Start()
     {
@@ -142,6 +149,13 @@ public class RoomsGenerator : MonoBehaviour
     }   
     
     private void Update() {
+
+        cumTime += Time.deltaTime * cumTimeSpeed;
+        // if(cumTime > 0){
+
+        // }
+
+
         UpdateParamsFromInput();
         SetColorTexture();
         UpdateCurrentPreset();
@@ -244,6 +258,13 @@ public class RoomsGenerator : MonoBehaviour
                 planeMat.SetFloat("_GlitchSpeed", glitchSpeed);
                 planeMat.SetFloat("_GlitchScale", glitchScale);
                 planeMat.SetInt("_GlitchType", glitchType);
+                
+
+                planeMat.SetFloat("_CumTime", cumTime);
+
+                planeMat.SetFloat("lineIntesity", lineIntesity);
+                planeMat.SetFloat("lineSize", lineSize);
+                planeMat.SetFloat("lineFreq", lineFreq);
 
                 // planeMat.SetFloat("ColorMaskTh", colorMaskTh);
                 // planeMat.SetFloat("ColorMaskIntesity", colorMaskIntesity);
@@ -711,5 +732,10 @@ public class RoomsGenerator : MonoBehaviour
         colorMaskIntesity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorMaskIntesity, 0.5f );
         colorSpread = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorSpread, 0.5f );
 
+        //Line
+        cumTimeSpeed = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.cumTimeSpeed,1);
+        lineIntesity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineIntesity,1);
+        lineSize = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineSize,0.5f);
+        lineFreq = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineFreq,30f);
     }
 }

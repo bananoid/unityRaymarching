@@ -58,6 +58,11 @@ fixed4 _ShadowColor;
 float2 _ShadowDistance;
 float _ShadowIntensity, _ShadowPenumbra;
 
+float lineIntesity;
+float lineSize;
+
+float lineFreq;
+
 float3  Shading(float3 p, float3 n, float3 color){
     //Diffuse color;
     float3 result = color;
@@ -89,13 +94,12 @@ float3  Shading(float3 p, float3 n, float3 color){
     float ao = AmbientOcclusion(p,n);
     result *= ao ;
     
-    float lines = sin(p.z * 2 + _Time * 100)*0.5+0.5;
-    float lineSMin = 0.3;
-    float lineSMax = 0.1;
-    lines = smoothstep(lineSMin, lineSMax, lines);
+    float lines = sin(p.z * lineFreq * 3 + _CumTime * 30)*0.5+0.5;
+    float lineS = 0.1;
+    lines = smoothstep(lineSize-lineS,lineSize+lineS, lines);
     lines = clamp(0,1,lines);
     
-    result *= spherLight;
+    result *= spherLight * lerp(1,lines,lineIntesity);
     return result;
 }
 

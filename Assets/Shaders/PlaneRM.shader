@@ -34,6 +34,15 @@
         _GlitchScale ("Glitch Scale", float) = 1
         _GlitchType ("Glitch Type", int) = 1
 
+
+        _CumTime ("_CumTime", float) = 0.5
+
+        // lineFade ("Line Fade", float) = 0.01
+        lineSize ("Line Size", float) = 0.5
+        lineFreq ("Line Freq", float) = 30.
+        // lineSpeed ("Line Speed", float) = 30.
+        lineIntesity ("Line Intesity", float) = 1.
+
     }
     SubShader
     {
