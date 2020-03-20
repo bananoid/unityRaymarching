@@ -717,6 +717,9 @@ MonoBehaviour:
   glitchSpeed: 1
   glitchScale: 1
   seedClockSpeed: 0
+  lineIntesity: 1
+  lineSize: 0.5
+  lineFreq: 30
 --- !u!4 &2005758700
 Transform:
   m_ObjectHideFlags: 0

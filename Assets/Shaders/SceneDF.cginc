@@ -171,6 +171,8 @@ float4 Scene02(float3 p){
 //     return combine;
 // }
 
+
+
 //Gyroid
 float4 Scene03(float3 p){
     float4 roomBox = RoomBox(p); 
@@ -192,18 +194,44 @@ float4 Scene03(float3 p){
     return float4(color, combine);
 }
 
+//Box Room
+float4 _Scene04(float3 p){
+    //Room Box
+    float4 roomBox = RoomBox(p); 
+
+    //Color
+    float3 col = WorldColor(p);
+
+    float box = sdOpenBox(p, roomBox.xyz);   
+    
+    // float sphere =  
+    float combine = box;
+    // combine = opU(box,)
+
+    //Result
+    float4 result;
+    result.xyz = col;
+    result.w = combine;
+    return result;
+}
+
 //Petal 6
 float4 Scene04(float3 p){  
-    float t = _Time * 30;
+    float4 roomBox = RoomBox(p); 
+    float scale = pow(roomBox.x*roomBox.y,0.3);
+
+    float t = _CumTime * 30;
     float y = 2;
-    rotateAxe(PI * .5 + cos(t*0.1) *.3, p.yz);
+    rotateAxe(PI * .5, p.yz);
+    
     float3 coneP = p;
     rotateAxe(3.14, coneP.yz);
+
     float plane = sdPlane(p, float4(0,1,0,y));
     float cone = sdRoundCone(coneP, 4, 0, 30);
 
     float3 sPos = p;
-    float rep = PI / 3.;
+    float rep = PI / 8.;
 
     // sPos.x = length( sPos.xz ) - 3;
     // sPos.x += 4;
@@ -218,24 +246,27 @@ float4 Scene04(float3 p){
 
     float repGrid = 1.5;
     // sPos.x += 1.5;
-    sPos.x -= 5;
+    sPos.x -= scale * 2;
     // sPos.xz = (frac((sPos.xz+0.5)/repGrid)-0.5)*repGrid;
     // rotateAxe(t, sPos.xz);
     sPos.y -= t;
-    float yRep = _sphere2.w * 1.8;
+    float yRep = 2 * 1.8;
     sPos.y = (frac((sPos.y+0.5)/yRep)-0.5)*yRep;
     // sPos.y += y + _sphere2.w * 0.5;
 
-    float sphere = sdSphere(sPos, _sphere2.w);
+    float sphere = sdSphere(sPos, scale * 0.3);
     // float sphere = sdBox(sPos, _sphere2.www * float3(0.5,0.5,0.5));
     // p.y = frac(p.y/rep)*rep;
     // float sphere = sdTorus(p + float3(0,0,0), float2(4,1.05)) * rep;
+    // float frontPlane = sdPlane(p, float4(0,0,1,0.4));
+    float combine = sphere;
+    // combine = opS(frontPlane,combine);
+    // combine  = opSS( cone,combine, 4.3);
+    // combine = opSS( sphere, combine, 0);
+    float3 color = WorldColor(p * 0.1);
+    float4 scene = float4(color,combine); 
 
-    float combine = plane;
-    combine  = opSS( cone,combine, 4.3);
-    combine = opSS( sphere, combine, 0);
-    float4 scene = float4(float3(9.4,0.2,0.1),cone); 
-    return combine;
+    return scene;
 }  
 
 float _CameraShift;
