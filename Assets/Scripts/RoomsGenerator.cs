@@ -131,7 +131,7 @@ public class RoomsGenerator : MonoBehaviour
     }   
     
     private void Update() {
-        UpdateParamsFromMidi();
+        UpdateParamsFromInput();
         UpdateCurrentPreset();
 
         CalcRows();
@@ -608,7 +608,8 @@ public class RoomsGenerator : MonoBehaviour
         return currentPreset.parameters[key].value;
     }
 
-    void UpdateParamsFromMidi(){
+    void UpdateParamsFromInput(){
+        //Screen splits
         float maxSplitsF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGMaxSplit ); 
         maxSplits = (uint)math.remap(0,1,1,4,maxSplitsF);
 
@@ -657,14 +658,14 @@ public class RoomsGenerator : MonoBehaviour
         //PointLight
         float smoothSpeed = 3;
 
-        float lrc = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightRoomCenter );
+        float lrc = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightRoomCenter, 0.5f );
         pointLightRoomCenter =  math.lerp(pointLightRoomCenter, lrc, smoothSpeed * Time.deltaTime);
 
-        float lr = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightSize ) * 10;
+        float lr = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightSize, 1 ) * 10;
         pointLight.range = math.lerp(pointLight.range, lr, smoothSpeed * Time.deltaTime);
         
         float3 plPos = pointLight.transform.position; 
-        plPos.z = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightZ ) * 15 - 5;
+        plPos.z = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightZ, 0.5f ) * 15 - 5;
         pointLight.transform.position = math.lerp(pointLight.transform.position, plPos, smoothSpeed * Time.deltaTime);
     }
 }

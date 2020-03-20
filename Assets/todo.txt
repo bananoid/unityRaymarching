@@ -11,10 +11,10 @@ x Glitch intensity
 
 x RM Scene index random spread size
 
-- Sphere Light size
-- Sphere Light Z pos
+x Sphere Light size
+x Sphere Light Z pos
 - Sphere Light oscillation
-
+- perlin noise light
 
 Random Color system
 
@@ -26,4 +26,6 @@ Entyti scene
 - Perlin noise
 - Per room attractor
 - Attractor random vortex axe
+- Ipulse with clock
+
 
