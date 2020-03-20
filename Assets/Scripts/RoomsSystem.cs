@@ -21,12 +21,8 @@ public class RoomsSystem : ComponentSystem
     {
         Entities.ForEach( (Entity entity, ref RoomObjectComponent roomObject) =>
        {    
-            //Does it already have a RenderMesh?
-            // bool hasRenderMesh = EntityManager.HasComponent<RenderMesh>(entity);
-            // if(!hasRenderMesh){
             var renderMesh = EntityManager.GetSharedComponentData<RenderMesh>(entity); 
             renderMesh.material.SetVector("lightDesc", lightDesc);
-            // }
        });
 
     }

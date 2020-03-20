@@ -36,7 +36,10 @@ public class RoomPreset {
 }
 
 public class RoomsGenerator : MonoBehaviour
-{   
+{       
+    [Header("Texture")]
+    public Texture colorTexture;
+    
     [Header("UI")]
     public Text textSeedSpeed;
     public Text textSceneIndexMin;
@@ -513,7 +516,10 @@ public class RoomsGenerator : MonoBehaviour
                 
                 var gradient = random.NextFloat4();
                 gradient.w = random.NextFloat(0.5f,1.1f);
-                material.SetVector("gradientDesc", gradient );
+                material.SetTexture("_MainTex", colorTexture);
+                material.SetVector("gradientDesc", gradient);
+                material.SetFloat("_ObjId", random.NextFloat());
+
 
                 Mesh mesh = renderMesh.mesh;
 

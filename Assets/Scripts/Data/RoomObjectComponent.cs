@@ -9,5 +9,6 @@ public struct RoomObjectComponent : IComponentData
 {
     public float weight;
     public float3 up;
+
 }
 

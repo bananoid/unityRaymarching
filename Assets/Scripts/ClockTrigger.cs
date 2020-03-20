@@ -93,6 +93,7 @@ public class ClockTrigger : MonoBehaviour
                 (int)MidiMapCC.ClockPrecisionUp) > 0
         ){
             clockPrecision = 4;
+            resetTimeout(); 
             Debug.Log("clockPrecision up");
         }
 
@@ -102,11 +103,16 @@ public class ClockTrigger : MonoBehaviour
                 (int)MidiMapCC.ClockPrecisionDown) > 0
         ){
             clockPrecision = 0;
+            resetTimeout(); 
             Debug.Log("clockPrecision down");
         }
 
         Tapping();
         BeatDetection();
+    }
+
+    void resetTimeout(){
+        // lastTapTime = Time.realtimeSinceStartup + tapTimeout * 10;
     }
 
     void Tapping()

@@ -12,6 +12,10 @@ Shader "Unlit/VJ"
     {
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 0
 
+        _MainTex ("Texture", 2D) = "white" {}
+
+        _ObjId ("float", float) = 0
+
         colorA ("ColorA", Color) = (1,0,0,1)
         colorB ("ColorB", Color) = (1,1,1,1)
         colorC ("ColorC", Color) = (0,0,1,1)
@@ -43,6 +47,10 @@ Shader "Unlit/VJ"
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #include "Random.cginc"
+
+            sampler2D _MainTex;
+            float _ObjId;
 
             float4 colorA;
             float4 colorB;
@@ -134,28 +142,42 @@ Shader "Unlit/VJ"
                 float3 gradient = float3(0,0,0);
                     
                 float gradientPos = 
-                    length((i.localPos + gradientDesc.w) * normalize(gradientDesc.xyz));
+                    length((i.localPos + gradientDesc.w*(_ObjId+0.5)*2) * normalize(gradientDesc.xyz));
 
                 
                 // gradientPos += _Time * 2;
 
-                gradient = colorA * gradientPos;
+                float2 texUV = gradientPos*0.001 + _ObjId;
+                texUV.x += sin(_Time * 0.02134);    
+                texUV.y += cos(_Time * 0.03434);
 
-                // gradient = colorA * (sin(gradientPos*pi*3 - pi*0.5) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5)*0.5+0.5);
-                // gradient+= colorB * (sin(gradientPos*pi*3 - pi*0.5 - pi*3) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 - pi*0.5)*0.5+0.5);
-                // gradient+= colorC * (sin(gradientPos*pi*3 - pi*0.5 - pi*6) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 + pi*3)*0.5+0.5);  
-                // gradient+= colorA * (sin(gradientPos*pi*3 - pi*0.5 - pi*9) * 0.5 + 0.5) * step(0.5, sin(gradientPos*pi*3*0.5 + pi*0.5)*0.5+0.5);  
+                float4 texCol = tex2D(_MainTex, texUV );    
+                col = texCol;
 
-                //gradient = sin(colorA.rgb * gradientPos * 2. + _Time * 1 ) * 0.5 + 0.5;
+                float maskThreshold = 0.5;
+                float maskThresholdRadius = 0.01;
+                float mtA = maskThreshold + maskThresholdRadius;
+                float mtB = maskThreshold - maskThresholdRadius;
+
+                float colorMask = smoothstep(mtA, mtB, sin(_ObjId*7 + _Time*5.2) * 0.5 + 0.5);
+                colorMask += 0.4;
+                colorMask = clamp(0,1,colorMask);
+                col *= colorMask;
+                // col += (1-colorMask)*0.5;
+                // col = colorMask.xxxx;
+
+                gradient = col * gradientPos;
 
                 col.rgb *= gradient;
                 // col.rgb += float3(lines,lines,lines);
                 col.rgb += lines * (1-i.localPos.z*2) * lineIntesity;
                 // col.rgb *= gradient;               
-               
+
+                
+                   
                 return col * light; 
                 // return lerp(float4(1,0,0,1), col,roomMask) * light; 
-                
+
 
             }
             ENDCG
