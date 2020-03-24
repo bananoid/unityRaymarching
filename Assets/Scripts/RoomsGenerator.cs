@@ -154,7 +154,7 @@ public class RoomsGenerator : MonoBehaviour
         if(cumTime > 1000){
             cumTime = 0;
         }
-        
+
         UpdateParamsFromInput();
         SetColorTexture();
         UpdateCurrentPreset();
@@ -710,7 +710,7 @@ public class RoomsGenerator : MonoBehaviour
         }
 
         //Glitch
-        glitchIntensity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.GlitchIntesity );
+        glitchIntensity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.GlitchIntesity ) * 4;
 
         //PointLight
         float smoothSpeed = 3;

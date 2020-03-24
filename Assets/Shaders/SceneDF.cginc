@@ -76,7 +76,7 @@ float4 Scene01(float3 p){
     float waveFreq = 4;
     float waveSpeed = 0.4;
 
-    waveP.z += _Time * waveSpeed * 120;
+    waveP.z += _CumTime * waveSpeed * 120;
     float wave = cnoise(waveP.xz * waveSize * waveFreq) * waveSize;
 
     // wave = clamp(wave,-0.2,0.2);
