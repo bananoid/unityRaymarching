@@ -37,6 +37,8 @@ public class RoomPreset {
 
 public class RoomsGenerator : MonoBehaviour
 {       
+    private Unity.Mathematics.Random random;
+
     [Header("Texture")]
     public List<Texture> colorTextures;
     private Texture colorTexture;
@@ -51,14 +53,6 @@ public class RoomsGenerator : MonoBehaviour
     public Text textSceneIndexMin;
     public Text textSceneIndexMax;
     public Text textSceneIndex;
-    private int2 sceneIndexRange = new int2(0,4);
-
-    [Header("Seed")]
-    private uint oldSeed = 0;
-    [SerializeField]
-    private uint seed = 1;
-    
-    private Unity.Mathematics.Random random;
 
     [Header("Camera")]
     public Camera mainCamera;
@@ -72,11 +66,17 @@ public class RoomsGenerator : MonoBehaviour
     [Header("Light")]
     public Light pointLight;
     public float pointLightRoomCenter;
+
+    [Header("Seed")]
+    public uint seed = 1;
+    private uint oldSeed = 0;
     
     [Header("Room Layout")]
     public int cols = 4;
     public uint maxSplits = 12;
     public uint maxIteration = 3;
+    private uint oldMaxIteration = 3;
+
     public float gutter = 0.0f;
     public Vector2 roomDepthRange = new Vector2(1,4);
     private float gridSize = 1;
@@ -86,9 +86,10 @@ public class RoomsGenerator : MonoBehaviour
 
     [Header("RM Panels")]
     public int RMSceneCount = 4;
-
+    public int2 sceneIndexRange = new int2(0,4);
     public bool raymarchEnabled = true;
     public GameObject roomPlanelPref;
+
     [Range(0,10)] public int rmSceneIndex = 0;
     [Range(0,0.1f)] public float rmRndScale = 0; 
 
@@ -121,9 +122,11 @@ public class RoomsGenerator : MonoBehaviour
     private int currentPresetIndex = -1;
     private RoomPreset currentPreset;
 
-    [Header("Line")]
+    [Header("Time")]
+    public float cumTimeSpeed = 1;
     float cumTime = 0;
-    float cumTimeSpeed = 1;
+    
+    [Header("Line")]
     public float lineIntesity = 1;
     public float lineSize = 0.5f;
     public float lineFreq = 30f;
@@ -161,8 +164,12 @@ public class RoomsGenerator : MonoBehaviour
 
         CalcRows();
 
-        if(oldSeed != seed && seed > 0){
+        if(oldSeed != seed && seed > 0
+            ||
+            oldMaxIteration != maxIteration 
+        ){
             oldSeed = seed;
+            oldMaxIteration = maxIteration;
             random = new Unity.Mathematics.Random(seed + 2345831274); 
             GenerateRooms();
             UpdateCamera();
@@ -664,9 +671,11 @@ public class RoomsGenerator : MonoBehaviour
     }
 
     void UpdateParamsFromInput(){
-        //Screen splits
-        float maxSplitsF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGMaxSplit ); 
-        maxSplits = (uint)math.remap(0,1,1,4,maxSplitsF);
+        //RayMarch Enable toggle
+        if(Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            raymarchEnabled = !raymarchEnabled;
+        }
 
         //Seed Clocl Speed
         if(Input.GetKeyDown(KeyCode.Alpha1))
@@ -690,6 +699,15 @@ public class RoomsGenerator : MonoBehaviour
             textSeedSpeed.text = "SS: Bar8";
         }
 
+
+        if(MidiMaster.GetKnobNumbers(MidiMap.channel).Length == 0){
+            return;
+        }
+
+        //Screen splits
+        float maxSplitsF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGMaxSplit ); 
+        maxSplits = (uint)math.remap(0,1,1,4,maxSplitsF);
+
         //Camera shift
         cameraShiftIntensity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGCameraShiftIntensity );
 
@@ -702,12 +720,6 @@ public class RoomsGenerator : MonoBehaviour
         sceneIndexRange.y = math.clamp(sceneIndexRange.y, 0,RMSceneCount);
         textSceneIndexMin.text = "SINX min "+sceneIndexRange.x;
         textSceneIndexMax.text = "SINX max "+sceneIndexRange.y;
-
-        //RayMarch Enable toggle
-        if(Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            raymarchEnabled = !raymarchEnabled;
-        }
 
         //Glitch
         glitchIntensity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.GlitchIntesity ) * 4;
