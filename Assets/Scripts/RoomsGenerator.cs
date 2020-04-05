@@ -39,6 +39,15 @@ public class RoomsGenerator : MonoBehaviour
 {       
     private Unity.Mathematics.Random random;
 
+    [Header("Color")]
+    public float4 ColorA = new float4(0.5f, 0.5f, 0.5f, 0);
+    public float4 ColorB = new float4(0.5f, 0.5f, 0.5f, 0);
+    public float4 ColorC = new float4(1.0f, 1.0f, 1.0f, 0);
+    public float4 ColorD = new float4(0.0f, 0.33f, 0.67f, 0);
+    public float ColorTime = 0;
+    [Range(0,1)] public float ColorScale = 1;
+    [Range(0,1)] public float ColorSplit = 1;
+
     [Header("Texture")]
     public List<Texture> colorTextures;
     private Texture colorTexture;
@@ -275,7 +284,14 @@ public class RoomsGenerator : MonoBehaviour
                 // planeMat.SetFloat("ColorMaskTh", colorMaskTh);
                 // planeMat.SetFloat("ColorMaskIntesity", colorMaskIntesity);
                 // planeMat.SetFloat("ColorSpread", colorSpread);
-
+                
+                planeMat.SetVector("_ColorA", ColorA);
+                planeMat.SetVector("_ColorB", ColorB);
+                planeMat.SetVector("_ColorC", ColorC);
+                planeMat.SetVector("_ColorD", ColorD);
+                planeMat.SetFloat("_ColorTime", ColorTime);
+                planeMat.SetFloat("_ColorScale", ColorScale * 0.2f);
+                planeMat.SetFloat("_ColorSplit", ColorSplit);
             }
         }
     }
@@ -321,13 +337,13 @@ public class RoomsGenerator : MonoBehaviour
             cellPos += i > 0 ? splitSize : 0;
             cellSize = splitSize;  
             
-            if(cellSize < gridSize){
-                break;
-            }
-
             float rSize = (parentCellPos + parentCellSize) - (cellPos + cellSize);
             if(rSize <= 0){
                 cellSize += rSize;
+            }
+
+            if(cellSize < gridSize){
+                continue;
             }
 
             if(hSplit){

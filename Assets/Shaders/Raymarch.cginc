@@ -37,7 +37,7 @@ float softShadow(float3 ro, float3 rd, float mint, float maxt, float k){
 
 
 float AmbientOcclusion(float3 p, float3 n){
-    float _AoIntensity = 0.4; 
+    float _AoIntensity = 0.1; 
     float _AoStepSize = 0.05; 
     int _AoIterations = 15;
     
@@ -92,7 +92,7 @@ float3  Shading(float3 p, float3 n, float3 color){
     // }
 
     float ao = AmbientOcclusion(p,n);
-    result *= ao ;
+    result *= ao;
     
     float lines = sin(p.z * lineFreq * 3 + _CumTime * 30)*0.5+0.5;
     float lineS = 0.1;

@@ -674,6 +674,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6ad1360e30704d93b4d5550b0ea5772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ColorA:
+    x: 1.01
+    y: 0.17
+    z: 0.33
+    w: 0
+  ColorB:
+    x: 0.88
+    y: 0.74
+    z: 0.5
+    w: 0
+  ColorC:
+    x: 0.83
+    y: 0.21
+    z: 0.82
+    w: 0
+  ColorD:
+    x: 0.21
+    y: 1.84
+    z: 0.78
+    w: 0.66
+  ColorTime: 194.6
+  ColorScale: 0.253
+  ColorSplit: 0.29
   colorTextures:
   - {fileID: 2800000, guid: d4bc925b962f6452f9cd16d372463c79, type: 3}
   - {fileID: 2800000, guid: bdd4d3edb127843bd99889cf9aa6cd75, type: 3}
@@ -688,18 +711,21 @@ MonoBehaviour:
   textSceneIndexMin: {fileID: 2092557575}
   textSceneIndexMax: {fileID: 782522858}
   textSceneIndex: {fileID: 612755661}
-  seed: 10151
   mainCamera: {fileID: 1517248415}
-  cameraShiftIntensity: 1
+  cameraShiftIntensity: 0
   cameraShiftAngleDivergence: 132.4
   pointLight: {fileID: 632680737}
-  pointLightRoomCenter: 0
-  cols: 9
+  pointLightRoomCenter: 2
+  seed: 10762
+  cols: 6
   maxSplits: 3
-  maxIteration: 4
+  maxIteration: 2
   gutter: 0.02
-  roomDepthRange: {x: 1, y: 4}
+  roomDepthRange: {x: 1, y: 3}
   RMSceneCount: 4
+  sceneIndexRange:
+    x: 1
+    y: 3
   raymarchEnabled: 1
   roomPlanelPref: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1,
     type: 3}
@@ -717,9 +743,10 @@ MonoBehaviour:
   glitchSpeed: 1
   glitchScale: 1
   seedClockSpeed: 0
-  lineIntesity: 1
-  lineSize: 0.5
-  lineFreq: 30
+  cumTimeSpeed: 0.1
+  lineIntesity: 0
+  lineSize: 0.9
+  lineFreq: 1
 --- !u!4 &2005758700
 Transform:
   m_ObjectHideFlags: 0

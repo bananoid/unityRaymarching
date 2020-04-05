@@ -2,6 +2,7 @@
 #define PHI (1.618033988749895)
 
 #include "noise/ClassicNoise2D.hlsl"
+// #include "noise/ClassicNoise3D.hlsl"
 
 float4 _PlaneBox;
 float _RoomDepth;
@@ -25,19 +26,29 @@ float4 RoomBox(float3 p){
     return boxS;
 }
 
+float3 _ColorA;
+float3 _ColorB;
+float3 _ColorC;
+float3 _ColorD;
+float _ColorTime;
+float _ColorScale;
+float _ColorSplit;
+
 float3 WorldColor(float3 p){
-    float3 col = palette(
-        p.y*0.024512 + 
-        p.x*0.01312 + 
-        p.z*0.01643 + _Time * 0.1, 
-        float3(0.5, 0.5, 0.5), 
-        float3(0.5, 0.5, 0.5), 
-        float3(1.0, 1.0, 1.0), 
-        // float3(0.00, 0.33, 0.67)
-        float3(0.00, 0.33, 0.67	)
+    // return 1;
+    p.z += _ColorTime;
+    float pos = cnoise((p.xz+p.y)*_ColorScale) + _Id * _ColorSplit;
+     
+    float3 col = palette( 
+        pos,
+        _ColorA, 
+        _ColorB, 
+        _ColorC, 
+        _ColorD 
+        
     );
-    col.g *= 0.8;
-    return col + 0.2;
+
+    return col;
 }
 
 //Box Room

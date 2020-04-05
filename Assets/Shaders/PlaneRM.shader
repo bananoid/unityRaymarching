@@ -42,6 +42,15 @@
         lineFreq ("Line Freq", float) = 30.
         // lineSpeed ("Line Speed", float) = 30.
         lineIntesity ("Line Intesity", float) = 1.
+        
+        _ColorA ("ColorA", Vector) = (0.5, 0.5, 0.5)
+        _ColorB ("ColorB", Vector) = (0.5, 0.5, 0.5)
+        _ColorC ("ColorC", Vector) = (1.0, 1.0, 1.0)
+        _ColorD ("ColorD", Vector) = (0.00, 0.33, 0.67)
+
+        _ColorTime ("Color Time", float) = 1
+        _ColorScale ("Color Scale", float) = 1
+        _ColorSplit ("Color Split", float) = 1
 
     }
     SubShader
