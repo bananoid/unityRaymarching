@@ -126,7 +126,9 @@
                 float4 gh = 0;
                    
                 if(_EnableRM > 0){
-                    float3 rayOrigin = i.ro;
+                    gh = glitch(i.uv);
+
+                    float3 rayOrigin = i.ro + gh.xyz * _GlitchIntensity;
                     float3 rayDirection = normalize(i.hitPos - rayOrigin);
 
                     float depth = 1;    
@@ -138,7 +140,9 @@
                     float4 rmResult = raymarching(rayOrigin, rayDirection, depth);
                     
                     col.xyz = rmResult.xyz;
-
+                    if(_GlitchIntensity > 0){
+                        col.rgb = lerp(col.rgb, step(0.2,gh.rgb), step(0.99,gh.w));
+                    }
                 }else{
                     if(_GlitchIntensity > 0){
                         gh = glitch(i.uv);
