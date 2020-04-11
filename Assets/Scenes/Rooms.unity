@@ -722,10 +722,13 @@ MonoBehaviour:
   maxIteration: 1
   gutter: 0.02
   roomDepthRange: {x: 1, y: 3}
+  maxIterations: 600
+  maxDistance: 300
+  minDistance: 0.001
   RMSceneCount: 4
   sceneIndexRange:
-    x: 1
-    y: 1
+    x: 0
+    y: 0
   raymarchEnabled: 1
   roomPlanelPref: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1,
     type: 3}

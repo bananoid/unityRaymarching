@@ -1,3 +1,27 @@
+float3 _ColorA;
+float3 _ColorB;
+float3 _ColorC;
+float3 _ColorD;
+float _ColorTime;
+float _ColorScale;
+float _ColorSplit;
+
+float3 WorldColor(float3 p){
+    p.z += _ColorTime;
+    float pos = cnoise((p.xz+p.y)*_ColorScale) + _Id * _ColorSplit;
+     
+    float3 col = palette( 
+        pos,
+        _ColorA, 
+        _ColorB, 
+        _ColorC, 
+        _ColorD 
+        
+    );
+
+    return col;
+}
+
 float3 getNormal(float3 p, float d ){
     // const float2 offset = float2(0.03, 0.0);
     const float2 offset = float2(0.001, 0.0);
@@ -33,8 +57,6 @@ float softShadow(float3 ro, float3 rd, float mint, float maxt, float k){
     }
     return result;
 }
-
-
 
 float AmbientOcclusion(float3 p, float3 n){
     float _AoIntensity = 0.1; 
@@ -99,16 +121,21 @@ float3  Shading(float3 p, float3 n, float3 color){
     lines = smoothstep(lineSize-lineS,lineSize+lineS, lines);
     lines = clamp(0,1,lines);
 
-    float maxDist = 1 - (p.z/_MaxDistance  * 10);
     
     result *= spherLight * lerp(1,lines,lineIntesity);
-    result *= maxDist;
+    
+    float maxDist = 1 - (p.z/_MaxDistance  * 10);
+    result *= (0,1,maxDist);
+    
     return result;
 }
 
 fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
     fixed4 result = float4(0, 0, 0, 0);
     float t = 0.01; // Distance Traveled from ray origin (ro) along the ray direction (rd)
+
+    float3 sPos = _MaxDistance;
+    float4 sDis;
 
     for (int i = 0; i < _MaxIterations; i++)
     {
@@ -121,18 +148,21 @@ fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
         }
 
         float3 p = rayOrigin + rayDirection * t;    // This is our current position
-        float4 d = distanceField(p); // should be a sphere at (0, 0, 0) with a radius of 1
+        float4 d = distanceField(p);
         if (d.w <= _MinDistance) // We have hit something
-        {
-            //Shading
-            float3 n = getNormal(p, d.w);
-            float3 s = Shading(p, n, d.rgb);
-            result = fixed4(s,1);
-            // result = fixed4(n*0.5 + 0.5,1);
+        {            
+            sPos = p;
+            sDis = d;    
             break;
         }
 
         t += d.w;
     }
+
+    float3 n = getNormal(sPos, sDis.w);
+    float3 wColor = WorldColor(sPos);
+    float3 s = Shading(sPos, n, wColor * sDis.rgb);
+    result = fixed4(s,1);
+
     return result;
 }

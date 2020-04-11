@@ -6,6 +6,7 @@
 
 float4 _PlaneBox;
 float _RoomDepth;
+#define defaultColor float3(1,1,1);
 
 // float4 SineSphere(float3 p){
 //     float4 Sphere1 = float4(float3(0.5,0,1), sdSphere(p - _sphere1.xyz, _sphere1.w));
@@ -26,38 +27,13 @@ float4 RoomBox(float3 p){
     return boxS;
 }
 
-float3 _ColorA;
-float3 _ColorB;
-float3 _ColorC;
-float3 _ColorD;
-float _ColorTime;
-float _ColorScale;
-float _ColorSplit;
-
-float3 WorldColor(float3 p){
-    // return 1;
-    p.z += _ColorTime;
-    float pos = cnoise((p.xz+p.y)*_ColorScale) + _Id * _ColorSplit;
-     
-    float3 col = palette( 
-        pos,
-        _ColorA, 
-        _ColorB, 
-        _ColorC, 
-        _ColorD 
-        
-    );
-
-    return col;
-}
-
 //Box Room
 float4 Scene00(float3 p){
     //Room Box
     float4 roomBox = RoomBox(p); 
 
     //Color
-    float3 col = WorldColor(p);
+    float3 col = defaultColor;
 
     float box = sdOpenBox(p, roomBox.xyz);   
     
@@ -74,7 +50,7 @@ float4 Scene01(float3 p){
     float4 roomBox = RoomBox(p); 
     
     //Color
-    float3 col = WorldColor(p);
+    float3 col = defaultColor;
 
     float3 surfP = p;
     float3 waveP = p;
@@ -141,7 +117,7 @@ float4 Scene02(float3 p){
     boxCenter.y = sin(t * 2.45 * boxS.x) * boxS.y;
     float sphere2 = sdSphere(p+boxCenter, 0.5 * scale);
     
-    float3 col = WorldColor(p);
+    float3 col = defaultColor;
 
     float3 roomColor = col;
     float3 objColor = col + float3(0.9,0.2,0.1) * 3;
@@ -186,7 +162,7 @@ float4 Scene02(float3 p){
 
 //Gyroid
 float4 Scene03(float3 p){
-    float3 color = WorldColor(p);
+    float3 color = defaultColor;
 
     float4 roomBox = RoomBox(p); 
     float plane = sdPlane(p, float4(0,0,-1,0.3));
@@ -212,7 +188,7 @@ float4 _Scene04(float3 p){
     float4 roomBox = RoomBox(p); 
 
     //Color
-    float3 col = WorldColor(p);
+    float3 col = defaultColor;
 
     float box = sdOpenBox(p, roomBox.xyz);   
     
@@ -275,7 +251,7 @@ float4 Scene04(float3 p){
     // combine = opS(frontPlane,combine);
     // combine  = opSS( cone,combine, 4.3);
     // combine = opSS( sphere, combine, 0);
-    float3 color = WorldColor(p * 0.1);
+    float3 color = defaultColor;
     float4 scene = float4(color,combine); 
 
     return scene;

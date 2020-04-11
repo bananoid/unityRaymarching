@@ -140,6 +140,7 @@
                     float4 rmResult = raymarching(rayOrigin, rayDirection, depth);
                     
                     col.xyz = rmResult.xyz;
+
                     if(_GlitchIntensity > 0){
                         col.rgb = lerp(col.rgb, step(0.2,gh.rgb), step(0.99,gh.w));
                     }
