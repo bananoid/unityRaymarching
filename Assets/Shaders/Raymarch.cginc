@@ -98,8 +98,11 @@ float3  Shading(float3 p, float3 n, float3 color){
     float lineS = 0.1;
     lines = smoothstep(lineSize-lineS,lineSize+lineS, lines);
     lines = clamp(0,1,lines);
+
+    float maxDist = 1 - (p.z/_MaxDistance  * 10);
     
     result *= spherLight * lerp(1,lines,lineIntesity);
+    result *= maxDist;
     return result;
 }
 

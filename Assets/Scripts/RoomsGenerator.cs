@@ -94,6 +94,10 @@ public class RoomsGenerator : MonoBehaviour
     private float totH;
 
     [Header("RM Panels")]
+    public int maxIterations = 200;
+    public float maxDistance = 100;   
+    public float minDistance = 0.001f;
+    
     public int RMSceneCount = 4;
     public int2 sceneIndexRange = new int2(0,4);
     public bool raymarchEnabled = true;
@@ -292,6 +296,12 @@ public class RoomsGenerator : MonoBehaviour
                 planeMat.SetFloat("_ColorTime", ColorTime);
                 planeMat.SetFloat("_ColorScale", ColorScale * 0.2f);
                 planeMat.SetFloat("_ColorSplit", ColorSplit);
+                
+                
+                planeMat.SetInt("_MaxIterations", maxIterations);
+                planeMat.SetFloat("_MaxDistance", maxDistance);
+                planeMat.SetFloat("_MinDistance", minDistance);
+
             }
         }
     }

@@ -597,8 +597,6 @@ MonoBehaviour:
   breakBeforeColorGrading: 0
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles:
-  - assemblyQualifiedName: RaymarchPostProcess, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   - assemblyQualifiedName: GlitchPostProcess, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   m_AfterStackBundles: []
@@ -720,14 +718,14 @@ MonoBehaviour:
   pointLightRoomCenter: 2
   seed: 10762
   cols: 6
-  maxSplits: 3
-  maxIteration: 2
+  maxSplits: 1
+  maxIteration: 1
   gutter: 0.02
   roomDepthRange: {x: 1, y: 3}
   RMSceneCount: 4
   sceneIndexRange:
     x: 1
-    y: 3
+    y: 1
   raymarchEnabled: 1
   roomPlanelPref: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1,
     type: 3}
@@ -741,10 +739,10 @@ MonoBehaviour:
   - {fileID: 8450773095403489392, guid: 4e7fd869ba8744af2a84b53496af6382, type: 3}
   - {fileID: 5204356065843496504, guid: dcfbc2239c36d44bfb1c7d6f5fcf9c6f, type: 3}
   glitchType: 1
-  glitchIntensity: 1
+  glitchIntensity: 0
   glitchSpeed: 1
   glitchScale: 1
-  seedClockSpeed: 0
+  seedClockSpeed: 2
   cumTimeSpeed: 0.1
   lineIntesity: 0
   lineSize: 0.9
