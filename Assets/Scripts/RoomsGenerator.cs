@@ -136,13 +136,15 @@ public class RoomsGenerator : MonoBehaviour
     private RoomPreset currentPreset;
 
     [Header("Time")]
-    public float cumTimeSpeed = 1;
+    [Range(-1,1)] public float cumTimeSpeed = 1;
     float cumTime = 0;
-    
+
     [Header("Line")]
     public float lineIntesity = 1;
-    public float lineSize = 0.5f;
-    public float lineFreq = 30f;
+    [Range(0,1)] public float lineSize = 0.5f;
+    [Range(0.01f,1)] public float lineFreq = 0.5f;
+    [Range(-1,1)] public float lineTimeSpeed = 1;
+    float lineTime = 0;
 
     RoomsSystem roomsSystem;
     void Start()
@@ -169,6 +171,11 @@ public class RoomsGenerator : MonoBehaviour
         cumTime += Time.deltaTime * cumTimeSpeed;
         if(cumTime > 1000){
             cumTime = 0;
+        }
+
+        lineTime += Time.deltaTime * lineTimeSpeed;
+        if(lineTime > 1000){
+            lineTime = 0;
         }
 
         UpdateParamsFromInput();
@@ -280,6 +287,7 @@ public class RoomsGenerator : MonoBehaviour
                 
 
                 planeMat.SetFloat("_CumTime", cumTime);
+                planeMat.SetFloat("_LineTime", lineTime);
 
                 planeMat.SetFloat("lineIntesity", lineIntesity);
                 planeMat.SetFloat("lineSize", lineSize);

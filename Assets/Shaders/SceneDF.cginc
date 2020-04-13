@@ -59,8 +59,8 @@ float4 Scene01(float3 p){
     float height = roomBox.y;
     height *= 1-p.z*0.03;
     
-    float waveSize = 0.3;
-    float waveFreq = 4;
+    float waveSize = 0.4;
+    float waveFreq = 1;
     float waveSpeed = 0.4;
 
     waveP.z += _CumTime * waveSpeed * 120;

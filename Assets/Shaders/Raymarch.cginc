@@ -86,6 +86,20 @@ float lineSize;
 float lineFreq;
 
 float3  Shading(float3 p, float3 n, float3 color){
+
+    float maxDist = 1 - ((p.z+10)/(_MaxDistance));
+    maxDist = clamp(0,1,maxDist);
+
+    if(lineIntesity > 0){
+        float lineDir = p.z;
+        // float lineDir = distance(p.xz, float2(0,_PointLight.z));
+        float lines = sin(lineDir * lineFreq * 3 + _LineTime * 30)*0.5+0.5;
+        float lineS = 0.3;
+        lines = smoothstep(lineSize-lineS,lineSize+lineS, lines);
+        lines = clamp(0,1,lines);
+        return lines.xxx * maxDist;
+    }
+
     //Diffuse color;
     float3 result = color;
     
@@ -109,25 +123,17 @@ float3  Shading(float3 p, float3 n, float3 color){
     // }
 
     //Ambient Occlusion
-    // if(_AoIntensity > 0){
-    // return float3(ao,ao,ao);
-    // }
-
     float ao = AmbientOcclusion(p,n);
     result *= ao;
-    
-    float lines = sin(p.z * lineFreq * 3 + _CumTime * 30)*0.5+0.5;
-    float lineS = 0.1;
-    lines = smoothstep(lineSize-lineS,lineSize+lineS, lines);
-    lines = clamp(0,1,lines);
 
     
-    result *= spherLight * lerp(1,lines,lineIntesity);
+    result *=  spherLight;
     
-    float maxDist = 1 - (p.z/_MaxDistance  * 10);
-    result *= (0,1,maxDist);
-    
+
+    result = max(result,0);
+    result *= maxDist;
     return result;
+    // return maxDist.xxx;
 }
 
 fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {

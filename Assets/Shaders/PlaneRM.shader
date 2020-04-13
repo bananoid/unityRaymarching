@@ -13,12 +13,10 @@
         _EnableRM ("Scene Index", int) = 1
 
         _SceneIndex ("Scene Index", int) = 0
-        _CumTime ("Cum Time", float) = 0
+
         _PointLight ("Point Light", Vector) = (0,0,0,1)
         _PlaneBox ("Plane Box", Vector) = (0,0,1,1)
         _RoomDepth ("Room Depth", float) = 1
-        // float _CumTime;
-        // float4 _sphere1, _sphere2, _box1;
 
         // _AoIntensity ("Ao Intensity", float) = 0.01
         // _AoStepSize ("Ao StepSize", float) = 0.2
@@ -34,8 +32,8 @@
         _GlitchScale ("Glitch Scale", float) = 1
         _GlitchType ("Glitch Type", int) = 1
 
-
-        _CumTime ("_CumTime", float) = 0.5
+        _CumTime ("_CumTime", float) = 0
+        _LineTime ("_LineTime", float) = 0
 
         // lineFade ("Line Fade", float) = 0.01
         lineSize ("Line Size", float) = 0.5
@@ -78,6 +76,8 @@
             
             int _SceneIndex;
             float _CumTime;
+            float _LineTime;
+
             float4 _sphere1, _sphere2, _box1;
 
             float4 _PointLight;
