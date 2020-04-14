@@ -15,18 +15,18 @@ float4 glitch(float2 uv){
     float4 res = 0;
     res.xy = uv;
 
-    float timeSpeed = 0.004;
+    float timeSpeed = 0.1;
     float tq = floor(_Time/timeSpeed)*timeSpeed; 
-    tq = random(tq) * 40;
+    tq = random(tq) * 100;
 
-    float blockSize = 0.125 * 0.01;
+    float blockSize = 0.001;
     blockSize *= tq+1;
 
     float2 pos = uv - 0.5;
     // pos += _Time * random(floor(pos.x/blockSize)*blockSize + seed );
-    pos += _Time;
+    pos.y += _Time * 2;
     pos.y *= ratio;
-    pos.y *= 0.1;
+    pos.y *= 0.2;
     pos = floor(pos/blockSize)*blockSize;    
     float noise = random(pos);
 
@@ -41,4 +41,11 @@ float4 glitch(float2 uv){
     res.w = noise;
     // res.rgba = planeSeed;
     return res;
+}
+
+float2 glitch2(float2 uv, float time){
+    float2 gh2; 
+    gh2.x = frac(uv.x * (_Id+0.1)  - time * (_Id+1) * 4 ); 
+    gh2.y = uv.y;     
+    return gh2;
 }

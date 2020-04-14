@@ -102,7 +102,7 @@
                 float4 vertex : SV_POSITION;
                 float3 ro: TEXCOORD1;
                 float3 hitPos: TEXCOORD2;
-                float4 grabUv: TEXCOORD3;
+                float4 grabUv: TEXCOORD3;                
             };
 
             // sampler2D _MainTex;
@@ -125,11 +125,17 @@
                 float4 col = 1;
                 float4 gh = 0;
                    
+                gh = glitch(i.uv);
+                
+                float2 gh2 = glitch2(i.uv, _CumTime);
+                
                 if(_EnableRM > 0){
-                    gh = glitch(i.uv);
 
-                    float3 rayOrigin = i.ro + gh.xyz * _GlitchIntensity;
+                    float3 rayOrigin = i.ro;
                     float3 rayDirection = normalize(i.hitPos - rayOrigin);
+
+                    rayOrigin += gh.xyz * _GlitchIntensity;
+                    // rayOrigin.xy += gh2.xy * _GlitchIntensity;
 
                     float depth = 1;    
                     
@@ -142,11 +148,11 @@
                     col.xyz = rmResult.xyz;
 
                     if(_GlitchIntensity > 0){
-                        col.rgb = lerp(col.rgb, step(0.2,gh.rgb), step(0.99,gh.w));
+                        // col.rgb = lerp(col.rgb, step(0.2,gh.rgb), step(0.99,gh.w));
+                        col.r = lerp(col.r, step(0.2,gh.r), step(0.99,gh.w));
                     }
                 }else{
                     if(_GlitchIntensity > 0){
-                        gh = glitch(i.uv);
                         float4 projPos = i.grabUv; 
                         projPos += gh * _GlitchIntensity;
                         col = tex2Dproj(_GrabTexture, projPos);
@@ -156,8 +162,10 @@
                     }      
                 }    
             
-                // col = gh;
-                    
+                // col.xy = gh2.xyx;
+                // col = float4(1,0,0,1);
+                // col = i.uv.y * _Id ;
+                 
                 return col;
             }
             ENDCG

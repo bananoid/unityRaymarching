@@ -211,7 +211,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
-  m_Range: 24.17
+  m_Range: 8
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -267,7 +267,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 632680736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 7.76}
+  m_LocalPosition: {x: 0, y: 0, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -694,41 +694,41 @@ MonoBehaviour:
     y: 1.84
     z: 0.78
     w: 0.66
-  ColorTime: 194.6
-  ColorScale: 0.253
-  ColorSplit: 0.29
+  ColorTime: 225.96
+  ColorScale: 0.062
+  ColorSplit: 0.257
   colorTextures:
   - {fileID: 2800000, guid: d4bc925b962f6452f9cd16d372463c79, type: 3}
   - {fileID: 2800000, guid: bdd4d3edb127843bd99889cf9aa6cd75, type: 3}
   - {fileID: 2800000, guid: eee9455daa8ec442dacfc810dcfd1690, type: 3}
   - {fileID: 2800000, guid: 7904b76030a354a8aa53dd1cb8f25429, type: 3}
-  colorTextureInxF: 0
-  colorMaskTh: 0
-  colorMaskIntesity: 0.5
-  colorSpread: 1
+  colorTextureInxF: 0.191
+  colorMaskTh: 0.588
+  colorMaskIntesity: 0.115
+  colorSpread: 0.861
   textColorTexInx: {fileID: 699404606}
   textSeedSpeed: {fileID: 1182529808}
   textSceneIndexMin: {fileID: 2092557575}
   textSceneIndexMax: {fileID: 782522858}
   textSceneIndex: {fileID: 612755661}
   mainCamera: {fileID: 1517248415}
-  cameraShiftIntensity: 0
+  cameraShiftIntensity: 0.156
   cameraShiftAngleDivergence: 132.4
   pointLight: {fileID: 632680737}
   pointLightRoomCenter: 2
-  seed: 10762
-  cols: 6
+  seed: 11685
+  cols: 12
   maxSplits: 1
-  maxIteration: 1
+  maxIteration: 7
   gutter: 0.02
-  roomDepthRange: {x: 1, y: 3}
+  roomDepthRange: {x: 1, y: 40}
   maxIterations: 2000
   maxDistance: 300
   minDistance: 0.001
   RMSceneCount: 4
   sceneIndexRange:
-    x: 0
-    y: 0
+    x: 2
+    y: 2
   raymarchEnabled: 1
   roomPlanelPref: {fileID: 268012281146749075, guid: cf5371cc0f90b4453a16e8b3f487a7b1,
     type: 3}
@@ -745,12 +745,12 @@ MonoBehaviour:
   glitchIntensity: 0
   glitchSpeed: 1
   glitchScale: 1
-  seedClockSpeed: 2
-  cumTimeSpeed: 0.1
-  lineIntesity: 0
-  lineSize: 0.9
+  seedClockSpeed: 0
+  cumTimeSpeed: -0.096
+  lineIntesity: 7.1
+  lineSize: 0.855
   lineFreq: 1
-  lineTimeSpeed: 1
+  lineTimeSpeed: -1
 --- !u!4 &2005758700
 Transform:
   m_ObjectHideFlags: 0

@@ -325,22 +325,26 @@ public class RoomsGenerator : MonoBehaviour
             rd = new List<RoomData>();
         }
 
-        float maxSplits = this.maxSplits;    
-        uint numSplits = (uint) ((random.NextFloat()*maxSplits) % maxSplits) + 1;
-        numSplits = math.max(numSplits, 1);
-        
-        bool hSplit = iteration % 2 == 0;
+        bool hSplit = (iteration + seed) % 2 == 0;
 
+        
         float parentCellPos;
         float parentCellSize;
-        
+        float parentRatio;
         if(hSplit){
             parentCellPos = inRect.x;
-            parentCellSize = inRect.w; 
+            parentCellSize = inRect.w;
+            parentRatio =  inRect.w/inRect.h; 
         }else{
             parentCellPos = inRect.y;
             parentCellSize = inRect.h; 
+            parentRatio =  inRect.h/inRect.w; 
         }
+        
+        float maxSplits = this.maxSplits * parentRatio;    
+        uint numSplits = (uint) ((random.NextFloat()*maxSplits) % maxSplits) + 1;
+        
+        numSplits = math.max(numSplits, 1);
 
         float splitSize = parentCellSize / (float)numSplits;
         splitSize = math.ceil(splitSize / gridSize) * gridSize; 
@@ -360,7 +364,7 @@ public class RoomsGenerator : MonoBehaviour
                 cellSize += rSize;
             }
 
-            if(cellSize < gridSize){
+            if(cellSize < gutter * 2){
                 continue;
             }
 

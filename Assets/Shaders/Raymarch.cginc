@@ -86,6 +86,11 @@ float lineSize;
 float lineFreq;
 
 float3  Shading(float3 p, float3 n, float3 color){
+    //Diffuse color;
+    float3 result = color;
+    
+    float spherLight = distance(p, _PointLight.xyz);
+    spherLight = 1 - smoothstep(0, _PointLight.w, spherLight);
 
     float maxDist = 1 - ((p.z+10)/(_MaxDistance));
     maxDist = clamp(0,1,maxDist);
@@ -94,17 +99,11 @@ float3  Shading(float3 p, float3 n, float3 color){
         float lineDir = p.z;
         // float lineDir = distance(p.xz, float2(0,_PointLight.z));
         float lines = sin(lineDir * lineFreq * 3 + _LineTime * 30)*0.5+0.5;
-        float lineS = 0.3;
+        float lineS = 0.03;
         lines = smoothstep(lineSize-lineS,lineSize+lineS, lines);
         lines = clamp(0,1,lines);
-        return lines.xxx * maxDist;
+        return color * lines.xxx * maxDist * spherLight;
     }
-
-    //Diffuse color;
-    float3 result = color;
-    
-    float spherLight = distance(p, _PointLight.xyz);
-    spherLight = 1 - smoothstep(0, _PointLight.w, spherLight);
 
     // Directional Light
     // if(_LightIntensity > 0){
