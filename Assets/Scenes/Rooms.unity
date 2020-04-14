@@ -694,7 +694,7 @@ MonoBehaviour:
     y: 1.84
     z: 0.78
     w: 0.66
-  ColorTime: 225.96
+  ColorTime: 243.55
   ColorScale: 0.062
   ColorSplit: 0.257
   colorTextures:
@@ -716,7 +716,7 @@ MonoBehaviour:
   cameraShiftAngleDivergence: 132.4
   pointLight: {fileID: 632680737}
   pointLightRoomCenter: 2
-  seed: 11685
+  seed: 12466
   cols: 12
   maxSplits: 1
   maxIteration: 7
@@ -747,7 +747,7 @@ MonoBehaviour:
   glitchScale: 1
   seedClockSpeed: 0
   cumTimeSpeed: -0.096
-  lineIntesity: 7.1
+  lineIntesity: 3.3
   lineSize: 0.855
   lineFreq: 1
   lineTimeSpeed: -1

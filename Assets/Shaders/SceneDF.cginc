@@ -87,6 +87,7 @@ float4 Scene01(float3 p){
     return result;
 }
 
+// Two ball 
 float4 Scene02(float3 p){
     
     float3 boxS = 0;
@@ -120,7 +121,7 @@ float4 Scene02(float3 p){
     float3 col = defaultColor;
 
     float3 roomColor = col;
-    float3 objColor = col + float3(0.9,0.2,0.1) * 3;
+    float3 objColor = float3(3,0,1);
 
     float4 combine = opUS(
         float4(objColor,sphere1), 

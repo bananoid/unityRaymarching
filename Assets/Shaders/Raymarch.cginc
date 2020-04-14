@@ -85,7 +85,7 @@ float lineSize;
 
 float lineFreq;
 
-float3  Shading(float3 p, float3 n, float3 color){
+float3  Shading(float3 p, float3 n, float3 color, float lineInt){
     //Diffuse color;
     float3 result = color;
     
@@ -95,7 +95,7 @@ float3  Shading(float3 p, float3 n, float3 color){
     float maxDist = 1 - ((p.z+10)/(_MaxDistance));
     maxDist = clamp(0,1,maxDist);
 
-    if(lineIntesity > 0){
+    if(lineInt > 0 && lineIntesity > 0){
         float lineDir = p.z;
         // float lineDir = distance(p.xz, float2(0,_PointLight.z));
         float lines = sin(lineDir * lineFreq * 3 + _LineTime * 30)*0.5+0.5;
@@ -166,7 +166,8 @@ fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
 
     float3 n = getNormal(sPos, sDis.w);
     float3 wColor = WorldColor(sPos);
-    float3 s = Shading(sPos, n, wColor * sDis.rgb);
+    wColor.rgb *= sDis.x;
+    float3 s = Shading(sPos, n, wColor, sDis.y );
     result = fixed4(s,1);
 
     return result;
