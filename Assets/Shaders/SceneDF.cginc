@@ -276,13 +276,13 @@ float CubeWithSphereHole(float3 p, float objScale){
     return opSS(objB,objA, 0.2);
 }
 
-float Icos(float3 p, float objScale){
+float Icos(float3 p, float objScale, float3 size){
     pModIcosahedron(p);
     // p.z += 0.5;
     rotateAxe(_CumTime * 3.0125 + _Id * PI, p.xy);
     // pModIcosahedron(p);
     // p.z -= 0.5;
-    float3 itemSize = float3(0.1,1,0.01) * randomPos(_Id.xxx);
+    float3 itemSize = size * randomPos(_Id.xxx);
     itemSize *= objScale;
     itemSize *= (sin(_CumTime * randomPos(_Id.xxx+0.234) * 3.12 + randomPos(_Id.xxx+0.463) * 10) * 0.5 + 1) * 3;
 
@@ -306,13 +306,15 @@ float4 LandScapeAndObjec(float3 p, int subInx){
     float3 rotSpeed = randomPos(_Id.xxx+0.2534) * 5;
     rotateAxe(_CumTime * rotSpeed.x, objP.yz);
     rotateAxe(_CumTime * rotSpeed.y, objP.xz);
-    
+       
     float objComb = 0;
     
     if(subInx == 0){
         objComb = CubeWithSphereHole(objP, objScale); 
     } else if(subInx == 1){
-        objComb = Icos(objP, objScale); 
+        objComb = Icos(objP, objScale, float3(0.1,1,0.01)); 
+    } else if(subInx == 2){
+        objComb = Icos(objP, objScale, float3(.71,0.03,0.15)); 
     }
 
     float4 combine = float4(objColor,objComb);
@@ -524,13 +526,15 @@ float4 distanceField(float3 p) {
     }else if(_SceneIndex == 4){
         return LandScapeAndObjec(p, 1);
     }else if(_SceneIndex == 5){
-        return Pelliccia(p);
+        return LandScapeAndObjec(p, 2);
     }else if(_SceneIndex == 6){
-        return Pelliccia(p);
-    }else if(_SceneIndex == 7){
         return Gyroid(p, false);
-    }else if(_SceneIndex == 8){
+    }else if(_SceneIndex == 7){
         return Gyroid(p, true);
+    }else if(_SceneIndex == 8){
+        return Pelliccia(p);
+    }else if(_SceneIndex == 9){
+        return Pelliccia(p);
     }
 
     return float4(float3(1.0,0.0,1.0), sdSphere(p, 2.5));
