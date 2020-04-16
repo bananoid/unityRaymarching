@@ -172,3 +172,9 @@ float sdTorus( float3 p, float2 t )
   float2 q = float2(length(p.xz)-t.x,p.y);
   return length(q)-t.y;
 }
+
+float sdCappedCylinder( float3 p, float h, float r )
+{
+  float2 d = abs(float2(length(p.xz),p.y)) - float2(h,r);
+  return min(max(d.x,d.y),0.0) + length(max(d,0.0));
+}

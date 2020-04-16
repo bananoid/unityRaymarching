@@ -133,6 +133,7 @@ float3  Shading(float3 ro, float3 p, float3 n, float3 color, float3 objColor){
     float3 nPos = p * 0.2;
     nPos.z += _Time * 10;
     float pn = cnoise3D(nPos) + 0.8;
+    // result *= pn;
 
     // if(outLineInt > 0){
     //     float outLine = dot(normalize(ro), n);
@@ -140,19 +141,16 @@ float3  Shading(float3 ro, float3 p, float3 n, float3 color, float3 objColor){
     //     result += outLine * 0.1;
     // }
 
-    result *= pn;
-
-
     if(lineInt > 0 && lineIntesity > 0.01){
         float lineDir = p.z;
         // float lineDir = distance(p.xz, float2(0,_PointLight.z));
         float lines = sin(lineDir * lineFreq * 3 + _LineTime * 30)*0.5+0.5;
-        float lineS = 0.03;
+        float lineS = 0.1;
         lines = smoothstep(lineSize-lineS,lineSize+lineS, lines);
         lines = clamp(0,1,lines);
         return result * lines.xxx * maxDist * spherLight * lineInt;
     }
-        
+
     return result;
     // return outLine.xxx;
 }

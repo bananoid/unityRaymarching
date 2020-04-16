@@ -45,7 +45,7 @@ float4 Scene00(float3 p){
 }
 
 //Landscape Room
-float4 Scene01(float3 p){
+float4 WaveLandscape(float3 p){
     //Room Box
     float4 roomBox = RoomBox(p); 
     
@@ -60,10 +60,10 @@ float4 Scene01(float3 p){
     height *= 1-p.z*0.03;
     
     float waveSize = 0.4;
-    float waveFreq = 1;
+    float waveFreq = 1.5;
     float waveSpeed = 0.4;
 
-    waveP.z += _CumTime * waveSpeed * 120;
+    waveP.z += _CumTime * waveSpeed * 20;
     float wave = cnoise(waveP.xz * waveSize * waveFreq) * waveSize;
 
     // wave = clamp(wave,-0.2,0.2);
@@ -333,6 +333,71 @@ float4 LandScapeAndObjec(float3 p, int subInx){
     return combine;
 }
 
+
+// Pelliccia
+float4 Pelliccia(float3 p){ 
+    //Room Box
+    float4 roomBox = RoomBox(p); 
+    float objScale = min(roomBox.x, roomBox.y) * 1;
+    float3 boxCenter = float3(0,0,-roomBox.z);
+    float height = roomBox.y;
+    float objH = height * 2;
+    float objR = 0.08 * (1 + _Id * 0.6); 
+    //Color
+    float3 col = float3(1,0,0);
+    
+    float planeBot = sdPlane(p, float4(0,1,0,height));
+    float planeTop = sdPlane(p, float4(0,-1,0,height));
+    float frontPlane = sdPlane(p, float4(0,0,1,0.4));
+
+    float vibTime = _LineTime * 10;
+
+    float dist = length(p.xz + boxCenter.xz + float3(0,0,-100));
+    float wPh = sin(dist * 4.5 * _Id - vibTime + _Id * PI) * 0.5;
+    wPh *= smoothstep(3, 0, dist);
+    wPh += height; 
+    
+    // p.y = abs(p.y);
+    float3 spPos = p;
+    float sGridSize = 2;
+    spPos += boxCenter;
+    spPos.y -= vibTime;
+    spPos.y = mod(spPos.y + 0.5 * sGridSize, sGridSize) - 0.5 * sGridSize;
+    float sphere = sdSphere(spPos, sGridSize * lerp( 0.1, 0.5, _Id));
+    
+    // p.y = abs(p.y);
+    float wP = sdPlane(p, float4(0,1,0,wPh)) - 0.3;
+
+    float3 itemPos = p;
+    itemPos += boxCenter;
+    // itemPos.y += height - objH * 0.5 + _SceneVars[0].x;
+    // itemPos.y = abs(itemPos.y);
+    float gridSize = objR * lerp(2.5, 4, _Id);
+    rotateAxe(_CumTime * 1.36, itemPos.xz);
+    // rotateAxe(_CumTime * 1.636, itemPos.xy);
+    // rotateAxe(_CumTime * 1.036, itemPos.yz);
+    itemPos.z += _CumTime * 2.435; 
+    itemPos.x = mod(itemPos.x + 0.5 * gridSize, gridSize) - 0.5 * gridSize;
+    itemPos.z = mod(itemPos.z + 0.5 * gridSize, gridSize) - 0.5 * gridSize;
+
+    float item = sdCappedCylinder(itemPos, objR, objH);
+    item = opIS(item, wP - 0.8 * smoothstep(roomBox.z * 1.2, 0, dist) , 0.2);
+
+    float combine = item; 
+
+    // combine = wP; 
+    // combine = sphere; 
+    combine = opUS(wP+0.1,item, objR);
+    combine = opUS(sphere, combine, 2); 
+    combine = opS(frontPlane,combine);
+
+    //Result
+    float4 result;
+    result.xyz = col;
+    result.w = combine;
+    return result;
+}
+ 
 // Simple top bottom
 float4 TopBottom(float3 p){ 
     //Room Box
@@ -451,7 +516,7 @@ float4 distanceField(float3 p) {
     if(_SceneIndex == 0){
         return Scene00(p);
     }else if(_SceneIndex == 1){
-        return Scene01(p);
+        return WaveLandscape(p);
     }else if(_SceneIndex == 2){
         return Scene02(p);
     }else if(_SceneIndex == 3){
@@ -459,9 +524,9 @@ float4 distanceField(float3 p) {
     }else if(_SceneIndex == 4){
         return LandScapeAndObjec(p, 1);
     }else if(_SceneIndex == 5){
-        return LandScapeAndObjec(p, 2);
+        return Pelliccia(p);
     }else if(_SceneIndex == 6){
-        return LandScapeAndObjec(p, 3);
+        return Pelliccia(p);
     }else if(_SceneIndex == 7){
         return Gyroid(p, false);
     }else if(_SceneIndex == 8){

@@ -804,7 +804,7 @@ public class RoomsGenerator : MonoBehaviour
             MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineFreq,0.5f) + 0.1f,
             smoothSpeed * Time.deltaTime);
 
-        lineTimeSpeed = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineIntesity,0);
+        lineTimeSpeed = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineIntesity,0) * 2 - 1;
         lineTimeSpeed *= lineFreq * 2;
 
         //rmRndScale
