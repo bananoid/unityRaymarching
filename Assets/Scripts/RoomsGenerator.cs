@@ -744,7 +744,7 @@ public class RoomsGenerator : MonoBehaviour
 
         //Screen splits
         float maxSplitsF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGMaxSplit ); 
-        maxSplits = (uint)math.remap(0,1,1,4,maxSplitsF);
+        maxSplits = (uint)math.remap(0,1,0,4,maxSplitsF);
 
         //Camera shift
         cameraShiftIntensity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.RGCameraShiftIntensity );
@@ -784,6 +784,7 @@ public class RoomsGenerator : MonoBehaviour
         //Line
         cumTimeSpeed = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.cumTimeSpeed,0.1f);
         lineIntesity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineIntesity,0);
+        lineTimeSpeed = lineIntesity;
         lineSize = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineSize,0.5f);
         lineFreq = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineFreq,0f);
         

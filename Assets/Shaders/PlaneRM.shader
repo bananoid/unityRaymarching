@@ -80,6 +80,10 @@
 
             float4 _sphere1, _sphere2, _box1;
 
+            float lineIntesity;
+            float lineSize;
+            float lineFreq;
+
             float4 _PointLight;
             float _Id;
             int _EnableRM;

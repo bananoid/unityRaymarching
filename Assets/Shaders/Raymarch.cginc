@@ -7,7 +7,7 @@ float _ColorScale;
 float _ColorSplit;
 
 float3 WorldColor(float3 p){
-    p.z += _ColorTime;
+    p.z += _ColorTime + _Time * 100;
     float pos = cnoise((p.xz+p.y)*_ColorScale) + _Id * _ColorSplit;
      
     float3 col = palette( 
@@ -24,7 +24,7 @@ float3 WorldColor(float3 p){
 
 float3 getNormal(float3 p, float d ){
     // const float2 offset = float2(0.03, 0.0);
-    const float2 offset = float2(0.001, 0.0);
+    const float2 offset = float2(0.05, 0.0);
     float3 n = float3(
         distanceField(p + offset.xyy).w - d,
         distanceField(p + offset.yxy).w - d,
@@ -80,20 +80,23 @@ fixed4 _ShadowColor;
 float2 _ShadowDistance;
 float _ShadowIntensity, _ShadowPenumbra;
 
-float lineIntesity;
-float lineSize;
+float3  Shading(float3 ro, float3 p, float3 n, float3 color, float3 objColor){
+    float intensity = objColor.x;
+    float lineInt = objColor.y;
+    float outLineInt = objColor.z;
 
-float lineFreq;
-
-float3  Shading(float3 p, float3 n, float3 color, float lineInt){
     //Diffuse color;
-    float3 result = color;
+    float3 result = color * intensity;
     
     float spherLight = distance(p, _PointLight.xyz);
     spherLight = 1 - smoothstep(0, _PointLight.w, spherLight);
 
     float maxDist = 1 - ((p.z+10)/(_MaxDistance));
     maxDist = clamp(0,1,maxDist);
+
+    //Ambient Occlusion
+    float ao = AmbientOcclusion(p,n);
+    result *= ao;
 
     if(lineInt > 0 && lineIntesity > 0){
         float lineDir = p.z;
@@ -102,7 +105,7 @@ float3  Shading(float3 p, float3 n, float3 color, float lineInt){
         float lineS = 0.03;
         lines = smoothstep(lineSize-lineS,lineSize+lineS, lines);
         lines = clamp(0,1,lines);
-        return color * lines.xxx * maxDist * spherLight;
+        return result * lines.xxx * maxDist * spherLight * lineInt;
     }
 
     // Directional Light
@@ -111,7 +114,7 @@ float3  Shading(float3 p, float3 n, float3 color, float lineInt){
     //     result *= light;
     // }
 
-    float3 light = dot(normalize(float3(1,1,0)), n) * .01;
+    float3 light = dot(normalize(float3(1,1,0)), n) * .1;
     result = result + max(light,0);
 
     // Shadows
@@ -121,18 +124,26 @@ float3  Shading(float3 p, float3 n, float3 color, float lineInt){
     //     result *= shadow + _ShadowColor * _ShadowIntensity;
     // }
 
-    //Ambient Occlusion
-    float ao = AmbientOcclusion(p,n);
-    result *= ao;
-
     
     result *=  spherLight;
     
-
     result = max(result,0);
     result *= maxDist;
+
+    float3 nPos = p * 0.2;
+    nPos.z += _Time * 10;
+    float pn = cnoise3D(nPos) + 0.8;
+
+    if(outLineInt > 0){
+        float outLine = dot(normalize(ro), n);
+        outLine = cos(outLine * PI * 1) * outLineInt;
+        result += outLine * 0.1;
+    }
+
+    result *= pn;
+
     return result;
-    // return maxDist.xxx;
+    // return outLine.xxx;
 }
 
 fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
@@ -148,8 +159,8 @@ fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
         if (t > _MaxDistance)
         {
             result = float4(0, 0, 0, 0);
-            break;
-            // discard;
+            // break;
+            discard;
         }
 
         float3 p = rayOrigin + rayDirection * t;    // This is our current position
@@ -166,9 +177,10 @@ fixed4 raymarching(float3 rayOrigin, float3 rayDirection, float depth) {
 
     float3 n = getNormal(sPos, sDis.w);
     float3 wColor = WorldColor(sPos);
-    wColor.rgb *= sDis.x;
-    float3 s = Shading(sPos, n, wColor, sDis.y );
+    // wColor.rgb *= sDis.x;
+    float3 s = Shading(rayOrigin, sPos, n, wColor, sDis );
     result = fixed4(s,1);
+    // result = fixed4(n,1);
 
     return result;
 }
