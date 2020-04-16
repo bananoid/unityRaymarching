@@ -160,21 +160,37 @@ float4 Scene02(float3 p){
 // }
 
 //Gyroid
-float4 Scene03(float3 p){
+float4 Gyroid(float3 p){
+    float combine;
+
     float3 color = float3(1,0,0);
 
     float4 roomBox = RoomBox(p); 
+    float objScale = min(roomBox.x, roomBox.y) * 1;
+    float3 boxCenter = float3(0,0,-roomBox.z);
+    float height = roomBox.y;
+
     float plane = sdPlane(p, float4(0,0,-1,0.3));
 
-    float scale = 10. / pow(roomBox.x*roomBox.y,0.3);
+
+    float3 objPos = p + boxCenter;
+    objPos.y *= 0.8;
+    float3 rotSpeed = randomPos(_Id.xxx+0.2534) * 5;
+    rotateAxe(_CumTime * rotSpeed.x, objPos.yz);
+    rotateAxe(_CumTime * rotSpeed.y, objPos.xz);
+    float obj = sdSphere(objPos, objScale) - 1;
+
+    float scale = 10. / pow(roomBox.x*roomBox.y,0.3) * (_Id*0.5 + 0.5);
     p.y += _CumTime * 10.0;
     p.z += _Time * 1.3450;
     p += _sphere2.xyz;
 
     p.y *= 0.5;
-    float gyroid = abs(sdGyroid(p,scale)) - 0.07;
-    
-    float combine = max(plane, gyroid);
+    float gyroid = abs(sdGyroid(objPos,scale)) - 0.7 * (0.5 + ((_Id - 0.5) * 0.5)) + 0.01;
+
+    // float combine = max(plane, gyroid);
+    combine = opIS(obj, gyroid, 1.5);
+    // combine = obj;
 
     //Color
     color += smoothstep(0.4, 0.6,gyroid);
@@ -275,13 +291,12 @@ float4 LandScapeAndObjec(float3 p, int subInx){
     //Room Box
     float4 roomBox = RoomBox(p); 
     float objScale = min(roomBox.x, roomBox.y) * 1;
+    float3 boxCenter = float3(0,0,-roomBox.z);
+    float height = roomBox.y;
 
     float3 roomColor = float3(1.,1,0);
     float3 objColor = float3(1.1,0,1);
     
-    float height = roomBox.y;
-    float3 boxCenter = float3(0,0,-roomBox.z);
-
     float3 objP = p;
     objP += boxCenter;    
     float3 rotSpeed = randomPos(_Id.xxx+0.2534) * 5;
@@ -436,7 +451,7 @@ float4 distanceField(float3 p) {
     }else if(_SceneIndex == 2){
         return Scene02(p);
     }else if(_SceneIndex == 3){
-        return Scene03(p);
+        return Gyroid(p);
     }else if(_SceneIndex == 4){
         return LandScapeAndObjec(p, 0);
     }else if(_SceneIndex == 5){
