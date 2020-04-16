@@ -160,7 +160,7 @@ float4 Scene02(float3 p){
 // }
 
 //Gyroid
-float4 Gyroid(float3 p){
+float4 Gyroid(float3 p, bool flat){
     float combine;
 
     float3 color = float3(1,0,0);
@@ -188,8 +188,12 @@ float4 Gyroid(float3 p){
     p.y *= 0.5;
     float gyroid = abs(sdGyroid(objPos,scale)) - 0.7 * (0.5 + ((_Id - 0.5) * 0.5)) + 0.01;
 
-    // float combine = max(plane, gyroid);
-    combine = opIS(obj, gyroid, 1.5);
+    if(flat){
+        gyroid -= -0.2;
+        combine = max(plane, gyroid);
+    }else{
+        combine = opIS(obj, gyroid, 1.5);
+    }
     // combine = obj;
 
     //Color
@@ -451,15 +455,17 @@ float4 distanceField(float3 p) {
     }else if(_SceneIndex == 2){
         return Scene02(p);
     }else if(_SceneIndex == 3){
-        return Gyroid(p);
-    }else if(_SceneIndex == 4){
         return LandScapeAndObjec(p, 0);
-    }else if(_SceneIndex == 5){
+    }else if(_SceneIndex == 4){
         return LandScapeAndObjec(p, 1);
-    }else if(_SceneIndex == 6){
+    }else if(_SceneIndex == 5){
         return LandScapeAndObjec(p, 2);
-    }else if(_SceneIndex == 7){
+    }else if(_SceneIndex == 6){
         return LandScapeAndObjec(p, 3);
+    }else if(_SceneIndex == 7){
+        return Gyroid(p, false);
+    }else if(_SceneIndex == 8){
+        return Gyroid(p, true);
     }
 
     return float4(float3(1.0,0.0,1.0), sdSphere(p, 2.5));
