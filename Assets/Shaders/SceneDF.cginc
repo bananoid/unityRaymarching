@@ -161,7 +161,7 @@ float4 Scene02(float3 p){
 
 //Gyroid
 float4 Scene03(float3 p){
-    float3 color = defaultColor;
+    float3 color = float3(1,0,0);
 
     float4 roomBox = RoomBox(p); 
     float plane = sdPlane(p, float4(0,0,-1,0.3));
@@ -250,7 +250,6 @@ float3 pModIcosahedron(inout float3 p) {
 	return p;
 }
 
-
 float CubeWithSphereHole(float3 p, float objScale){
     float objA = sdBox(p, objScale * float3(1,1,1) * (sin(_CumTime * (2+_Id) + _Id * 10)*0.1 + 0.5));
     float objB = sdSphere(p, objScale * 0.5);
@@ -259,11 +258,15 @@ float CubeWithSphereHole(float3 p, float objScale){
 
 float Icos(float3 p, float objScale){
     pModIcosahedron(p);
-    p.z += 0.5;
-    rotateAxe(_CumTime + _Id * 100, p.yz);
-    pModIcosahedron(p);
-    p.z -= 0.5;
-    float objA = sdBox(p + float3(0.0,0,2.5), objScale * float3(0.1,1.3,0.1) * (sin(_CumTime * (2+_Id) + _Id * 10)*0.1 + 0.5));
+    // p.z += 0.5;
+    rotateAxe(_CumTime * 3.0125 + _Id * PI, p.xy);
+    // pModIcosahedron(p);
+    // p.z -= 0.5;
+    float3 itemSize = float3(0.1,1,0.01) * randomPos(_Id.xxx);
+    itemSize *= objScale;
+    itemSize *= (sin(_CumTime * randomPos(_Id.xxx+0.234) * 3.12 + randomPos(_Id.xxx+0.463) * 10) * 0.5 + 1) * 3;
+
+    float objA = sdBox(p + float3(0.0,0,1.5), itemSize);
     return objA;
 }
 
@@ -279,29 +282,32 @@ float4 LandScapeAndObjec(float3 p, int subInx){
     float height = roomBox.y;
     float3 boxCenter = float3(0,0,-roomBox.z);
 
-    float planeBot = sdPlane(p, float4(0,1,0,height));
-    float planeTop = sdPlane(p, float4(0,-1,0,height));
-    float frontPlane = sdPlane(p, float4(0,0,1,0.4));
-
-    p += boxCenter;    
-    float3 rotSpeed = float3(10.1243,12.91912,1.643246);
-    rotateAxe(_CumTime * rotSpeed.x, p.yz);
-    rotateAxe(_CumTime * rotSpeed.y, p.xz);
+    float3 objP = p;
+    objP += boxCenter;    
+    float3 rotSpeed = randomPos(_Id.xxx+0.2534) * 5;
+    rotateAxe(_CumTime * rotSpeed.x, objP.yz);
+    rotateAxe(_CumTime * rotSpeed.y, objP.xz);
     
     float objComb = 0;
     
     if(subInx == 0){
-        objComb = CubeWithSphereHole(p, objScale); 
+        objComb = CubeWithSphereHole(objP, objScale); 
     } else if(subInx == 1){
-        objComb = Icos(p, objScale); 
+        objComb = Icos(objP, objScale); 
     }
 
-    float roomComb; 
-    roomComb = opU(planeBot,planeTop);
-    roomComb = opS(frontPlane,roomComb);
-    
-    float4 combine; 
-    combine = opUS( float4(objColor,objComb) , float4(roomColor,roomComb), 0.1);
+    float4 combine = float4(objColor,objComb);
+
+    if(lineSize <= 0.99){
+        float planeBot = sdPlane(p, float4(0,1,0,height));
+        float planeTop = sdPlane(p, float4(0,-1,0,height));
+        float frontPlane = sdPlane(p, float4(0,0,1,0.4));
+        
+        float roomComb; 
+        roomComb = opU(planeBot,planeTop);
+        roomComb = opS(frontPlane,roomComb);
+        combine = opUS( float4(objColor,objComb) , float4(roomColor,roomComb), 0.1);
+    }
 
 
     //Result

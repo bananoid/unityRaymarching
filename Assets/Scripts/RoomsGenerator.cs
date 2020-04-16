@@ -47,6 +47,7 @@ public class RoomsGenerator : MonoBehaviour
     public float ColorTime = 0;
     [Range(0,1)] public float ColorScale = 1;
     [Range(0,1)] public float ColorSplit = 1;
+    [Range(0,1)] public float ColorSaturation = 0.5f;
 
     [Header("Texture")]
     public List<Texture> colorTextures;
@@ -102,6 +103,8 @@ public class RoomsGenerator : MonoBehaviour
     public int2 sceneIndexRange = new int2(0,4);
     public bool raymarchEnabled = true;
     public GameObject roomPlanelPref;
+
+    public Matrix4x4 sceneVars;
 
     [Range(0,10)] public int rmSceneIndex = 0;
     [Range(0,0.1f)] public float rmRndScale = 0; 
@@ -304,12 +307,14 @@ public class RoomsGenerator : MonoBehaviour
                 planeMat.SetFloat("_ColorTime", ColorTime);
                 planeMat.SetFloat("_ColorScale", ColorScale * 0.2f);
                 planeMat.SetFloat("_ColorSplit", ColorSplit);
+                planeMat.SetFloat("_ColorSaturation", ColorSaturation);
                 
                 
                 planeMat.SetInt("_MaxIterations", maxIterations);
                 planeMat.SetFloat("_MaxDistance", maxDistance);
                 planeMat.SetFloat("_MinDistance", minDistance);
 
+                planeMat.SetMatrix("_SceneVars", sceneVars);
             }
         }
     }
@@ -772,22 +777,36 @@ public class RoomsGenerator : MonoBehaviour
         pointLight.range = math.lerp(pointLight.range, lr, smoothSpeed * Time.deltaTime);
         
         float3 plPos = pointLight.transform.position; 
-        plPos.z = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightZ, 0.5f ) * 15 - 5;
+        plPos.z = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.PointLightZ, 0.5f ) * 25 - 5;
         pointLight.transform.position = math.lerp(pointLight.transform.position, plPos, smoothSpeed * Time.deltaTime);
 
         //Color
-        colorTextureInxF =  MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorTexInx, 0.5f );
+        colorTextureInxF = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorTexInx, 0.5f );
         colorMaskTh = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorMaskTh, 0.5f );
         colorMaskIntesity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorMaskIntesity, 0.5f );
         colorSpread = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorSpread, 0.5f );
 
+        ColorTime = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorMaskIntesity, 0.5f ) * 1000;    
+        ColorScale = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorMaskTh, 0.5f ) + 0.01f;    
+        ColorSplit = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorSpread, 0.1f );
+        ColorSaturation = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.ColorTexInx, 1.0f );
+
         //Line
         cumTimeSpeed = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.cumTimeSpeed,0.1f);
-        lineIntesity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineIntesity,0);
-        lineTimeSpeed = lineIntesity;
-        lineSize = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineSize,0.5f);
-        lineFreq = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineFreq,0f);
         
+        lineSize = math.lerp(lineSize, 
+            MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineSize,0.5f),
+            smoothSpeed * Time.deltaTime * 10);
+        lineIntesity = math.lerp(lineIntesity,
+            MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineSize,0.5f),
+            smoothSpeed * Time.deltaTime);
+        lineFreq = math.lerp(lineFreq,
+            MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineFreq,0.5f) + 0.1f,
+            smoothSpeed * Time.deltaTime);
+
+        lineTimeSpeed = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.lineIntesity,0);
+        lineTimeSpeed *= lineFreq * 2;
+
         //rmRndScale
         rmRndScale = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.rmRndScale,0f) * 1;
     }

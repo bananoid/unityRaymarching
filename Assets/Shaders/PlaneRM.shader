@@ -49,7 +49,7 @@
         _ColorTime ("Color Time", float) = 1
         _ColorScale ("Color Scale", float) = 1
         _ColorSplit ("Color Split", float) = 1
-
+        _ColorSaturation ("ColorSaturation", float) = 1
     }
     SubShader
     {
@@ -87,6 +87,8 @@
             float4 _PointLight;
             float _Id;
             int _EnableRM;
+
+            float4x4 _SceneVars;
 
             #include "Random.cginc"
             #include "DistanceFunctions.cginc"

@@ -24,7 +24,7 @@ float4 glitch(float2 uv){
 
     float2 pos = uv - 0.5;
     // pos += _Time * random(floor(pos.x/blockSize)*blockSize + seed );
-    pos.y += _Time * 2;
+    pos.y += _Time * 30;
     pos.y *= ratio;
     pos.y *= 0.2;
     pos = floor(pos/blockSize)*blockSize;    
