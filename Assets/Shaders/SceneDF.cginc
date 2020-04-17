@@ -380,7 +380,7 @@ float4 SpaceGrid(float3 p){
 }
 
 // Pelliccia
-float4 Pelliccia(float3 p){ 
+float4 Pelliccia(float3 p, bool rasata){ 
     //Room Box
     float4 roomBox = RoomBox(p); 
     float objScale = min(roomBox.x, roomBox.y) * 1;
@@ -427,6 +427,10 @@ float4 Pelliccia(float3 p){
 
     float item = sdCappedCylinder(itemPos, objR, objH);
     item = opIS(item, wP - 0.8 * smoothstep(roomBox.z * 1.2, 0, dist) , 0.2);
+
+    if(rasata){
+        item = wP;
+    }
 
     float combine = item; 
 
@@ -577,8 +581,9 @@ float4 distanceField(float3 p) {
     }else if(_SceneIndex == 8){
         return SpaceGrid(p);
     }else if(_SceneIndex == 9){
-        return Pelliccia(p);
+        return Pelliccia(p, true);
     }else if(_SceneIndex == 10){
+        return Pelliccia(p, false);
     }else if(_SceneIndex == 11){
     }else if(_SceneIndex == 12){
     }
