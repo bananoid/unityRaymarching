@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         syphonServer = GetComponent<SyphonServer>();
-        Screen.SetResolution(1920,1080,false);
+        Screen.SetResolution(1920/2,1080/2,false);
         syphonServer.enabled = true;
     }
 
