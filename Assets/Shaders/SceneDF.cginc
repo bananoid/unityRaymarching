@@ -306,7 +306,7 @@ float4 LandScapeAndObjec(float3 p, int subInx){
     float3 rotSpeed = randomPos(_Id.xxx+0.2534) * 5;
     rotateAxe(_CumTime * rotSpeed.x, objP.yz);
     rotateAxe(_CumTime * rotSpeed.y, objP.xz);
-       
+
     float objComb = 0;
     
     if(subInx == 0){
@@ -330,11 +330,54 @@ float4 LandScapeAndObjec(float3 p, int subInx){
         combine = opUS( float4(objColor,objComb) , float4(roomColor,roomComb), 0.1);
     }
 
-
     //Result
     return combine;
 }
 
+float4 SpaceGrid(float3 p){
+    float4 roomBox = RoomBox(p); 
+    float objScale = min(roomBox.x, roomBox.y) * 1;
+    float3 boxCenter = float3(0,0,-roomBox.z);
+    float height = roomBox.y;
+
+    float3 gridSize = float3(1,1,10) * lerp(0.5,1.0, randomPos(_Id.xxx+0.4534));
+    float3 objSize = gridSize * lerp(0.01,0.1, randomPos(_Id.xxx+0.2714));
+    objSize.z *= lerp(1,9, _Id);   
+    
+    float3 col = float3(1,0,0);
+
+    float frontPlane = sdPlane(p, float4(0,0,1,10.));
+
+    float obj;
+
+    float3 rotSpeed = randomPos(_Id.xxx+0.2534) * 1;
+    rotateAxe(_CumTime * rotSpeed.x, p.xy);
+    // rotateAxe(_CumTime * rotSpeed.y, p.xz);
+
+    p.z += _CumTime * 30;
+
+    pMod1(p.x, gridSize.x);
+    pMod1(p.y, gridSize.y);
+    pMod1(p.z, gridSize.z);
+
+
+    obj = sdBox(p, objSize);
+    float objB = sdSphere(p, objSize.x*4.5);
+
+    // rotateAxe(PI * 0.5 + _CumTime, p.yz);
+    // obj = sdTorus(p, objSize.xx * float2(3.0,0.5));
+
+    float combine = obj;
+
+    combine = opS(obj,objB);
+    // combine = opS(frontPlane,combine);
+
+    //Result
+    float4 result;
+    result.xyz = col;
+    result.w = combine;
+    return result;
+}
 
 // Pelliccia
 float4 Pelliccia(float3 p){ 
@@ -532,9 +575,12 @@ float4 distanceField(float3 p) {
     }else if(_SceneIndex == 7){
         return Gyroid(p, true);
     }else if(_SceneIndex == 8){
-        return Pelliccia(p);
+        return SpaceGrid(p);
     }else if(_SceneIndex == 9){
         return Pelliccia(p);
+    }else if(_SceneIndex == 10){
+    }else if(_SceneIndex == 11){
+    }else if(_SceneIndex == 12){
     }
 
     return float4(float3(1.0,0.0,1.0), sdSphere(p, 2.5));
