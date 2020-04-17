@@ -4,6 +4,7 @@
 
 float _GlitchIntensity;
 float _GlitchSpeed;
+float _GlitchTime;
 float _GlitchScale;
 int _GlitchType;
 
@@ -16,15 +17,15 @@ float4 glitch(float2 uv){
     res.xy = uv;
 
     float timeSpeed = 0.1;
-    float tq = floor(_Time/timeSpeed)*timeSpeed; 
+    float tq = floor(_GlitchTime/timeSpeed)*timeSpeed; 
     tq = random(tq) * 100;
 
-    float blockSize = 0.001;
+    float blockSize = 0.001 * lerp(0.1,3,_GlitchScale);
     blockSize *= tq+1;
 
     float2 pos = uv - 0.5;
-    // pos += _Time * random(floor(pos.x/blockSize)*blockSize + seed );
-    pos.y += _Time * 30;
+    // pos += _GlitchTime * random(floor(pos.x/blockSize)*blockSize + seed );
+    pos.y += _GlitchTime * 3;
     pos.y *= ratio;
     pos.y *= 0.2;
     pos = floor(pos/blockSize)*blockSize;    

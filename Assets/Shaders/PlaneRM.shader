@@ -140,7 +140,7 @@
                     float3 rayOrigin = i.ro;
                     float3 rayDirection = normalize(i.hitPos - rayOrigin);
 
-                    rayOrigin += gh.xyz * _GlitchIntensity;
+                    rayOrigin.xy += (gh.xy-0.5) * _GlitchIntensity;
                     // rayOrigin.xy += gh2.xy * _GlitchIntensity;
 
                     float depth = 1;    

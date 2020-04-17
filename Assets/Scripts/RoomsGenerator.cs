@@ -130,6 +130,7 @@ public class RoomsGenerator : MonoBehaviour
     [Range(0,1)] public float glitchIntensity = 1;
     public float glitchSpeed = 1;
     public float glitchScale = 1;
+    float glitchTime = 0;
     public bool GlitchOn = true;
     public bool GlitchTrig = false;
 
@@ -182,6 +183,11 @@ public class RoomsGenerator : MonoBehaviour
         lineTime += Time.deltaTime * lineTimeSpeed;
         if(lineTime > 1000){
             lineTime = 0;
+        }
+
+        glitchTime += Time.deltaTime * glitchSpeed;
+        if(glitchTime > 1000){
+            glitchTime = 0;
         }
 
         UpdateParamsFromInput();
@@ -290,6 +296,7 @@ public class RoomsGenerator : MonoBehaviour
                 planeMat.SetFloat("_GlitchSpeed", glitchSpeed);
                 planeMat.SetFloat("_GlitchScale", glitchScale);
                 planeMat.SetInt("_GlitchType", glitchType);
+                planeMat.SetFloat("_GlitchTime", glitchTime);
                 
 
                 planeMat.SetFloat("_CumTime", cumTime);
