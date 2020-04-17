@@ -6,6 +6,9 @@ public class MidiMap{
 
 public enum MidiMapNote{
     ClockTap = 0x69,
+
+    GlitchTrig = 0x2B,
+    GlitchOnOff = 0x4B,
 }
 
 public enum MidiMapCC{
@@ -19,6 +22,9 @@ public enum MidiMapCC{
     RGSceneIndexSpread = 0x0D,
     
     //Col 2
+    GlitchType = 0x0F,
+    GlitchScale = 0x1F,
+    GlitchSpeed = 0x33,
     GlitchIntesity = 0x4F,
 
     //Col 3

@@ -125,10 +125,13 @@ public class RoomsGenerator : MonoBehaviour
     private List<Entity> spawnedObjs;
 
     [Header("Glitch")]
+    private int glitchTypeCount = 3; 
     public int glitchType = 1;
     [Range(0,1)] public float glitchIntensity = 1;
     public float glitchSpeed = 1;
     public float glitchScale = 1;
+    public bool GlitchOn = true;
+    public bool GlitchTrig = false;
 
     [Header("Clock")]
     public ClockEventType seedClockSpeed = 0;
@@ -766,6 +769,24 @@ public class RoomsGenerator : MonoBehaviour
 
         //Glitch
         glitchIntensity = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.GlitchIntesity ) * 4;
+        
+        // glitchTypeCount = 3; 
+        glitchType =  (int)math.round(MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.GlitchType ) * (glitchTypeCount-1));
+
+        glitchSpeed = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.GlitchSpeed );
+        glitchScale = MidiMaster.GetKnob(MidiMap.channel, (int)MidiMapCC.GlitchScale );    
+
+        if(MidiMaster.GetKeyDown(MidiMap.channel, (int)MidiMapNote.GlitchTrig)){
+            GlitchTrig = true;    
+        }else if(MidiMaster.GetKeyUp(MidiMap.channel, (int)MidiMapNote.GlitchTrig)){
+            GlitchTrig = false;
+        }
+        
+        if(MidiMaster.GetKeyDown(MidiMap.channel, (int)MidiMapNote.GlitchOnOff)){
+            GlitchOn = !GlitchOn;
+        }
+        
+        glitchIntensity =  (GlitchOn ^ GlitchTrig) ? 0 : glitchIntensity;  
 
         //PointLight
         float smoothSpeed = 3;
